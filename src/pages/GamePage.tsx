@@ -42,16 +42,13 @@ const cardsFetched = [
       "https://i.scdn.co/image/ab67616d0000b273e52a59a28efa4773dd2bfe1b",
   },
 ];
+const cardsInfo: CardInterface[] = cardsFetched.map((card) => ({ ...card, inHand: false, hidden: false }));
+const initialCard = {...cardsInfo.pop()!, inHand: true, hidden: false};
 
 export default function GamePage() {
-  const [cards, setCards] = useState<CardInterface[]>(cardsFetched as CardInterface[]);
-  const [initialCard, setInitialCard] = useState<CardInterface>(cards[0]);
+  const [cards, setCards] = useState<CardInterface[]>(cardsInfo);
 
-  useEffect(() => {
-    if (cards.length > 1) {
-      setCards(cards.slice(1, -1));
-    }
-  }, []);
+  // move board events here
 
   return (
     <Container>

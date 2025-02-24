@@ -3,7 +3,6 @@ export interface CardInterface {
   artist: string;
   date: string;
   albumCover: string;
-  x: number;
-  y: number;
   inHand: boolean;
+  hidden: boolean;
 }

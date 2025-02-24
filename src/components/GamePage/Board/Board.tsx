@@ -3,15 +3,16 @@ import Card from "../Deck/Card";
 import React, { ReactElement, useRef, useState } from "react";
 import { CardInterface } from "../../../Interfaces";
 
-export default function Board({cards}: {cards: CardInterface[]}) {
+export default function Board({ cards }: { cards: CardInterface[] }) {
   const [activeCard, setActiveCard] = useState<HTMLElement | null>(null);
   const boardRef = useRef<HTMLDivElement>(null);
 
   function grabCard(e: React.MouseEvent) {
-    const element = e.target as HTMLDivElement;
-    const board = boardRef.current;
+    const el = e.target as HTMLDivElement;
+    el.style.border = "1px solid white";
+    const element = el.parentElement!;
 
-    if (element.classList.contains("card-in-play") && board) {
+    if (element.classList.contains("card-in-play")) {
       const x = e.clientX;
       const y = e.clientY;
 
@@ -24,27 +25,28 @@ export default function Board({cards}: {cards: CardInterface[]}) {
   }
 
   function dropCard(e: React.MouseEvent) {
-    const element = e.target as HTMLDivElement;
-    const board = boardRef.current;
-    if (activeCard && board) {
-        element.style.transition = "all 0.5s ease-in-out";
-        element.style.pointerEvents = "none";
-        element.style.left = "";
-        element.style.top = "";
-        
-        element.addEventListener("transitionend", function removeTransition() {
-          element.style.transition = "";
-          element.style.pointerEvents = "auto";
-          element.removeEventListener("transitionend", removeTransition);
+    const el = e.target as HTMLDivElement;
+    el.style.border = "";
+    const element = el.parentElement!;
+    if (activeCard) {
+      element.style.transition = "all 0.5s ease-in-out";
+      element.style.pointerEvents = "none";
+      element.style.left = "";
+      element.style.top = "";
+
+      element.addEventListener("transitionend", function removeTransition() {
+        element.style.transition = "";
+        element.style.pointerEvents = "auto";
+        element.removeEventListener("transitionend", removeTransition);
       });
     }
     setActiveCard(null);
   }
 
   function moveCard(e: React.MouseEvent) {
-    const board = boardRef.current;
-    
-    if (activeCard && board) {
+    const board = boardRef.current!;
+
+    if (activeCard) {
       const minX = board.offsetLeft + 64;
       const minY = board.offsetTop + 64;
       const maxX = board.offsetLeft + board.clientWidth - 64;
@@ -72,16 +74,16 @@ export default function Board({cards}: {cards: CardInterface[]}) {
   }
 
   const board: ReactElement[] = [];
-  cards.forEach((card) =>{
-    card.inHand = false;
+  cards.forEach((card, index) => {
     board.push(
       <Card
         key={card.song}
+        index={index}
         card={card}
+        setOpenedGapIndex={undefined}
       />
-    )
-  }
-  );
+    );
+  });
 
   return (
     <Container

@@ -2,8 +2,6 @@ import styled from "styled-components";
 import { BsGear } from "react-icons/bs";
 
 export default function Menu() {
-
-
   return (
     <Container>
         <button>Back</button>

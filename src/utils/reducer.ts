@@ -39,23 +39,33 @@ const cardsFetched = [
       "https://i.scdn.co/image/ab67616d0000b273e52a59a28efa4773dd2bfe1b",
   },
 ];
-const cardsInfo: CardInterface[] = cardsFetched.map((card) => ({
+const cardsInfo: CardInterface[] = cardsFetched.map((card, index) => ({
   ...card,
+  id: index.toString(),
   inHand: false,
   hidden: false,
 }));
 
-const playersInfo: PlayerInterface[] = [
-  { name: "Player 1", cards: [], tokens: 2 },
-];
-playersInfo.forEach((player) => {
+const playersInfo = new Map<string, PlayerInterface>([
+  [
+    "socketId1",
+    { socketId: "socketId1", name: "player1", cards: [], tokens: 2 },
+  ],
+  // ["socketId2", { socketId: "socketId2", name: "player2", cards: [], tokens: 2 }],
+  // ["socketId3", { socketId: "socketId3", name: "player3", cards: [], tokens: 2 }],
+  // ["socketId4", { socketId: "socketId4", name: "player4", cards: [], tokens: 2 }],
+]);
+playersInfo.forEach((value: PlayerInterface) => {
   const initialCard = { ...cardsInfo.pop()!, inHand: true, hidden: false };
-  player.cards.push(initialCard);
+  value.cards.push(initialCard);
 });
 
 export const initialState = {
+  socketId: "socketId1",
   spotifyToken: "",
   players: playersInfo,
+  playerCards: playersInfo.get("socketId1")!.cards,
+  openedGapIndex: null,
   cards: cardsInfo,
 };
 
@@ -63,6 +73,12 @@ export const defaultDispatch: Dispatch<Action> = () => {};
 
 export const reducer = (state: State, action: Action) => {
   switch (action.type) {
+    case reducerCases.SET_SOCKET_ID: {
+      return {
+        ...state,
+        socketId: action.socketId,
+      };
+    }
     case reducerCases.SET_SPOTIFY_TOKEN: {
       return {
         ...state,
@@ -73,6 +89,18 @@ export const reducer = (state: State, action: Action) => {
       return {
         ...state,
         players: action.players,
+      };
+    }
+    case reducerCases.SET_PLAYER_CARDS: {
+      return {
+        ...state,
+        playerCards: action.playerCards,
+      };
+    }
+    case reducerCases.SET_OPENED_GAP_INDEX: {
+      return {
+        ...state,
+        openedGapIndex: action.openedGapIndex,
       };
     }
     case reducerCases.SET_CARDS: {

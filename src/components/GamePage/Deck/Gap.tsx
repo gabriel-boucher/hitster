@@ -1,31 +1,23 @@
 import styled from "styled-components";
+import { useStateProvider } from "../../../utils/StateProvider";
 
 interface GapProps {
   index: number;
-  hoveredGap: number | null;
-  onHover: (id: number | null) => void;
-  addCardBetween: (index: number) => void;
 }
 
-export default function Gap({
-  index,
-  hoveredGap,
-  onHover,
-  addCardBetween,
-}: GapProps) {
+export default function Gap({ index }: GapProps) {
+  const [{ openedGapIndex }] = useStateProvider();
+
   return (
     <Container
-      onMouseEnter={() => onHover(index)}
-      onMouseLeave={() => onHover(null)}
-      onMouseUp={() => addCardBetween(index)}
       style={{
-        width: hoveredGap === index ? "calc-size(auto,size)" : "0px",
+        width: openedGapIndex === index ? "calc-size(auto,size)" : "0px",
       }}
     >
       <div
         className="card-container"
         style={{
-          border: hoveredGap === index ? "1px solid white" : "0px",
+          border: openedGapIndex === index ? "1px solid white" : "0px",
         }}
       ></div>
     </Container>

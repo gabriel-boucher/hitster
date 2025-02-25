@@ -1,62 +1,32 @@
 import styled from "styled-components";
 import { CardInterface } from "../../../utils/Interfaces";
-import { useRef } from "react";
 
 interface CardProps {
-    index: number;
-    card: CardInterface;
-    setOpenedGapIndex?: (id: number | null) => void;
-  }
+  card: CardInterface;
+}
 
-export default function Card({ index, card, setOpenedGapIndex }: CardProps) {
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  function getSideToAddCard(e: React.MouseEvent) {
-    const cardRefCurrent = cardRef.current;
-
-    if (cardRefCurrent) {
-        const midPoint = cardRefCurrent.offsetLeft + cardRefCurrent.offsetWidth / 2;
-    
-        if (e.clientX < midPoint) {
-          return "left";
-        } else {
-          return "right";
-        }
-    }
-  }
-
-  function onMouseMove(e: React.MouseEvent) {
-      const side = getSideToAddCard(e);
-  
-      if (side === "left" && setOpenedGapIndex) {
-        setOpenedGapIndex(index - 1);
-      } else if (side === "right" && setOpenedGapIndex) {
-        setOpenedGapIndex(index + 1);
-      }
-    }
-
+export default function Card({ card }: CardProps) {
   if (!card.inHand) {
     return (
-      <ContainerInPlay
-        className="card-in-play"
-      >
+      <ContainerInPlay id={card.id} className="card-in-play">
         <div
-            className="card-container"
-            style={{ backgroundImage: `url(src/assets/hitster_logo_square.webp)` }}
-        >
-        </div>
+          className="card-container"
+          style={{
+            backgroundImage: `url(src/assets/hitster_logo_square.webp)`,
+          }}
+        ></div>
       </ContainerInPlay>
     );
   } else {
     return (
-      <ContainerInHand
-        onMouseMove={(e) => onMouseMove(e)}
-        onMouseLeave={() => setOpenedGapIndex && setOpenedGapIndex(null)}
-        ref={cardRef}
-      >
+      <ContainerInHand id={card.id} className="card-in-hand">
         <div
           className="card-container"
-          style={{ backgroundImage: card.hidden ? `url(src/assets/hitster_logo_square.webp)` : `url(${card.albumCover})` }}
+          style={{
+            backgroundImage: card.hidden
+              ? `url(src/assets/hitster_logo_square.webp)`
+              : `url(${card.albumCover})`,
+          }}
         >
           <div className={`details ${card.hidden ? "hidden" : ""}`}>
             <div className="date">{card.date}</div>
@@ -76,7 +46,7 @@ const ContainerInPlay = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  
+
   .card-container {
     height: inherit;
     width: inherit;

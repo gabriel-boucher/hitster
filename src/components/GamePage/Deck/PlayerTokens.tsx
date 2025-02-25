@@ -5,13 +5,13 @@ import { ReactElement, useEffect, useState } from "react";
 import { useStateProvider } from "../../../utils/StateProvider";
 
 export default function PlayerTokens() {
-  const [{ players }] = useStateProvider();
+  const [{ socketId, players }] = useStateProvider();
   const [tokensContainer, setTokensContainer] = useState<ReactElement[]>([]);
 
   function displayTokens() {
     const newTokensContainer: ReactElement[] = [];
 
-    for (let token = 0; token < players[0].tokens; token++) {
+    for (let token = 0; token < players.get(socketId)!.tokens; token++) {
       newTokensContainer.push(<Token key={token}/>)
     }
 

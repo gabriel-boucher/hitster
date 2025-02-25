@@ -1,13 +1,12 @@
 import styled from "styled-components";
 import PlayerCards from "./PlayerCards";
 import PlayerTokens from "./PlayerTokens";
-import { CardInterface } from "../../../Interfaces";
 
-export default function Deck({ initialCard }: {initialCard: CardInterface}) {
+export default function Deck() {
 
   return (
     <Container id="deck">
-        <PlayerCards initialCard={initialCard}/>
+        <PlayerCards/>
         <hr/>
         <PlayerTokens/>
     </Container>

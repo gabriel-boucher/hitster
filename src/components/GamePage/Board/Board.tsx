@@ -1,18 +1,19 @@
 import styled from "styled-components";
 import Card from "../Deck/Card";
 import React, { ReactElement, useRef, useState } from "react";
-import { CardInterface } from "../../../Interfaces";
+import { useStateProvider } from "../../../utils/StateProvider";
 
-export default function Board({ cards }: { cards: CardInterface[] }) {
+export default function Board() {
+  const [{cards}] = useStateProvider();
   const [activeCard, setActiveCard] = useState<HTMLElement | null>(null);
   const boardRef = useRef<HTMLDivElement>(null);
 
   function grabCard(e: React.MouseEvent) {
     const el = e.target as HTMLDivElement;
-    el.style.border = "1px solid white";
     const element = el.parentElement!;
 
     if (element.classList.contains("card-in-play")) {
+      el.style.border = "1px solid white";
       const x = e.clientX;
       const y = e.clientY;
 
@@ -26,9 +27,9 @@ export default function Board({ cards }: { cards: CardInterface[] }) {
 
   function dropCard(e: React.MouseEvent) {
     const el = e.target as HTMLDivElement;
-    el.style.border = "";
     const element = el.parentElement!;
     if (activeCard) {
+      el.style.border = "";
       element.style.transition = "all 0.5s ease-in-out";
       element.style.pointerEvents = "none";
       element.style.left = "";

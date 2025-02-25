@@ -1,11 +1,13 @@
 import styled from "styled-components";
 import Card from "./Card";
 import { ReactElement, useEffect, useState } from "react";
-import { CardInterface } from "../../../Interfaces";
+import { CardInterface } from "../../../utils/Interfaces";
 import Gap from "./Gap";
+import { useStateProvider } from "../../../utils/StateProvider";
+import { reducerCases } from "../../../utils/Constants";
 
-export default function PlayerCards({initialCard}: {initialCard: CardInterface}) {
-  const [cards, setCards] = useState<CardInterface[]>([initialCard]);
+export default function PlayerCards() {
+  const [{ players }, dispatch] = useStateProvider();
   const [cardsContainer, setCardsContainer] = useState<ReactElement[]>([]);
   const [openedGapIndex, setOpenedGapIndex] = useState<number | null>(null);
 
@@ -19,17 +21,17 @@ export default function PlayerCards({initialCard}: {initialCard: CardInterface})
       inHand: true,
       hidden: true,
     };
-
-    const newCards = [...cards];
-    newCards.splice(index, 0, newCard);
-    setCards(newCards);
+    const playerCards = [...players[0].cards];
+    playerCards.splice(index, 0, newCard);
+    dispatch({ type: reducerCases.SET_PLAYERS, players: [{ ...players[0], cards: playerCards }] });
   };
 
 
   function displayCards() {
+    const playerCards = [...players[0].cards];
     const newCardsContainer: ReactElement[] = [];
 
-    for (let i = 0; i <= 2*cards.length; i++) {
+    for (let i = 0; i <= 2*playerCards.length; i++) {
       if (i%2 === 0) {
         newCardsContainer.push(
           <Gap
@@ -46,7 +48,7 @@ export default function PlayerCards({initialCard}: {initialCard: CardInterface})
           <Card 
             key={i} 
             index={i} 
-            card={cards[index]} 
+            card={playerCards[index]} 
             setOpenedGapIndex={setOpenedGapIndex} 
           />
         )
@@ -58,7 +60,7 @@ export default function PlayerCards({initialCard}: {initialCard: CardInterface})
 
   useEffect(() => {
     displayCards();
-  }, [cards, openedGapIndex]);
+  }, [players, openedGapIndex]);
 
   return (
     <Container>

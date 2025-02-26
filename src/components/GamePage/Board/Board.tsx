@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Card from "../Deck/Card";
 import { ReactElement } from "react";
 import { useStateProvider } from "../../../utils/StateProvider";
+import { cardStates } from "../../../utils/Constants";
 
 export default function Board() {
   const [{cards}] = useStateProvider();
@@ -12,6 +13,7 @@ export default function Board() {
       <Card
         key={card.id}
         card={card}
+        cardState={cardStates.CARD_IN_PLAY}
       />
     );
   });

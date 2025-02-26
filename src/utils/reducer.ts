@@ -43,7 +43,7 @@ const cardsInfo: CardInterface[] = cardsFetched.map((card, index) => ({
   ...card,
   id: index.toString(),
   inHand: false,
-  hidden: false,
+  hidden: true,
 }));
 
 const playersInfo = new Map<string, PlayerInterface>([
@@ -64,9 +64,11 @@ export const initialState = {
   socketId: "socketId1",
   spotifyToken: "",
   players: playersInfo,
+  playersTurn: 0,
   playerCards: playersInfo.get("socketId1")!.cards,
   openedGapIndex: null,
   cards: cardsInfo,
+  activeCard: cardsInfo[cardsInfo.length - 1],
 };
 
 export const defaultDispatch: Dispatch<Action> = () => {};
@@ -91,6 +93,12 @@ export const reducer = (state: State, action: Action) => {
         players: action.players,
       };
     }
+    case reducerCases.SET_PLAYERS_TURN: {
+      return {
+        ...state,
+        playersTurn: action.playersTurn,
+      };
+    }
     case reducerCases.SET_PLAYER_CARDS: {
       return {
         ...state,
@@ -107,6 +115,12 @@ export const reducer = (state: State, action: Action) => {
       return {
         ...state,
         cards: action.cards,
+      };
+    }
+    case reducerCases.SET_ACTIVE_CARD: {
+      return {
+        ...state,
+        activeCard: action.activeCard,
       };
     }
     default:

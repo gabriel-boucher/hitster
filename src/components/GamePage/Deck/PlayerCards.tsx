@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import Card from "./Card";
-import { ReactElement, useEffect, useRef, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import Gap from "./Gap";
 import { useStateProvider } from "../../../utils/StateProvider";
+import { cardElements, cardStates } from "../../../utils/Constants";
 
 export default function PlayerCards() {
   const [{ playerCards, openedGapIndex }] = useStateProvider();
@@ -18,7 +19,7 @@ export default function PlayerCards() {
       );
       } else {
         newCardsContainer.push(
-          <Card key={i} card={playerCards[Math.floor(i / 2)]} />
+          <Card key={i} card={playerCards[Math.floor(i / 2)]} cardState={cardStates.CARD_IN_HAND} />
         );
       }
     }
@@ -32,7 +33,7 @@ export default function PlayerCards() {
 
   return (
     <Container>
-      <div className="cards-container">{cardsContainer}</div>
+      <div id={cardElements.CARDS_CONTAINER}>{cardsContainer}</div>
     </Container>
   );
 }
@@ -45,7 +46,7 @@ const Container = styled.div`
   align-items: center;
   overflow: auto;
 
-  .cards-container {
+  #cards-container {
     height: 100%;
     width: 96%;
     display: flex;

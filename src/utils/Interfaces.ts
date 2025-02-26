@@ -6,7 +6,6 @@ export interface CardInterface {
   artist: string;
   date: string;
   albumCover: string;
-  inHand: boolean;
   hidden: boolean;
 }
 
@@ -23,9 +22,11 @@ export interface State {
   socketId: string;
   spotifyToken: string;
   players: Map<string, PlayerInterface>;
+  playersTurn: number;
   playerCards: CardInterface[];
   openedGapIndex: number | null;
   cards: CardInterface[];
+  activeCard: CardInterface;
 }
 
 export interface SetSocketIdAction {
@@ -40,6 +41,11 @@ export interface SetSpotifyTokenAction {
 export interface SetPlayersAction {
   type: reducerCases.SET_PLAYERS;
   players: Map<string, PlayerInterface>;
+}
+
+export interface SetPlayersTurnAction {
+  type: reducerCases.SET_PLAYERS_TURN;
+  playersTurn: number;
 }
 
 export interface SetPlayerCardsAction {
@@ -57,4 +63,9 @@ export interface SetCardsAction {
   cards: CardInterface[];
 }
 
-export type Action = SetSocketIdAction | SetSpotifyTokenAction | SetPlayersAction | SetPlayerCardsAction | SetOpenedGapIndexAction | SetCardsAction;
+export interface SetActiveCardAction {
+  type: reducerCases.SET_ACTIVE_CARD;
+  activeCard: CardInterface;
+}
+
+export type Action = SetSocketIdAction | SetSpotifyTokenAction | SetPlayersAction | SetPlayersTurnAction | SetPlayerCardsAction | SetOpenedGapIndexAction | SetCardsAction | SetActiveCardAction;

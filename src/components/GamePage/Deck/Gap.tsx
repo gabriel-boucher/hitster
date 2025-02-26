@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useStateProvider } from "../../../utils/StateProvider";
+import { gapElements } from "../../../utils/Constants";
 
 interface GapProps {
   index: number;
@@ -15,7 +16,7 @@ export default function Gap({ index }: GapProps) {
       }}
     >
       <div
-        className="card-container"
+        className={gapElements.GAP_CONTAINER}
         style={{
           border: openedGapIndex === index ? "1px solid white" : "0px",
         }}
@@ -37,7 +38,7 @@ const Container = styled.div`
 
   transition: width 0.3s ease;
 
-  .card-container {
+  .gap-container {
     aspect-ratio: 1/1;
     width: 80%;
 

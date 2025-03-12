@@ -2,18 +2,20 @@ import styled from "styled-components";
 import { useState, useRef, useEffect } from "react";
 import { useStateProvider } from "../utils/StateProvider";
 import { CardInterface } from "../utils/Interfaces";
+import CardInDeck from "../components/GamePage/Board/CardInDeck";
+import CardInStack from "../components/GamePage/Board/CardInStack";
+import DraggableCard from "../components/GamePage/Board/DraggableCard";
 
 export default function TestPage() {
   const [{ playerCards, cards }] = useStateProvider();
 
   const [deckCards, setDeckCards] = useState<CardInterface[]>(playerCards);
+  const [stackCards, setStackCards] = useState<CardInterface[]>(cards);
   const [gapIndex, setGapIndex] = useState<number | null>(null);
+  const [activeCard, setActiveCard] = useState<CardInterface | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const [stackCards, setStackCards] = useState<CardInterface[]>(cards);
-  const [dragSource, setDragSource] = useState<"stack" | "deck" | null>(null);
-  const [activeCard, setActiveCard] = useState<CardInterface | null>(null);
 
   const handleMouseMove = (e: MouseEvent) => {
     if (isDragging) {
@@ -37,11 +39,10 @@ export default function TestPage() {
         newStackCards.push(activeCard!);
         setStackCards(newStackCards);
       }
+      setGapIndex(null);
       setIsDragging(false);
-      setDragSource(null);
       setActiveCard(null);
 
-      setGapIndex(null);
       setDragPosition({ x: 0, y: 0 });
     }
   };
@@ -64,9 +65,8 @@ export default function TestPage() {
     const newCards = [...cards];
     const [card] = newCards.splice(index, 1);
     setCards(newCards);
-
+    
     setIsDragging(true);
-    setDragSource("deck");
     setActiveCard(card);
   };
 
@@ -91,174 +91,43 @@ export default function TestPage() {
         window.removeEventListener("mouseup", handleMouseUp);
       };
     }
-  }, [isDragging, dragSource, gapIndex]);
+  }, [isDragging, gapIndex]);
 
   return (
     <Container>
+      {isDragging && <DraggableCard dragPosition={dragPosition} />}
       <Stack>
-        {isDragging && dragSource === "stack" && (
-          <DraggableCard
-            style={{
-              left: dragPosition.x,
-              top: dragPosition.y,
-              position: "fixed",
-              transform: "none",
-              zIndex: 1000,
-              pointerEvents: "none",
-              backgroundImage: `url(${activeCard?.albumCover})`,
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "cover",
-            }}
-          >
-            {activeCard?.date}
-          </DraggableCard>
-        )}
-        {stackCards.map((card, index) => (
-          <CardStack
+        {stackCards.map((_, index) => (
+          <CardInStack
             key={index}
-            onMouseDown={(e) => handleMouseDown(e, index, stackCards, setStackCards)}
-            style={{
-              backgroundImage: `url(${card.albumCover})`,
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "cover",
-              bottom: `${index * 4}px`,
-              zIndex: index,
-              marginBottom: "40px",
-              display: "flex",
-              justifyContent: "center",
-              color: "red",
-            }}
-          >
-            {card.date}
-          </CardStack>
+            index={index}
+            stackCards={stackCards}
+            setStackCards={setStackCards}
+            handleMouseDown={handleMouseDown}
+          />
         ))}
       </Stack>
       <Deck>
-        {isDragging && dragSource === "deck" && (
-          <DraggableCard
-            style={{
-              left: dragPosition.x,
-              top: dragPosition.y,
-              position: "fixed",
-              transform: "none",
-              zIndex: 1000,
-              pointerEvents: "none",
-              backgroundImage: `url(${activeCard?.albumCover})`,
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "cover",
-            }}
-          >
-            {activeCard?.date}
-          </DraggableCard>
-        )}
         {deckCards.map((card, index) => (
-          <CardDeck
+          <CardInDeck
             key={index}
-            onMouseOver={(e) => handleDeckGapDetection(e, index)} // keeps gap opened
-            onMouseMove={(e) => handleDeckGapDetection(e, index)} // opens gap
-            onMouseDown={(e) => handleMouseDown(e, index, deckCards, setDeckCards)}
-            onMouseLeave={() => setGapIndex(null)}
-            $isGapBefore={gapIndex === index}
-            $isGapAfter={gapIndex === index + 1}
-            $isDragging={isDragging}
-            $dragSource={dragSource}
-            $numberOfCards={deckCards.length}
-            style={{
-              backgroundImage: `url(${card.albumCover})`,
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "cover",
-              display: "flex",
-              justifyContent: "center",
-              color: "red",
-            }}
-          >
-            {card.date}
-          </CardDeck>
+            index={index}
+            card={card}
+            deckCards={deckCards}
+            isGapBefore={gapIndex === index}
+            isGapAfter={gapIndex === index + 1}
+            isDragging={isDragging}
+            numberOfCards={deckCards.length}
+            handleDeckGapDetection={handleDeckGapDetection}
+            handleMouseDown={handleMouseDown}
+            setDeckCards={setDeckCards}
+            setGapIndex={setGapIndex}
+          />
         ))}
       </Deck>
     </Container>
   );
 }
-
-const CardDeck = styled.div<{
-  $isGapBefore?: boolean;
-  $isGapAfter?: boolean;
-  $isDragging: boolean;
-  $dragSource: "stack" | "deck" | null;
-  $numberOfCards: number;
-}>`
-  position: relative;
-  width: 100px;
-  height: 100px;
-  border-radius: 10px;
-  border: 1px solid black;
-  cursor: grab;
-  user-select: none;
-  transition: margin 0.3s ease;
-  margin-left: ${(props) => (props.$isGapBefore ? "50px" : "0")};
-  margin-right: ${(props) => (props.$isGapAfter ? "50px" : "0")};
-
-  &::before,
-  &::after {
-    content: "";
-    position: absolute;
-    top: -50%;
-    height: 200%;
-    width: 101px;
-    z-index: 0;
-    pointer-events: ${(props) => (props.$isDragging ? "auto" : "none")};
-    opacity: 0.5;
-    user-select: none;
-  }
-
-  &::before {
-    right: 50%;
-  }
-
-  &::after {
-    left: 50%;
-  }
-
-  &:nth-child(
-      ${(props) =>
-          props.$isDragging && props.$dragSource === "deck" ? "2" : "1"}
-    ) {
-    &::before {
-      width: calc(
-        (100vw - (${(props) => props.$numberOfCards} - 1) * 102px) / 2 - 50px
-      );
-    }
-  }
-
-  &:last-child {
-    &::after {
-      width: calc(
-        (100vw - (${(props) => props.$numberOfCards} - 1) * 102px) / 2 - 50px
-      );
-    }
-  }
-`;
-
-const CardStack = styled.div`
-  position: absolute;
-  width: 100px;
-  height: 100px;
-  border-radius: 10px;
-  border: 1px solid black;
-  cursor: grab;
-  user-select: none;
-  transition: box-shadow 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-
-  &:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-`;
-
-const DraggableCard = styled(CardStack)`
-  cursor: grabbing;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-`;
 
 const Deck = styled.div`
   width: 100%;

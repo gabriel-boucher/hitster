@@ -1,7 +1,7 @@
 import { reducerCases } from "./Constants";
 
 export interface CardInterface {
-  id: string
+  id?: string
   song: string;
   artist: string;
   date: string;

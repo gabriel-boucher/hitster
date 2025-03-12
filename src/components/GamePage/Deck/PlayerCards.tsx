@@ -14,10 +14,12 @@ export default function PlayerCards() {
 
     for (let i = 0; i <= 2 * playerCards.length; i++) {
       if (i % 2 === 0) {
+        console.log(i, "gap")
         newCardsContainer.push(
           <Gap key={i} index={i} />
       );
       } else {
+        console.log(i, "card")
         newCardsContainer.push(
           <Card key={i} card={playerCards[Math.floor(i / 2)]} cardState={cardStates.CARD_IN_HAND} />
         );

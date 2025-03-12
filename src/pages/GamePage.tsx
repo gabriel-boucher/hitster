@@ -51,14 +51,16 @@ export default function GamePage() {
     const gapContainer = e.target as HTMLDivElement;
     if (gapContainer.classList.contains(gapElements.GAP_CONTAINER)) {
       const gapReact = gapContainer.parentElement!;
-      gapReact.style.display = "none";
-      setTimeout(() => {
-        gapReact.style.display = "";
-      }, 1000)
+      // gapReact.replaceWith(activeCardReact);
+      // activeCardReact.replaceWith(gapReact)
+      // gapReact.style.display = "none";
+      // setTimeout(() => {
+      //   gapReact.style.display = "";
+      // }, 1000)
     }
 
     if (activeCardReact) {
-      gapContainer.style.outline = "";
+      // gapContainer.style.outline = "";
       activeCardReact.style.position = ""
       activeCardReact.style.transition = "all 0.5s ease-in-out";
       activeCardReact.style.pointerEvents = "none";
@@ -84,16 +86,21 @@ export default function GamePage() {
     const newCards = [...cards];
     const newPlayerCards = [...playerCards];
 
-    let newCard = activeCard;
+    // let newCard = activeCard;
     if (cards.includes(activeCard)) {
-      newCard = newCards.pop()!;
+      // newCard = newCards.pop()!;
+      newCards.pop()!;
     } else if (playerCards.includes(activeCard)) {
       const index1 = playerCards.indexOf(activeCard);
-      [newCard] = newPlayerCards.splice(index1, 1);
+      // [newCard] = newPlayerCards.splice(index1, 1);
+      newPlayerCards.splice(index1, 1);
+
     }
     
-    newPlayerCards.splice(index/2, 0, newCard);
+    // newPlayerCards.splice(index/2, 0, newCard);
+    newPlayerCards.splice(index/2, 0, activeCard);
 
+    
     dispatch({
       type: reducerCases.SET_PLAYER_CARDS,
       playerCards: newPlayerCards,

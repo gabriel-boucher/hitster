@@ -1,44 +1,7 @@
 import { Action, CardInterface, PlayerInterface, State } from "./Interfaces";
-import { reducerCases } from "./Constants";
+import { cardsFetched, playersFetched, reducerCases } from "./Constants";
 import { Dispatch } from "react";
 
-const cardsFetched = [
-  {
-    song: "Starlight",
-    artist: "Muse",
-    date: "2006",
-    albumCover:
-      "https://i.scdn.co/image/ab67616d0000b27328933b808bfb4cbbd0385400",
-  },
-  {
-    song: "Supermassive Black Hole",
-    artist: "Muse",
-    date: "2006",
-    albumCover:
-      "https://i.scdn.co/image/ab67616d0000b27328933b808bfb4cbbd0385400",
-  },
-  {
-    song: "What's My Age Again?",
-    artist: "blink-182",
-    date: "1999",
-    albumCover:
-      "https://i.scdn.co/image/ab67616d0000b2736da502e35a7a3e48de2b0f74",
-  },
-  {
-    song: "When I Come Around",
-    artist: "Green Day",
-    date: "1994",
-    albumCover:
-      "https://i.scdn.co/image/ab67616d0000b273db89b08034de626ebee6823d",
-  },
-  {
-    song: "Dreams - 2004 Remaster",
-    artist: "Fleetwood Mac",
-    date: "1977",
-    albumCover:
-      "https://i.scdn.co/image/ab67616d0000b273e52a59a28efa4773dd2bfe1b",
-  },
-];
 const cardsInfo: CardInterface[] = cardsFetched.map((card, index) => ({
   ...card,
   id: index.toString(),
@@ -46,19 +9,16 @@ const cardsInfo: CardInterface[] = cardsFetched.map((card, index) => ({
   hidden: true,
 }));
 
-const playersInfo = new Map<string, PlayerInterface>([
-  [
-    "socketId1",
-    { socketId: "socketId1", name: "player1", cards: [], tokens: 2 },
-  ],
-  // ["socketId2", { socketId: "socketId2", name: "player2", cards: [], tokens: 2 }],
-  // ["socketId3", { socketId: "socketId3", name: "player3", cards: [], tokens: 2 }],
-  // ["socketId4", { socketId: "socketId4", name: "player4", cards: [], tokens: 2 }],
-]);
-playersInfo.forEach((value: PlayerInterface) => {
-  const initialCard = { ...cardsInfo.pop()!, inHand: true, hidden: false };
-  value.cards.push(initialCard);
-});
+const playersInfo = new Map<string, PlayerInterface>(
+  playersFetched.map((player) => [
+    player.socketId,
+    {
+      ...player,
+      cards: [{ ...cardsInfo.pop()!, inHand: true, hidden: false }],
+      tokens: 2,
+    },
+  ])
+);
 
 export const initialState = {
   socketId: "socketId1",

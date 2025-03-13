@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useStateProvider } from "../utils/StateProvider";
 import { CardInterface } from "../utils/Interfaces";
 import CardInDeck from "../components/GamePage/Board/CardInDeck";
@@ -9,8 +9,8 @@ import DraggableCard from "../components/GamePage/Board/DraggableCard";
 export default function TestPage() {
   const [{ playerCards, cards }] = useStateProvider();
 
-  const [deckCards, setDeckCards] = useState<CardInterface[]>(playerCards);
-  const [stackCards, setStackCards] = useState<CardInterface[]>(cards);
+  const [deckCards, setDeckCards] = useState<CardInterface[]>([...playerCards]);
+  const [stackCards, setStackCards] = useState<CardInterface[]>([...cards]);
   const [gapIndex, setGapIndex] = useState<number | null>(null);
   const [activeCard, setActiveCard] = useState<CardInterface>(
     stackCards[stackCards.length - 1]
@@ -19,28 +19,44 @@ export default function TestPage() {
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
-  const nextTurn = () => {
-    // for (let i = 0; i < deckCards.length; i++) {
-    //   if (deckCards[i].id === activeCard.id) {
-    //     const newDeckCards = [...deckCards];
-    //     newDeckCards[i].hidden = false;
-    //     setDeckCards(newDeckCards);
+  const isRightAnswer = (index: number) => {
+    const active = parseInt(activeCard.date);
+    const before = index > 0 ? parseInt(deckCards[index - 1].date) : -Infinity;
+    const after =
+      index < deckCards.length - 1
+        ? parseInt(deckCards[index + 1].date)
+        : Infinity;
 
-    //     if (
-    //       parseInt(deckCards[i - 1].date) <= parseInt(deckCards[i].date) &&
-    //       parseInt(deckCards[i].date) <= parseInt(deckCards[i + 1].date)
-    //     ) {
-    //       setTimeout(() => {
-    //         const newDeckCards = [...deckCards];
-    //         newDeckCards.splice(i, 1);
-    //         setDeckCards(newDeckCards);
-    //       }, 2000);
-    //     }
-    //     break;
-    //   }
-    // }
-    setDeckCards(deckCards.map((card) => card.id === activeCard.id ? { ...card, hidden: false } : card));
-    setActiveCard(stackCards[stackCards.length - 1]);
+    return before <= active && active <= after;
+  };
+
+  const nextTurn = () => {
+    const index = deckCards.indexOf(activeCard);
+    if (index === -1) return;
+
+    const newDeckCards = [...deckCards];
+    newDeckCards[index].hidden = false;
+    setDeckCards(newDeckCards);
+
+    if (!isRightAnswer(index)) {
+      setTimeout(() => {
+        const newDeckCards = [...deckCards];
+        newDeckCards.splice(index, 1);
+        setDeckCards(newDeckCards);
+      }, 1000);
+    }
+
+    if (stackCards.length === 0) {
+      const newStackCards = cards.map((card) => ({
+        ...card,
+        id: (parseInt(card.id) + parseInt(activeCard.id)).toString(),
+        hidden: true, // cards are changed to hidden false during the process (don't know why)
+      }));
+      setStackCards(newStackCards);
+      setActiveCard(newStackCards[newStackCards.length - 1]); // use cards because react doesn't update stackCards in time to use stackCards
+    } else {
+      setActiveCard(stackCards[stackCards.length - 1]);
+    }
   };
 
   const handleMouseMove = (e: MouseEvent) => {
@@ -57,7 +73,7 @@ export default function TestPage() {
       if (gapIndex !== null) {
         // card dropped in the deck
         const newDeckCards = [...deckCards];
-        newDeckCards.splice(gapIndex, 0, activeCard!);
+        newDeckCards.splice(gapIndex, 0, activeCard);
         setDeckCards(newDeckCards);
       } else {
         // card returns to the stack

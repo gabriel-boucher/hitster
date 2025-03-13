@@ -4,7 +4,7 @@ import { Dispatch } from "react";
 
 const cardsInfo: CardInterface[] = cardsFetched.map((card, index) => ({
   ...card,
-  id: index.toString(),
+  id: (cardsFetched.length - 1 - index).toString(),
   inHand: false,
   hidden: true,
 }));

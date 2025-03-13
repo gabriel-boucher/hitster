@@ -12,10 +12,36 @@ export default function TestPage() {
   const [deckCards, setDeckCards] = useState<CardInterface[]>(playerCards);
   const [stackCards, setStackCards] = useState<CardInterface[]>(cards);
   const [gapIndex, setGapIndex] = useState<number | null>(null);
-  const [activeCard, setActiveCard] = useState<CardInterface | null>(null);
+  const [activeCard, setActiveCard] = useState<CardInterface>(
+    stackCards[stackCards.length - 1]
+  );
   const [isDragging, setIsDragging] = useState(false);
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+
+  const nextTurn = () => {
+    // for (let i = 0; i < deckCards.length; i++) {
+    //   if (deckCards[i].id === activeCard.id) {
+    //     const newDeckCards = [...deckCards];
+    //     newDeckCards[i].hidden = false;
+    //     setDeckCards(newDeckCards);
+
+    //     if (
+    //       parseInt(deckCards[i - 1].date) <= parseInt(deckCards[i].date) &&
+    //       parseInt(deckCards[i].date) <= parseInt(deckCards[i + 1].date)
+    //     ) {
+    //       setTimeout(() => {
+    //         const newDeckCards = [...deckCards];
+    //         newDeckCards.splice(i, 1);
+    //         setDeckCards(newDeckCards);
+    //       }, 2000);
+    //     }
+    //     break;
+    //   }
+    // }
+    setDeckCards(deckCards.map((card) => card.id === activeCard.id ? { ...card, hidden: false } : card));
+    setActiveCard(stackCards[stackCards.length - 1]);
+  };
 
   const handleMouseMove = (e: MouseEvent) => {
     if (isDragging) {
@@ -41,7 +67,6 @@ export default function TestPage() {
       }
       setGapIndex(null);
       setIsDragging(false);
-      setActiveCard(null);
 
       setDragPosition({ x: 0, y: 0 });
     }
@@ -53,21 +78,22 @@ export default function TestPage() {
     cards: CardInterface[],
     setCards: (cards: CardInterface[]) => void
   ) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setDragOffset({
-      x: rect.width / 2,
-      y: rect.height / 2,
-    });
-    setDragPosition({
-      x: e.clientX - rect.width / 2,
-      y: e.clientY - rect.height / 2,
-    });
-    const newCards = [...cards];
-    const [card] = newCards.splice(index, 1);
-    setCards(newCards);
-    
-    setIsDragging(true);
-    setActiveCard(card);
+    if (e.currentTarget.id === activeCard.id) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      setDragOffset({
+        x: rect.width / 2,
+        y: rect.height / 2,
+      });
+      setDragPosition({
+        x: e.clientX - rect.width / 2,
+        y: e.clientY - rect.height / 2,
+      });
+      const newCards = [...cards];
+      newCards.splice(index, 1);
+      setCards(newCards);
+
+      setIsDragging(true);
+    }
   };
 
   const handleDeckGapDetection = (
@@ -95,12 +121,14 @@ export default function TestPage() {
 
   return (
     <Container>
+      <button onClick={nextTurn}>Next Turn</button>
       {isDragging && <DraggableCard dragPosition={dragPosition} />}
       <Stack>
-        {stackCards.map((_, index) => (
+        {stackCards.map((card, index) => (
           <CardInStack
-            key={index}
+            key={card.id}
             index={index}
+            card={card}
             stackCards={stackCards}
             setStackCards={setStackCards}
             handleMouseDown={handleMouseDown}
@@ -110,7 +138,7 @@ export default function TestPage() {
       <Deck>
         {deckCards.map((card, index) => (
           <CardInDeck
-            key={index}
+            key={card.id}
             index={index}
             card={card}
             deckCards={deckCards}

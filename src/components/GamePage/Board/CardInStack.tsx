@@ -3,6 +3,7 @@ import { CardInterface } from "../../../utils/Interfaces";
 
 interface CardProps {
   index: number;
+  card: CardInterface;
   stackCards: CardInterface[];
   setStackCards: (cards: CardInterface[]) => void;
   handleMouseDown: (
@@ -15,6 +16,7 @@ interface CardProps {
 
 export default function CardInStack({
   index,
+  card,
   stackCards,
   setStackCards,
   handleMouseDown,
@@ -22,6 +24,7 @@ export default function CardInStack({
   return (
     <Card
       onMouseDown={(e) => handleMouseDown(e, index, stackCards, setStackCards)}
+      id={card.id}
       style={{
         bottom: index * 4,
         zIndex: index,

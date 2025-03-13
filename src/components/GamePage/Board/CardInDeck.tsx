@@ -47,6 +47,7 @@ export default function CardInDeck({
       onMouseMove={(e) => handleDeckGapDetection(e, index)} // opens gap
       onMouseDown={(e) => handleMouseDown(e, index, deckCards, setDeckCards)}
       onMouseLeave={() => setGapIndex(null)}
+      id={card.id}
     >
       <div className="card-container">
         {!card.hidden && (

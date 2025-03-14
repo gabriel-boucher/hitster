@@ -20,7 +20,7 @@ export default function GamePage() {
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
-  const [deckTokens, setDeckTokens] = useState([0,1,2,3,4]);
+  const [deckTokens, setDeckTokens] = useState([0, 1, 2, 3, 4]);
 
   const isRightAnswer = (index: number) => {
     const active = parseInt(activeCard.date);
@@ -157,29 +157,47 @@ export default function GamePage() {
             />
           ))}
         </Stack>
+        <PlayerCardsInPlay>
+          {deckCards.map((card, index) => (
+            <CardInDeck
+              key={card.id}
+              index={index}
+              card={card}
+              deckCards={deckCards}
+              isGapBefore={gapIndex === index}
+              isGapAfter={gapIndex === index + 1}
+              isDragging={isDragging}
+              numberOfCards={deckCards.length}
+              handleDeckGapDetection={handleDeckGapDetection}
+              handleMouseDown={handleMouseDown}
+              setDeckCards={setDeckCards}
+              setGapIndex={setGapIndex}
+            />
+          ))}
+        </PlayerCardsInPlay>
       </Board>
       <Deck>
         <PlayerCards>
-            {deckCards.map((card, index) => (
-              <CardInDeck
-                key={card.id}
-                index={index}
-                card={card}
-                deckCards={deckCards}
-                isGapBefore={gapIndex === index}
-                isGapAfter={gapIndex === index + 1}
-                isDragging={isDragging}
-                numberOfCards={deckCards.length}
-                handleDeckGapDetection={handleDeckGapDetection}
-                handleMouseDown={handleMouseDown}
-                setDeckCards={setDeckCards}
-                setGapIndex={setGapIndex}
-              />
-            ))}
+          {deckCards.map((card, index) => (
+            <CardInDeck
+              key={card.id}
+              index={index}
+              card={card}
+              deckCards={deckCards}
+              isGapBefore={gapIndex === index}
+              isGapAfter={gapIndex === index + 1}
+              isDragging={isDragging}
+              numberOfCards={deckCards.length}
+              handleDeckGapDetection={handleDeckGapDetection}
+              handleMouseDown={handleMouseDown}
+              setDeckCards={setDeckCards}
+              setGapIndex={setGapIndex}
+            />
+          ))}
         </PlayerCards>
         <PlayerTokens>
           {deckTokens.map((token, index) => (
-            <TokenInDeck key={index}/>
+            <TokenInDeck key={index} />
           ))}
         </PlayerTokens>
       </Deck>
@@ -225,6 +243,7 @@ const PlayerTokens = styled.div`
 const Board = styled.div`
   height: 70vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 `;
@@ -239,6 +258,11 @@ const Stack = styled.div`
   user-select: none;
 `;
 
+const PlayerCardsInPlay = styled(PlayerCards)`
+  height: 20vh;
+  background-color: green;
+`;
+
 const Menu = styled.div`
   height: 10vh;
   background-color: black;
@@ -248,5 +272,4 @@ const Menu = styled.div`
   padding: 0px 20px 0px 20px;
 `;
 
-const Container = styled.div`
-`;
+const Container = styled.div``;

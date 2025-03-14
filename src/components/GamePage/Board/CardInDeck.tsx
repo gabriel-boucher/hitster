@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { CardInterface } from "../../../utils/Interfaces";
+import { useEffect, useRef } from "react";
 
 interface CardProps {
   index: number;
@@ -36,6 +37,17 @@ export default function CardInDeck({
   setDeckCards,
   setGapIndex,
 }: CardProps) {
+  const elementRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const element = elementRef.current;
+    if (element) {
+      const width = element.offsetWidth;
+      console.log(width);
+      element.style.setProperty('--element-width', `${width / 2}px`);
+    }
+  }, []);
+
   return (
     <Card
       $card={card}
@@ -48,6 +60,7 @@ export default function CardInDeck({
       onMouseDown={(e) => handleMouseDown(e, index, deckCards, setDeckCards)}
       onMouseLeave={() => setGapIndex(null)}
       id={card.id}
+      ref={elementRef}
     >
       <div className="card-container">
         {!card.hidden && (
@@ -69,11 +82,11 @@ const Card = styled.div<{
   $isDragging: boolean;
   $numberOfCards: number;
 }>`
-  aspect-ratio: 1/1;
   height: 100%;
+  min-width: 0;
+  aspect-ratio: 1/1;
 
   flex-shrink: 1;
-  min-width: 0;
 
   display: flex;
   justify-content: center;
@@ -83,8 +96,8 @@ const Card = styled.div<{
   position: relative;
   user-select: none;
   transition: margin ${(props) => (props.$isDragging ? "0.3s" : "0s")} ease;
-  margin-left: ${(props) => (props.$isGapBefore ? "100px" : "0")};
-  margin-right: ${(props) => (props.$isGapAfter ? "100px" : "0")};
+  margin-left: ${(props) => (props.$isGapBefore ? "var(--element-width)" : "0")};
+  margin-right: ${(props) => (props.$isGapAfter ? "var(--element-width)" : "0")};
 
   &::before,
   &::after {
@@ -110,17 +123,13 @@ const Card = styled.div<{
 
   &:first-child {
     &::before {
-      width: calc(
-        (100vw - (${(props) => props.$numberOfCards} - 1) * 100%) / 2 - 100px
-      );
+      width: 100vh;
     }
   }
 
   &:last-child {
     &::after {
-      width: calc(
-        (100vw - (${(props) => props.$numberOfCards} - 1) * 100%) / 2 - 100px
-      );
+      width: 100vh;
     }
   }
 

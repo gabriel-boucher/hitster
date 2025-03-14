@@ -137,50 +137,81 @@ export default function TestPage() {
 
   return (
     <Container>
-      <button onClick={nextTurn}>Next Turn</button>
+      <Menu>
+        <button onClick={nextTurn}>Next Turn</button>
+      </Menu>
       {isDragging && <DraggableCard dragPosition={dragPosition} />}
-      <Stack>
-        {stackCards.map((card, index) => (
-          <CardInStack
-            key={card.id}
-            index={index}
-            card={card}
-            stackCards={stackCards}
-            setStackCards={setStackCards}
-            handleMouseDown={handleMouseDown}
-          />
-        ))}
-      </Stack>
+      <Board>
+        <Stack>
+          {stackCards.map((card, index) => (
+            <CardInStack
+              key={card.id}
+              index={index}
+              card={card}
+              stackCards={stackCards}
+              setStackCards={setStackCards}
+              handleMouseDown={handleMouseDown}
+            />
+          ))}
+        </Stack>
+      </Board>
       <Deck>
-        {deckCards.map((card, index) => (
-          <CardInDeck
-            key={card.id}
-            index={index}
-            card={card}
-            deckCards={deckCards}
-            isGapBefore={gapIndex === index}
-            isGapAfter={gapIndex === index + 1}
-            isDragging={isDragging}
-            numberOfCards={deckCards.length}
-            handleDeckGapDetection={handleDeckGapDetection}
-            handleMouseDown={handleMouseDown}
-            setDeckCards={setDeckCards}
-            setGapIndex={setGapIndex}
-          />
-        ))}
+        <PlayerCards>
+          <div id="cards-container">
+            {deckCards.map((card, index) => (
+              <CardInDeck
+                key={card.id}
+                index={index}
+                card={card}
+                deckCards={deckCards}
+                isGapBefore={gapIndex === index}
+                isGapAfter={gapIndex === index + 1}
+                isDragging={isDragging}
+                numberOfCards={deckCards.length}
+                handleDeckGapDetection={handleDeckGapDetection}
+                handleMouseDown={handleMouseDown}
+                setDeckCards={setDeckCards}
+                setGapIndex={setGapIndex}
+              />
+            ))}
+          </div>
+        </PlayerCards>
       </Deck>
     </Container>
   );
 }
 
 const Deck = styled.div`
-  width: 100%;
-  height: 200px;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #030353;
+  height: 20vh;
+  border-radius: 16px 16px 0px 0px;
+  box-shadow: 0 4px 30px hsla(0, 0%, 0%, 10%);
+  background: hsla(0, 0%, 100%, 20%);
   user-select: none;
+`;
+
+const PlayerCards = styled.div`
+  height: 100%;
+  max-width: 80%;
+  width: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: black;
+
+  #cards-container {
+    height: 100%;
+    width: 96%;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+  }
+`;
+
+const Board = styled.div`
+  height: 70vh;
 `;
 
 const Stack = styled.div`
@@ -193,10 +224,14 @@ const Stack = styled.div`
   user-select: none;
 `;
 
-const Container = styled.div`
+const Menu = styled.div`
+  height: 10vh;
+  background-color: black;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100vh;
+  justify-content: space-between;
+  padding: 0px 20px 0px 20px;
+`;
+
+const Container = styled.div`
 `;

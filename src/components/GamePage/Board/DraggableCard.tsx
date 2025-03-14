@@ -21,8 +21,8 @@ export default function DraggableCard({ dragPosition }: CardProps) {
 }
 
 const Card = styled.div`
-  height: 8rem;
-  width: 8rem;
+  height: 16vh;
+  width: 16vh;
   user-select: none;
 
   .card-container {

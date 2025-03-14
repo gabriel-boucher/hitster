@@ -36,8 +36,8 @@ export default function CardInStack({
 }
 
 const Card = styled.div`
-  height: 8rem;
-  width: 8rem;
+  height: 16vh;
+  width: 16vh;
   position: absolute;
   margin-bottom: 40px;
   user-select: none;

@@ -6,6 +6,7 @@ import CardInDeck from "../components/GamePage/Card/CardInDeck";
 import CardInStack from "../components/GamePage/Card/CardInStack";
 import DraggableCard from "../components/GamePage/Card/DraggableCard";
 import TokenInDeck from "../components/GamePage/Token/TokenInDeck";
+import PlayerInGame from "../components/GamePage/Players/PlayerInGame";
 
 export default function GamePage() {
   const [{ playerCards, cards }] = useStateProvider();
@@ -21,6 +22,9 @@ export default function GamePage() {
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
   const [deckTokens, setDeckTokens] = useState([0, 1, 2, 3, 4]);
+
+  const [players, setPlayers] = useState([0, 1, 2])
+  const [activePlayer, setActivePlayer] = useState(0)
 
   const isRightAnswer = (index: number) => {
     const active = parseInt(activeCard.date);
@@ -145,6 +149,11 @@ export default function GamePage() {
       </Menu>
       {isDragging && <DraggableCard dragPosition={dragPosition} />}
       <Board>
+        <Players>
+          {players.map((player, index) => (
+            <PlayerInGame key={index} isActivePlayer={activePlayer === index}/>
+          ))}
+        </Players>
         <Stack>
           {stackCards.map((card, index) => (
             <CardInStack
@@ -246,6 +255,12 @@ const Board = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+`;
+
+const Players = styled(PlayerTokens)`
+  position: absolute;
+  top: 10vh;
+  height: 10%;
 `;
 
 const Stack = styled.div`

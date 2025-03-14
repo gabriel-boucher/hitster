@@ -5,6 +5,7 @@ import { CardInterface } from "../utils/Interfaces";
 import CardInDeck from "../components/GamePage/Board/CardInDeck";
 import CardInStack from "../components/GamePage/Board/CardInStack";
 import DraggableCard from "../components/GamePage/Board/DraggableCard";
+import TokenInDeck from "../components/GamePage/Board/TokenInDeck";
 
 export default function TestPage() {
   const [{ playerCards, cards }] = useStateProvider();
@@ -18,6 +19,8 @@ export default function TestPage() {
   const [isDragging, setIsDragging] = useState(false);
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+
+  const [deckTokens, setDeckTokens] = useState([0,1,2,3,4]);
 
   const isRightAnswer = (index: number) => {
     const active = parseInt(activeCard.date);
@@ -157,7 +160,6 @@ export default function TestPage() {
       </Board>
       <Deck>
         <PlayerCards>
-          <div id="cards-container">
             {deckCards.map((card, index) => (
               <CardInDeck
                 key={card.id}
@@ -174,8 +176,12 @@ export default function TestPage() {
                 setGapIndex={setGapIndex}
               />
             ))}
-          </div>
         </PlayerCards>
+        <PlayerTokens>
+          {deckTokens.map((token, index) => (
+            <TokenInDeck key={index}/>
+          ))}
+        </PlayerTokens>
       </Deck>
     </Container>
   );
@@ -199,19 +205,28 @@ const PlayerCards = styled.div`
   align-items: center;
   overflow: hidden;
   background-color: black;
+  padding-left: 1%;
+  padding-right: 1%;
+`;
 
-  #cards-container {
-    height: 100%;
-    width: 96%;
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: center;
-    align-items: center;
-  }
+const PlayerTokens = styled.div`
+  height: 100%;
+  max-width: 20%;
+  width: 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: blue;
+  padding-left: 1%;
+  padding-right: 1%;
 `;
 
 const Board = styled.div`
   height: 70vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Stack = styled.div`

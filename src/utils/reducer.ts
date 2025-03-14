@@ -5,7 +5,6 @@ import { Dispatch } from "react";
 const cardsInfo: CardInterface[] = cardsFetched.map((card, index) => ({
   ...card,
   id: (cardsFetched.length - 1 - index).toString(),
-  inHand: false,
   hidden: true,
 }));
 
@@ -14,7 +13,7 @@ const playersInfo = new Map<string, PlayerInterface>(
     player.socketId,
     {
       ...player,
-      cards: [{ ...cardsInfo.pop()!, inHand: true, hidden: false }],
+      cards: [{ ...cardsInfo.pop()!, hidden: false }],
       tokens: 2,
     },
   ])

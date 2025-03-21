@@ -17,7 +17,6 @@ interface CardProps {
   ) => void;
   handleMouseDown: (
     e: React.MouseEvent<HTMLDivElement>,
-    index: number,
     cards: CardInterface[],
     setCards: (cards: CardInterface[]) => void
   ) => void;
@@ -53,7 +52,7 @@ export default function CardInDeck({
       $widthContainer={playerCardsRef.current?.offsetWidth}
       onMouseOver={(e) => handleDeckGapDetection(e, index)} // keeps gap opened
       onMouseMove={(e) => handleDeckGapDetection(e, index)} // opens gap
-      onMouseDown={(e) => handleMouseDown(e, index, deckCards, setDeckCards)}
+      onMouseDown={(e) => handleMouseDown(e, deckCards, setDeckCards)}
       onMouseLeave={() => setGapIndex(null)}
       id={card.id}
       ref={elementRef}

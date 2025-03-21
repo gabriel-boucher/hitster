@@ -8,7 +8,6 @@ interface CardProps {
   setStackCards: (cards: CardInterface[]) => void;
   handleMouseDown: (
     e: React.MouseEvent<HTMLDivElement>,
-    index: number,
     cards: CardInterface[],
     setCards: (cards: CardInterface[]) => void
   ) => void;
@@ -23,7 +22,7 @@ export default function CardInStack({
 }: CardProps) {
   return (
     <Card
-      onMouseDown={(e) => handleMouseDown(e, index, stackCards, setStackCards)}
+      onMouseDown={(e) => handleMouseDown(e, stackCards, setStackCards)}
       id={card.id}
       style={{
         bottom: index * 4,

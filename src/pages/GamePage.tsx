@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState, useEffect, useRef, use, useMemo, useCallback } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useStateProvider } from "../utils/StateProvider";
 import { CardInterface } from "../utils/Interfaces";
 import CardInDeck from "../components/GamePage/Card/CardInDeck";
@@ -49,9 +49,11 @@ export default function GamePage() {
 
     if (!isRightAnswer(index)) {
       setTimeout(() => {
-        const newDeckCards = [...deckCards];
-        newDeckCards.splice(index, 1);
-        setDeckCards(newDeckCards);
+        setDeckCards((prev) => {
+          const newDeckCards = [...prev];
+          newDeckCards.splice(index, 1);
+          return newDeckCards;
+        });
       }, 1000);
     }
 
@@ -68,41 +70,43 @@ export default function GamePage() {
     }
   };
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (isDragging) {
-      requestAnimationFrame(() => {
-        setDragPosition({
-          x: e.clientX - dragOffset.x,
-          y: e.clientY - dragOffset.y,
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (isDragging) {
+        requestAnimationFrame(() => {
+          setDragPosition({
+            x: e.clientX - dragOffset.x,
+            y: e.clientY - dragOffset.y,
+          });
         });
-      });
-    }
-  }, [isDragging, dragOffset, setDragPosition]);
+      }
+    },
+    [isDragging, dragOffset, setDragPosition]
+  );
 
   const handleMouseUp = useCallback(() => {
     if (isDragging) {
       if (gapIndex !== null) {
         // card dropped in the deck
-        const newDeckCards = [...deckCards];
-        newDeckCards.splice(gapIndex, 0, activeCard);
-        setDeckCards(newDeckCards);
+        setDeckCards((prev) => {
+          const newDeckCards = [...prev];
+          newDeckCards.splice(gapIndex, 0, activeCard);
+          return newDeckCards;
+        });
       } else {
         // card returns to the stack
-        const newStackCards = [...stackCards];
-        newStackCards.push(activeCard!);
-        setStackCards(newStackCards);
+        setStackCards((prev) => [...prev, activeCard!]);
       }
       setGapIndex(null);
       setIsDragging(false);
 
       setDragPosition({ x: 0, y: 0 });
     }
-  }, [isDragging, gapIndex, deckCards, stackCards, setDeckCards, setStackCards]);
+  }, [isDragging, gapIndex, setDeckCards, setStackCards]);
 
   const handleMouseDown = useCallback(
     (
       e: React.MouseEvent<HTMLDivElement>,
-      index: number,
       cards: CardInterface[],
       setCards: (cards: CardInterface[]) => void
     ) => {
@@ -116,9 +120,7 @@ export default function GamePage() {
           x: e.clientX - rect.width / 2,
           y: e.clientY - rect.height / 2,
         });
-        const newCards = [...cards];
-        newCards.splice(index, 1);
-        setCards(newCards);
+        setCards(cards.filter((card) => card.id !== activeCard.id));
 
         setIsDragging(true);
       }
@@ -221,8 +223,8 @@ export default function GamePage() {
       </Menu>
       {isDragging && <DraggableCard dragPosition={dragPosition} />}
       <Board>
-        {stackComponent}
         {playersComponent}
+        {stackComponent}
         {playerCardsComponent}
       </Board>
       <Deck>

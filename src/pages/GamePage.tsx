@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useStateProvider } from "../utils/StateProvider";
 import { CardInterface } from "../utils/Interfaces";
 import CardInDeck from "../components/GamePage/Card/CardInDeck";
@@ -23,8 +23,10 @@ export default function GamePage() {
 
   const [deckTokens, setDeckTokens] = useState([0, 1, 2, 3, 4]);
 
-  const [players, setPlayers] = useState([0, 1, 2])
-  const [activePlayer, setActivePlayer] = useState(0)
+  const [players, setPlayers] = useState([0, 1, 2]);
+  const [activePlayer, setActivePlayer] = useState(0);
+
+  const playerCardsRef = useRef<HTMLDivElement | null>(null);
 
   const isRightAnswer = (index: number) => {
     const active = parseInt(activeCard.date);
@@ -68,9 +70,11 @@ export default function GamePage() {
 
   const handleMouseMove = (e: MouseEvent) => {
     if (isDragging) {
-      setDragPosition({
-        x: e.clientX - dragOffset.x,
-        y: e.clientY - dragOffset.y,
+      requestAnimationFrame(() => {
+        setDragPosition({
+          x: e.clientX - dragOffset.x,
+          y: e.clientY - dragOffset.y,
+        });
       });
     }
   };
@@ -151,7 +155,7 @@ export default function GamePage() {
       <Board>
         <Players>
           {players.map((player, index) => (
-            <PlayerInGame key={index} isActivePlayer={activePlayer === index}/>
+            <PlayerInGame key={index} isActivePlayer={activePlayer === index} />
           ))}
         </Players>
         <Stack>
@@ -166,11 +170,12 @@ export default function GamePage() {
             />
           ))}
         </Stack>
-        <PlayerCardsInPlay>
+        <PlayerCardsInPlay ref={playerCardsRef}>
           {deckCards.map((card, index) => (
             <CardInDeck
               key={card.id}
               index={index}
+              playerCardsRef={playerCardsRef}
               card={card}
               deckCards={deckCards}
               isGapBefore={gapIndex === index}
@@ -191,6 +196,7 @@ export default function GamePage() {
             <CardInDeck
               key={card.id}
               index={index}
+              playerCardsRef={playerCardsRef}
               card={card}
               deckCards={deckCards}
               isGapBefore={gapIndex === index}
@@ -275,7 +281,7 @@ const Stack = styled.div`
 
 const PlayerCardsInPlay = styled(PlayerCards)`
   height: 20vh;
-  background-color: green;
+  /* background-color: green; */
 `;
 
 const Menu = styled.div`

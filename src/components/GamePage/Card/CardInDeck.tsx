@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import { CardInterface } from "../../../utils/Interfaces";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
 interface CardProps {
   index: number;
+  playerCardsRef: React.RefObject<HTMLDivElement | null>;
   card: CardInterface;
   deckCards: CardInterface[];
   isGapBefore: boolean;
@@ -26,6 +27,7 @@ interface CardProps {
 
 export default function CardInDeck({
   index,
+  playerCardsRef,
   card,
   deckCards,
   isGapBefore,
@@ -39,15 +41,6 @@ export default function CardInDeck({
 }: CardProps) {
   const elementRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const element = elementRef.current;
-    if (element) {
-      const width = element.offsetWidth;
-      console.log(width);
-      element.style.setProperty('--element-width', `${width / 2}px`);
-    }
-  }, []);
-
   return (
     <Card
       $card={card}
@@ -55,6 +48,9 @@ export default function CardInDeck({
       $isGapAfter={isGapAfter}
       $isDragging={isDragging}
       $numberOfCards={numberOfCards}
+      $height={playerCardsRef.current?.offsetHeight}
+      $width={elementRef.current?.offsetWidth}
+      $widthContainer={playerCardsRef.current?.offsetWidth}
       onMouseOver={(e) => handleDeckGapDetection(e, index)} // keeps gap opened
       onMouseMove={(e) => handleDeckGapDetection(e, index)} // opens gap
       onMouseDown={(e) => handleMouseDown(e, index, deckCards, setDeckCards)}
@@ -81,6 +77,9 @@ const Card = styled.div<{
   $isGapAfter: boolean;
   $isDragging: boolean;
   $numberOfCards: number;
+  $height?: number;
+  $width?: number;
+  $widthContainer?: number;
 }>`
   height: 100%;
   min-width: 0;
@@ -88,16 +87,24 @@ const Card = styled.div<{
 
   flex-shrink: 1;
 
+  width: ${(props) =>
+    props.$widthContainer! >= (props.$numberOfCards + 1) * props.$height!
+      ? `${props.$height}px`
+      : `${props.$widthContainer! / (props.$numberOfCards + 1)}px`};
+
   display: flex;
   justify-content: center;
   align-items: center;
-  /* background-color: pink; */
+  background-color: pink;
 
   position: relative;
   user-select: none;
+
   transition: margin ${(props) => (props.$isDragging ? "0.3s" : "0s")} ease;
-  margin-left: ${(props) => (props.$isGapBefore ? "var(--element-width)" : "0")};
-  margin-right: ${(props) => (props.$isGapAfter ? "var(--element-width)" : "0")};
+  margin-left: ${(props) =>
+    props.$isGapBefore ? `${props.$width && props.$width / 2}px` : "0"};
+  margin-right: ${(props) =>
+    props.$isGapAfter ? `${props.$width && props.$width / 2}px` : "0"};
 
   &::before,
   &::after {
@@ -110,7 +117,7 @@ const Card = styled.div<{
     pointer-events: ${(props) => (props.$isDragging ? "auto" : "none")};
     user-select: none;
     opacity: 0.5;
-    /* background-color: red; */
+    background-color: red;
   }
 
   &::before {
@@ -122,12 +129,16 @@ const Card = styled.div<{
   }
 
   &:first-child {
+    margin-left: ${(props) =>
+      props.$isGapBefore ? `${props.$width && props.$width}px` : "0"};
     &::before {
       width: 100vh;
     }
   }
 
   &:last-child {
+    margin-right: ${(props) =>
+      props.$isGapAfter ? `${props.$width && props.$width}px` : "0"};
     &::after {
       width: 100vh;
     }
@@ -145,7 +156,12 @@ const Card = styled.div<{
 
     border-radius: 5%;
 
-    background-image: ${(props) => `url(${props.$card.hidden ? "src/assets/hitster_logo_square.webp" : props.$card.albumCover})`};
+    background-image: ${(props) =>
+      `url(${
+        props.$card.hidden
+          ? "src/assets/hitster_logo_square.webp"
+          : props.$card.albumCover
+      })`};
     background-repeat: no-repeat;
     background-size: cover;
 

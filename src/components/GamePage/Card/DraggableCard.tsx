@@ -13,6 +13,7 @@ export default function DraggableCard({ dragPosition }: CardProps) {
         position: "absolute",
         zIndex: "1000",
         pointerEvents: "none",
+        willChange: "transform",
       }}
     >
       <div className="card-container"></div>

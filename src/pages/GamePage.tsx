@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, use, useMemo, useCallback } from "react";
 import { useStateProvider } from "../utils/StateProvider";
 import { CardInterface } from "../utils/Interfaces";
 import CardInDeck from "../components/GamePage/Card/CardInDeck";
@@ -68,7 +68,7 @@ export default function GamePage() {
     }
   };
 
-  const handleMouseMove = (e: MouseEvent) => {
+  const handleMouseMove = useCallback((e: MouseEvent) => {
     if (isDragging) {
       requestAnimationFrame(() => {
         setDragPosition({
@@ -77,9 +77,9 @@ export default function GamePage() {
         });
       });
     }
-  };
+  }, [isDragging, dragOffset, setDragPosition]);
 
-  const handleMouseUp = () => {
+  const handleMouseUp = useCallback(() => {
     if (isDragging) {
       if (gapIndex !== null) {
         // card dropped in the deck
@@ -97,43 +97,46 @@ export default function GamePage() {
 
       setDragPosition({ x: 0, y: 0 });
     }
-  };
+  }, [isDragging, gapIndex, deckCards, stackCards, setDeckCards, setStackCards]);
 
-  const handleMouseDown = (
-    e: React.MouseEvent<HTMLDivElement>,
-    index: number,
-    cards: CardInterface[],
-    setCards: (cards: CardInterface[]) => void
-  ) => {
-    if (e.currentTarget.id === activeCard.id) {
-      const rect = e.currentTarget.getBoundingClientRect();
-      setDragOffset({
-        x: rect.width / 2,
-        y: rect.height / 2,
-      });
-      setDragPosition({
-        x: e.clientX - rect.width / 2,
-        y: e.clientY - rect.height / 2,
-      });
-      const newCards = [...cards];
-      newCards.splice(index, 1);
-      setCards(newCards);
+  const handleMouseDown = useCallback(
+    (
+      e: React.MouseEvent<HTMLDivElement>,
+      index: number,
+      cards: CardInterface[],
+      setCards: (cards: CardInterface[]) => void
+    ) => {
+      if (e.currentTarget.id === activeCard.id) {
+        const rect = e.currentTarget.getBoundingClientRect();
+        setDragOffset({
+          x: rect.width / 2,
+          y: rect.height / 2,
+        });
+        setDragPosition({
+          x: e.clientX - rect.width / 2,
+          y: e.clientY - rect.height / 2,
+        });
+        const newCards = [...cards];
+        newCards.splice(index, 1);
+        setCards(newCards);
 
-      setIsDragging(true);
-    }
-  };
+        setIsDragging(true);
+      }
+    },
+    [activeCard]
+  );
 
-  const handleDeckGapDetection = (
-    e: React.MouseEvent<HTMLDivElement>,
-    cardIndex: number
-  ) => {
-    if (isDragging) {
-      const card = e.currentTarget;
-      const rect = card.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      setGapIndex(mouseX < rect.width / 2 ? cardIndex : cardIndex + 1);
-    }
-  };
+  const handleDeckGapDetection = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>, cardIndex: number) => {
+      if (isDragging) {
+        const card = e.currentTarget;
+        const rect = card.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        setGapIndex(mouseX < rect.width / 2 ? cardIndex : cardIndex + 1);
+      }
+    },
+    [isDragging]
+  );
 
   useEffect(() => {
     if (isDragging) {
@@ -144,7 +147,72 @@ export default function GamePage() {
         window.removeEventListener("mouseup", handleMouseUp);
       };
     }
-  }, [isDragging, gapIndex]);
+  }, [isDragging, handleMouseMove, handleMouseUp]);
+
+  const stackComponent = useMemo(
+    () => (
+      <Stack>
+        {stackCards.map((card, index) => (
+          <CardInStack
+            key={card.id}
+            index={index}
+            card={card}
+            stackCards={stackCards}
+            setStackCards={setStackCards}
+            handleMouseDown={handleMouseDown}
+          />
+        ))}
+      </Stack>
+    ),
+    [stackCards, activeCard]
+  );
+
+  const playersComponent = useMemo(
+    () => (
+      <Players>
+        {players.map((player, index) => (
+          <PlayerInGame key={index} isActivePlayer={activePlayer === index} />
+        ))}
+      </Players>
+    ),
+    [players, activePlayer]
+  );
+
+  const playerCardsComponent = useMemo(
+    () => (
+      <PlayerCardsInPlay ref={playerCardsRef}>
+        {deckCards.map((card, index) => (
+          <CardInDeck
+            key={card.id}
+            index={index}
+            playerCardsRef={playerCardsRef}
+            card={card}
+            deckCards={deckCards}
+            isGapBefore={gapIndex === index}
+            isGapAfter={gapIndex === index + 1}
+            isDragging={isDragging}
+            numberOfCards={deckCards.length}
+            handleDeckGapDetection={handleDeckGapDetection}
+            handleMouseDown={handleMouseDown}
+            setDeckCards={setDeckCards}
+            setGapIndex={setGapIndex}
+          />
+        ))}
+      </PlayerCardsInPlay>
+    ),
+    [deckCards, gapIndex, isDragging, handleDeckGapDetection]
+  );
+
+  const playerTokensComponent = useMemo(
+    () => (
+      <PlayerTokens>
+        {deckTokens.map((token, index) => (
+          <TokenInDeck key={index} />
+        ))}
+      </PlayerTokens>
+    ),
+    [deckTokens]
+  );
 
   return (
     <Container>
@@ -153,68 +221,13 @@ export default function GamePage() {
       </Menu>
       {isDragging && <DraggableCard dragPosition={dragPosition} />}
       <Board>
-        <Players>
-          {players.map((player, index) => (
-            <PlayerInGame key={index} isActivePlayer={activePlayer === index} />
-          ))}
-        </Players>
-        <Stack>
-          {stackCards.map((card, index) => (
-            <CardInStack
-              key={card.id}
-              index={index}
-              card={card}
-              stackCards={stackCards}
-              setStackCards={setStackCards}
-              handleMouseDown={handleMouseDown}
-            />
-          ))}
-        </Stack>
-        <PlayerCardsInPlay ref={playerCardsRef}>
-          {deckCards.map((card, index) => (
-            <CardInDeck
-              key={card.id}
-              index={index}
-              playerCardsRef={playerCardsRef}
-              card={card}
-              deckCards={deckCards}
-              isGapBefore={gapIndex === index}
-              isGapAfter={gapIndex === index + 1}
-              isDragging={isDragging}
-              numberOfCards={deckCards.length}
-              handleDeckGapDetection={handleDeckGapDetection}
-              handleMouseDown={handleMouseDown}
-              setDeckCards={setDeckCards}
-              setGapIndex={setGapIndex}
-            />
-          ))}
-        </PlayerCardsInPlay>
+        {stackComponent}
+        {playersComponent}
+        {playerCardsComponent}
       </Board>
       <Deck>
-        <PlayerCards>
-          {deckCards.map((card, index) => (
-            <CardInDeck
-              key={card.id}
-              index={index}
-              playerCardsRef={playerCardsRef}
-              card={card}
-              deckCards={deckCards}
-              isGapBefore={gapIndex === index}
-              isGapAfter={gapIndex === index + 1}
-              isDragging={isDragging}
-              numberOfCards={deckCards.length}
-              handleDeckGapDetection={handleDeckGapDetection}
-              handleMouseDown={handleMouseDown}
-              setDeckCards={setDeckCards}
-              setGapIndex={setGapIndex}
-            />
-          ))}
-        </PlayerCards>
-        <PlayerTokens>
-          {deckTokens.map((token, index) => (
-            <TokenInDeck key={index} />
-          ))}
-        </PlayerTokens>
+        {playerCardsComponent}
+        {playerTokensComponent}
       </Deck>
     </Container>
   );

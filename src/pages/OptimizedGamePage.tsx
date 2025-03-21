@@ -265,7 +265,7 @@ const MemoizedCardInDeck = React.memo(CardInDeck, (prevProps, nextProps) => {
   );
 });
 
-export default function GamePage() {
+export default function OptimizedGamePage() {
   const [{ playerCards, cards }] = useStateProvider();
   const [players] = useState([0, 1, 2]);
   const [activePlayer, setActivePlayer] = useState(0);

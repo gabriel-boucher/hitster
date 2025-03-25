@@ -1,44 +1,45 @@
 import styled from "styled-components";
 import { CardInterface } from "../../../utils/Interfaces";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
+import { reducerCases } from "../../../utils/Constants";
+import { useStateProvider } from "../../../utils/StateProvider";
 
 interface CardProps {
   index: number;
   playerCardsRef: React.RefObject<HTMLDivElement | null>;
   card: CardInterface;
-  deckCards: CardInterface[];
   isGapBefore: boolean;
   isGapAfter: boolean;
   isDragging: boolean;
-  numberOfCards: number;
   handleDeckGapDetection: (
     e: React.MouseEvent<HTMLDivElement>,
     cardIndex: number
   ) => void;
   handleMouseDown: (
     e: React.MouseEvent<HTMLDivElement>,
-    cards: CardInterface[],
-    setCards: (cards: CardInterface[]) => void
+    card: reducerCases.SET_PLAYERS | reducerCases.SET_CARDS,
   ) => void;
-  setDeckCards: (cards: CardInterface[]) => void;
-  setGapIndex: (index: number | null) => void;
 }
 
 export default function CardInDeck({
   index,
   playerCardsRef,
   card,
-  deckCards,
   isGapBefore,
   isGapAfter,
   isDragging,
-  numberOfCards,
   handleDeckGapDetection,
   handleMouseDown,
-  setDeckCards,
-  setGapIndex,
 }: CardProps) {
+  const [{players, activePlayer}, dispatch] = useStateProvider();
   const elementRef = useRef<HTMLDivElement | null>(null);
+
+  const handleMouseEvents = useMemo(() => ({
+    onMouseOver: (e: React.MouseEvent<HTMLDivElement>) => handleDeckGapDetection(e, index),
+    onMouseMove: (e: React.MouseEvent<HTMLDivElement>) => handleDeckGapDetection(e, index),
+    onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => handleMouseDown(e, reducerCases.SET_PLAYERS),
+    onMouseLeave: () => dispatch({ type: reducerCases.SET_GAP_INDEX, gapIndex: null })
+  }), [index, handleDeckGapDetection, handleMouseDown, dispatch]);
 
   return (
     <Card
@@ -46,14 +47,11 @@ export default function CardInDeck({
       $isGapBefore={isGapBefore}
       $isGapAfter={isGapAfter}
       $isDragging={isDragging}
-      $numberOfCards={numberOfCards}
-      $height={playerCardsRef.current?.offsetHeight}
+      $numberOfCards={players[activePlayer].cards.length}
       $width={elementRef.current?.offsetWidth}
-      $widthContainer={playerCardsRef.current?.offsetWidth}
-      onMouseOver={(e) => handleDeckGapDetection(e, index)} // keeps gap opened
-      onMouseMove={(e) => handleDeckGapDetection(e, index)} // opens gap
-      onMouseDown={(e) => handleMouseDown(e, deckCards, setDeckCards)}
-      onMouseLeave={() => setGapIndex(null)}
+      $containerHeight={playerCardsRef.current?.offsetHeight}
+      $containerWidth={playerCardsRef.current?.offsetWidth}
+      {...handleMouseEvents}
       id={card.id}
       ref={elementRef}
     >
@@ -76,9 +74,9 @@ const Card = styled.div<{
   $isGapAfter: boolean;
   $isDragging: boolean;
   $numberOfCards: number;
-  $height?: number;
   $width?: number;
-  $widthContainer?: number;
+  $containerHeight?: number;
+  $containerWidth?: number;
 }>`
   height: 100%;
   min-width: 0;
@@ -87,14 +85,14 @@ const Card = styled.div<{
   flex-shrink: 1;
 
   width: ${(props) =>
-    props.$widthContainer! >= (props.$numberOfCards + 1) * props.$height!
-      ? `${props.$height}px`
-      : `${props.$widthContainer! / (props.$numberOfCards + 1)}px`};
+    props.$containerWidth! >= (props.$numberOfCards + 1) * props.$containerHeight!
+      ? `${props.$containerHeight}px`
+      : `${props.$containerWidth! / (props.$numberOfCards + 1)}px`};
 
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: pink;
+  /* background-color: pink; */
 
   position: relative;
   user-select: none;
@@ -116,7 +114,7 @@ const Card = styled.div<{
     pointer-events: ${(props) => (props.$isDragging ? "auto" : "none")};
     user-select: none;
     opacity: 0.5;
-    background-color: red;
+    /* background-color: red; */
   }
 
   &::before {

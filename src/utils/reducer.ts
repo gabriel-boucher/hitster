@@ -1,31 +1,35 @@
-import { Action, CardInterface, PlayerInterface, State } from "./Interfaces";
+import { Action, PlayerInterface, CardInterface, State } from "./Interfaces";
 import { cardsFetched, playersFetched, reducerCases } from "./Constants";
 import { Dispatch } from "react";
+import { v4 as uuidv4 } from "uuid";
 
-const cardsInfo: CardInterface[] = cardsFetched.map((card, index) => ({
+const cardsInfo: CardInterface[] = cardsFetched.map((card) => ({
   ...card,
-  id: (cardsFetched.length - 1 - index).toString(),
+  id: uuidv4(),
   hidden: true,
 }));
 
-const playersInfo = new Map<string, PlayerInterface>(
-  playersFetched.map((player) => [
-    player.socketId,
-    {
-      ...player,
-      cards: [{ ...cardsInfo.pop()!, hidden: false }],
-      tokens: 2,
-    },
-  ])
+export const playersInfo: Record<string, PlayerInterface> = playersFetched.reduce(
+  (acc, player) => {
+    const startingCard = cardsInfo.pop()!;
+    startingCard.hidden = false;
+    
+    acc[player.socketId] = {
+      socketId: player.socketId,
+      name: player.name,
+      cards: [startingCard],
+      tokens: [{ id: uuidv4() }, { id: uuidv4() }],
+    };
+    return acc;
+  },
+  {} as Record<string, PlayerInterface>
 );
 
 export const initialState = {
-  socketId: "socketId1",
   spotifyToken: "",
   players: playersInfo,
-  playersTurn: 0,
-  playerCards: playersInfo.get("socketId1")!.cards,
-  openedGapIndex: null,
+  activePlayer: "socketId1",
+  gapIndex: null,
   cards: cardsInfo,
   activeCard: cardsInfo[cardsInfo.length - 1],
 };
@@ -34,12 +38,6 @@ export const defaultDispatch: Dispatch<Action> = () => {};
 
 export const reducer = (state: State, action: Action) => {
   switch (action.type) {
-    case reducerCases.SET_SOCKET_ID: {
-      return {
-        ...state,
-        socketId: action.socketId,
-      };
-    }
     case reducerCases.SET_SPOTIFY_TOKEN: {
       return {
         ...state,
@@ -52,22 +50,10 @@ export const reducer = (state: State, action: Action) => {
         players: action.players,
       };
     }
-    case reducerCases.SET_PLAYERS_TURN: {
+    case reducerCases.SET_ACTIVE_PLAYER: {
       return {
         ...state,
-        playersTurn: action.playersTurn,
-      };
-    }
-    case reducerCases.SET_PLAYER_CARDS: {
-      return {
-        ...state,
-        playerCards: action.playerCards,
-      };
-    }
-    case reducerCases.SET_OPENED_GAP_INDEX: {
-      return {
-        ...state,
-        openedGapIndex: action.openedGapIndex,
+        activePlayer: action.activePlayer,
       };
     }
     case reducerCases.SET_CARDS: {
@@ -80,6 +66,12 @@ export const reducer = (state: State, action: Action) => {
       return {
         ...state,
         activeCard: action.activeCard,
+      };
+    }
+    case reducerCases.SET_GAP_INDEX: {
+      return {
+        ...state,
+        gapIndex: action.gapIndex,
       };
     }
     default:

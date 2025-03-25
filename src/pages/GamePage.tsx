@@ -1,144 +1,103 @@
 import styled from "styled-components";
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { reducerCases } from "../utils/Constants";
+import { useState, useEffect } from "react";
 import { useStateProvider } from "../utils/StateProvider";
+import { useMouseHandlers } from "../utils/MouseHandlers";
 import { CardInterface } from "../utils/Interfaces";
-import CardInDeck from "../components/GamePage/Card/CardInDeck";
-import CardInStack from "../components/GamePage/Card/CardInStack";
+import { v4 as uuidv4 } from "uuid";
 import DraggableCard from "../components/GamePage/Card/DraggableCard";
-import TokenInDeck from "../components/GamePage/Token/TokenInDeck";
-import PlayerInGame from "../components/GamePage/Players/PlayerInGame";
+import PlayerBar from "../components/GamePage/Players/PlayerBar";
+import PlayerCards from "../components/GamePage/Card/PlayerCards";
+import PlayerTokens from "../components/GamePage/Token/PlayerTokens";
+import StackCards from "../components/GamePage/Card/StackCards";
 
 export default function GamePage() {
-  const [{ playerCards, cards }] = useStateProvider();
+  const [{ players, activePlayer, cards, activeCard }, dispatch] =
+    useStateProvider();
 
-  const [deckCards, setDeckCards] = useState<CardInterface[]>([...playerCards]);
-  const [stackCards, setStackCards] = useState<CardInterface[]>([...cards]);
-  const [gapIndex, setGapIndex] = useState<number | null>(null);
-  const [activeCard, setActiveCard] = useState<CardInterface>(
-    stackCards[stackCards.length - 1]
-  );
   const [isDragging, setIsDragging] = useState(false);
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
-  const [deckTokens, setDeckTokens] = useState([0, 1, 2, 3, 4]);
+  const [spareCards, _] = useState<CardInterface[]>([...cards]);
 
-  const [players, setPlayers] = useState([0, 1, 2]);
-  const [activePlayer, setActivePlayer] = useState(0);
+  const {
+    handleMouseMove,
+    handleMouseUp,
+    handleMouseDown,
+    handleDeckGapDetection,
+  } = useMouseHandlers(
+    isDragging,
+    dragOffset,
+    setDragPosition,
+    setDragOffset,
+    setIsDragging
+  );
 
-  const playerCardsRef = useRef<HTMLDivElement | null>(null);
+  function revealCard(index: number) {
+    const newPlayers = { ...players };
+    newPlayers[activePlayer].cards[index].hidden = false;
+    dispatch({ type: reducerCases.SET_PLAYERS, players: newPlayers });
+  }
 
-  const isRightAnswer = (index: number) => {
+  function isRightAnswer(index: number) {
     const active = parseInt(activeCard.date);
-    const before = index > 0 ? parseInt(deckCards[index - 1].date) : -Infinity;
+    const before =
+      index > 0
+        ? parseInt(players[activePlayer].cards[index - 1].date)
+        : -Infinity;
     const after =
-      index < deckCards.length - 1
-        ? parseInt(deckCards[index + 1].date)
+      index < players[activePlayer].cards.length - 1
+        ? parseInt(players[activePlayer].cards[index + 1].date)
         : Infinity;
 
     return before <= active && active <= after;
-  };
+  }
 
-  const nextTurn = () => {
-    const index = deckCards.indexOf(activeCard);
+  function removeCard(index: number) {
+    setTimeout(() => {
+      const newPlayers = { ...players };
+      newPlayers[activePlayer].cards.splice(index, 1);
+      dispatch({ type: reducerCases.SET_PLAYERS, players: newPlayers });
+    }, 1000);
+  }
+
+  function refillCards() {
+    const newCards = spareCards.map((card) => ({
+      ...card,
+      id: uuidv4(),
+      hidden: true, // cards are changed to hidden false during the process (don't know why)
+    }));
+    dispatch({ type: reducerCases.SET_CARDS, cards: newCards });
+    dispatch({
+      type: reducerCases.SET_ACTIVE_CARD,
+      activeCard: newCards[newCards.length - 1],
+    }); // use cards because react doesn't update stackCards in time to use stackCards
+  }
+
+  function nextTurn() {
+    const index = players[activePlayer].cards.indexOf(activeCard);
     if (index === -1) return;
 
-    const newDeckCards = [...deckCards];
-    newDeckCards[index].hidden = false;
-    setDeckCards(newDeckCards);
+    revealCard(index);
 
     if (!isRightAnswer(index)) {
-      setTimeout(() => {
-        setDeckCards((prev) => {
-          const newDeckCards = [...prev];
-          newDeckCards.splice(index, 1);
-          return newDeckCards;
-        });
-      }, 1000);
+      removeCard(index);
     }
 
-    if (stackCards.length === 0) {
-      const newStackCards = cards.map((card) => ({
-        ...card,
-        id: (parseInt(card.id) + parseInt(activeCard.id)).toString(),
-        hidden: true, // cards are changed to hidden false during the process (don't know why)
-      }));
-      setStackCards(newStackCards);
-      setActiveCard(newStackCards[newStackCards.length - 1]); // use cards because react doesn't update stackCards in time to use stackCards
-    } else {
-      setActiveCard(stackCards[stackCards.length - 1]);
+    dispatch({
+      type: reducerCases.SET_ACTIVE_CARD,
+      activeCard: cards[cards.length - 1],
+    });
+
+    if (cards.length === 0) {
+      refillCards();
     }
-  };
+  }
 
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (isDragging) {
-        requestAnimationFrame(() => {
-          setDragPosition({
-            x: e.clientX - dragOffset.x,
-            y: e.clientY - dragOffset.y,
-          });
-        });
-      }
-    },
-    [isDragging, dragOffset, setDragPosition]
-  );
-
-  const handleMouseUp = useCallback(() => {
-    if (isDragging) {
-      if (gapIndex !== null) {
-        // card dropped in the deck
-        setDeckCards((prev) => {
-          const newDeckCards = [...prev];
-          newDeckCards.splice(gapIndex, 0, activeCard);
-          return newDeckCards;
-        });
-      } else {
-        // card returns to the stack
-        setStackCards((prev) => [...prev, activeCard!]);
-      }
-      setGapIndex(null);
-      setIsDragging(false);
-
-      setDragPosition({ x: 0, y: 0 });
-    }
-  }, [isDragging, gapIndex, setDeckCards, setStackCards]);
-
-  const handleMouseDown = useCallback(
-    (
-      e: React.MouseEvent<HTMLDivElement>,
-      cards: CardInterface[],
-      setCards: (cards: CardInterface[]) => void
-    ) => {
-      if (e.currentTarget.id === activeCard.id) {
-        const rect = e.currentTarget.getBoundingClientRect();
-        setDragOffset({
-          x: rect.width / 2,
-          y: rect.height / 2,
-        });
-        setDragPosition({
-          x: e.clientX - rect.width / 2,
-          y: e.clientY - rect.height / 2,
-        });
-        setCards(cards.filter((card) => card.id !== activeCard.id));
-
-        setIsDragging(true);
-      }
-    },
-    [activeCard]
-  );
-
-  const handleDeckGapDetection = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>, cardIndex: number) => {
-      if (isDragging) {
-        const card = e.currentTarget;
-        const rect = card.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        setGapIndex(mouseX < rect.width / 2 ? cardIndex : cardIndex + 1);
-      }
-    },
-    [isDragging]
-  );
+  const stackCardsComponent = StackCards({ handleMouseDown });
+  const playerCardsComponent = PlayerCards({ isDragging, handleDeckGapDetection, handleMouseDown });
+  const playerTokensComponent = PlayerTokens();
 
   useEffect(() => {
     if (isDragging) {
@@ -151,71 +110,6 @@ export default function GamePage() {
     }
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
-  const stackComponent = useMemo(
-    () => (
-      <Stack>
-        {stackCards.map((card, index) => (
-          <CardInStack
-            key={card.id}
-            index={index}
-            card={card}
-            stackCards={stackCards}
-            setStackCards={setStackCards}
-            handleMouseDown={handleMouseDown}
-          />
-        ))}
-      </Stack>
-    ),
-    [stackCards, activeCard]
-  );
-
-  const playersComponent = useMemo(
-    () => (
-      <Players>
-        {players.map((player, index) => (
-          <PlayerInGame key={index} isActivePlayer={activePlayer === index} />
-        ))}
-      </Players>
-    ),
-    [players, activePlayer]
-  );
-
-  const playerCardsComponent = useMemo(
-    () => (
-      <PlayerCardsInPlay ref={playerCardsRef}>
-        {deckCards.map((card, index) => (
-          <CardInDeck
-            key={card.id}
-            index={index}
-            playerCardsRef={playerCardsRef}
-            card={card}
-            deckCards={deckCards}
-            isGapBefore={gapIndex === index}
-            isGapAfter={gapIndex === index + 1}
-            isDragging={isDragging}
-            numberOfCards={deckCards.length}
-            handleDeckGapDetection={handleDeckGapDetection}
-            handleMouseDown={handleMouseDown}
-            setDeckCards={setDeckCards}
-            setGapIndex={setGapIndex}
-          />
-        ))}
-      </PlayerCardsInPlay>
-    ),
-    [deckCards, gapIndex, isDragging, handleDeckGapDetection]
-  );
-
-  const playerTokensComponent = useMemo(
-    () => (
-      <PlayerTokens>
-        {deckTokens.map((token, index) => (
-          <TokenInDeck key={index} />
-        ))}
-      </PlayerTokens>
-    ),
-    [deckTokens]
-  );
-
   return (
     <Container>
       <Menu>
@@ -223,8 +117,8 @@ export default function GamePage() {
       </Menu>
       {isDragging && <DraggableCard dragPosition={dragPosition} />}
       <Board>
-        {playersComponent}
-        {stackComponent}
+        <PlayerBar />
+        {stackCardsComponent}
         {playerCardsComponent}
       </Board>
       <Deck>
@@ -244,59 +138,12 @@ const Deck = styled.div`
   user-select: none;
 `;
 
-const PlayerCards = styled.div`
-  height: 100%;
-  max-width: 80%;
-  width: 80%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  background-color: black;
-  padding-left: 1%;
-  padding-right: 1%;
-`;
-
-const PlayerTokens = styled.div`
-  height: 100%;
-  max-width: 20%;
-  width: 20%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  background-color: blue;
-  padding-left: 1%;
-  padding-right: 1%;
-`;
-
 const Board = styled.div`
   height: 70vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-`;
-
-const Players = styled(PlayerTokens)`
-  position: absolute;
-  top: 10vh;
-  height: 10%;
-`;
-
-const Stack = styled.div`
-  position: relative;
-  width: 100%;
-  height: 200px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  user-select: none;
-`;
-
-const PlayerCardsInPlay = styled(PlayerCards)`
-  height: 20vh;
-  /* background-color: green; */
 `;
 
 const Menu = styled.div`

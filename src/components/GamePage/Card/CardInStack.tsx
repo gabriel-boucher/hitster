@@ -1,28 +1,30 @@
 import styled from "styled-components";
 import { CardInterface } from "../../../utils/Interfaces";
+import { reducerCases } from "../../../utils/Constants";
+import { useMemo } from "react";
 
 interface CardProps {
   index: number;
   card: CardInterface;
-  stackCards: CardInterface[];
-  setStackCards: (cards: CardInterface[]) => void;
   handleMouseDown: (
     e: React.MouseEvent<HTMLDivElement>,
-    cards: CardInterface[],
-    setCards: (cards: CardInterface[]) => void
+    card: reducerCases.SET_PLAYERS | reducerCases.SET_CARDS
   ) => void;
 }
 
 export default function CardInStack({
   index,
   card,
-  stackCards,
-  setStackCards,
   handleMouseDown,
 }: CardProps) {
+
+  const handleMouseEvents = useMemo(() => ({
+    onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => handleMouseDown(e, reducerCases.SET_CARDS),
+  }), [handleMouseDown]);
+
   return (
     <Card
-      onMouseDown={(e) => handleMouseDown(e, stackCards, setStackCards)}
+      {...handleMouseEvents}
       id={card.id}
       style={{
         bottom: index * 4,

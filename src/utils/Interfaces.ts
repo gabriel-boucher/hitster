@@ -1,7 +1,14 @@
 import { reducerCases } from "./Constants";
 
+export interface PlayerInterface {
+  socketId: string;
+  name: string;
+  cards: CardInterface[];
+  tokens: TokenInterface[];
+}
+
 export interface CardInterface {
-  id: string
+  id: string;
   song: string;
   artist: string;
   date: string;
@@ -9,29 +16,17 @@ export interface CardInterface {
   hidden: boolean;
 }
 
-export interface PlayerInterface {
-  socketId: string;
-  name: string;
-  cards: CardInterface[];
-  tokens: number;
+export interface TokenInterface {
+  id: string;
 }
-
-
 
 export interface State {
-  socketId: string;
   spotifyToken: string;
-  players: Map<string, PlayerInterface>;
-  playersTurn: number;
-  playerCards: CardInterface[];
-  openedGapIndex: number | null;
+  players: Record<string, PlayerInterface>;
+  activePlayer: string;
   cards: CardInterface[];
   activeCard: CardInterface;
-}
-
-export interface SetSocketIdAction {
-  type: reducerCases.SET_SOCKET_ID;
-  socketId: string;
+  gapIndex: number | null;
 }
 export interface SetSpotifyTokenAction {
   type: reducerCases.SET_SPOTIFY_TOKEN;
@@ -40,22 +35,12 @@ export interface SetSpotifyTokenAction {
 
 export interface SetPlayersAction {
   type: reducerCases.SET_PLAYERS;
-  players: Map<string, PlayerInterface>;
+  players: Record<string, PlayerInterface>;
 }
 
-export interface SetPlayersTurnAction {
-  type: reducerCases.SET_PLAYERS_TURN;
-  playersTurn: number;
-}
-
-export interface SetPlayerCardsAction {
-  type: reducerCases.SET_PLAYER_CARDS;
-  playerCards: CardInterface[];
-}
-
-export interface SetOpenedGapIndexAction {
-  type: reducerCases.SET_OPENED_GAP_INDEX;
-  openedGapIndex: number | null;
+export interface SetActivePlayer {
+  type: reducerCases.SET_ACTIVE_PLAYER;
+  activePlayer: string;
 }
 
 export interface SetCardsAction {
@@ -68,4 +53,15 @@ export interface SetActiveCardAction {
   activeCard: CardInterface;
 }
 
-export type Action = SetSocketIdAction | SetSpotifyTokenAction | SetPlayersAction | SetPlayersTurnAction | SetPlayerCardsAction | SetOpenedGapIndexAction | SetCardsAction | SetActiveCardAction;
+export interface SetGapIndexAction {
+  type: reducerCases.SET_GAP_INDEX;
+  gapIndex: number | null;
+}
+
+export type Action =
+  | SetSpotifyTokenAction
+  | SetPlayersAction
+  | SetActivePlayer
+  | SetCardsAction
+  | SetActiveCardAction
+  | SetGapIndexAction;

@@ -1,11 +1,11 @@
 import './App.css'
 import GamePage from './pages/GamePage'
-import OptimizedGamePage from './pages/OptimizedGamePage'
+import TestPage from './pages/TestPage'
 
 export default function App() {
 
   return (
-    <GamePage/>
-    // <OptimizedGamePage/>
+    // <GamePage/>
+    <TestPage/>
   )
 }

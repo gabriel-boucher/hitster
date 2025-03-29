@@ -3,8 +3,6 @@ import { reducerCases } from "./Constants";
 export interface PlayerInterface {
   socketId: string;
   name: string;
-  cards: CardInterface[];
-  tokens: TokenInterface[];
 }
 
 export interface CardInterface {
@@ -14,6 +12,7 @@ export interface CardInterface {
   date: string;
   albumCover: string;
   hidden: boolean;
+  playerId: string | null;
 }
 
 export interface TokenInterface {
@@ -22,8 +21,8 @@ export interface TokenInterface {
 
 export interface State {
   spotifyToken: string;
-  players: Record<string, PlayerInterface>;
-  activePlayer: string;
+  players: PlayerInterface[];
+  activePlayer: PlayerInterface;
   cards: CardInterface[];
   activeCard: CardInterface;
   gapIndex: number | null;
@@ -35,12 +34,12 @@ export interface SetSpotifyTokenAction {
 
 export interface SetPlayersAction {
   type: reducerCases.SET_PLAYERS;
-  players: Record<string, PlayerInterface>;
+  players: PlayerInterface[];
 }
 
 export interface SetActivePlayer {
   type: reducerCases.SET_ACTIVE_PLAYER;
-  activePlayer: string;
+  activePlayer: PlayerInterface;
 }
 
 export interface SetCardsAction {
@@ -53,15 +52,9 @@ export interface SetActiveCardAction {
   activeCard: CardInterface;
 }
 
-export interface SetGapIndexAction {
-  type: reducerCases.SET_GAP_INDEX;
-  gapIndex: number | null;
-}
-
 export type Action =
   | SetSpotifyTokenAction
   | SetPlayersAction
   | SetActivePlayer
   | SetCardsAction
   | SetActiveCardAction
-  | SetGapIndexAction;

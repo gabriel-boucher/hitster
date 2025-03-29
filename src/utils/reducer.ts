@@ -3,32 +3,24 @@ import { cardsFetched, playersFetched, reducerCases } from "./Constants";
 import { Dispatch } from "react";
 import { v4 as uuidv4 } from "uuid";
 
+export const playersInfo: PlayerInterface[] = playersFetched
+
 const cardsInfo: CardInterface[] = cardsFetched.map((card) => ({
   ...card,
   id: uuidv4(),
   hidden: true,
+  playerId: null,
 }));
 
-export const playersInfo: Record<string, PlayerInterface> = playersFetched.reduce(
-  (acc, player) => {
-    const startingCard = cardsInfo.pop()!;
-    startingCard.hidden = false;
-    
-    acc[player.socketId] = {
-      socketId: player.socketId,
-      name: player.name,
-      cards: [startingCard],
-      tokens: [{ id: uuidv4() }, { id: uuidv4() }],
-    };
-    return acc;
-  },
-  {} as Record<string, PlayerInterface>
-);
+playersInfo.forEach((player, index) => {
+  cardsInfo[index].hidden = false;
+  cardsInfo[index].playerId = player.socketId;
+});
 
 export const initialState = {
   spotifyToken: "",
   players: playersInfo,
-  activePlayer: "socketId1",
+  activePlayer: playersInfo[0],
   gapIndex: null,
   cards: cardsInfo,
   activeCard: cardsInfo[cardsInfo.length - 1],
@@ -66,12 +58,6 @@ export const reducer = (state: State, action: Action) => {
       return {
         ...state,
         activeCard: action.activeCard,
-      };
-    }
-    case reducerCases.SET_GAP_INDEX: {
-      return {
-        ...state,
-        gapIndex: action.gapIndex,
       };
     }
     default:

@@ -1,102 +1,41 @@
 import styled from "styled-components";
-import { reducerCases } from "../utils/Constants";
 import { useState, useEffect } from "react";
-import { useStateProvider } from "../utils/StateProvider";
 import { useMouseHandlers } from "../utils/MouseHandlers";
-import { CardInterface } from "../utils/Interfaces";
-import { v4 as uuidv4 } from "uuid";
 import DraggableCard from "../components/GamePage/Card/DraggableCard";
 import PlayerBar from "../components/GamePage/Players/PlayerBar";
 import PlayerCards from "../components/GamePage/Card/PlayerCards";
 import PlayerTokens from "../components/GamePage/Token/PlayerTokens";
 import StackCards from "../components/GamePage/Card/StackCards";
+import useGameRules from "./GameRules";
+import { useStateProvider } from "../utils/StateProvider";
+import { reducerCases } from "../utils/Constants";
 
 export default function GamePage() {
-  const [{ players, activePlayer, cards, activeCard }, dispatch] =
-    useStateProvider();
-
+  const [{ cards, activeCard}, dispatch] = useStateProvider();
   const [isDragging, setIsDragging] = useState(false);
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-
-  const [spareCards, _] = useState<CardInterface[]>([...cards]);
 
   const {
+    handleMouseDown,
     handleMouseMove,
     handleMouseUp,
-    handleMouseDown,
-    handleDeckGapDetection,
+    handleMouseLeave,
+    handleMouseOver,
   } = useMouseHandlers(
     isDragging,
-    dragOffset,
     setDragPosition,
-    setDragOffset,
     setIsDragging
   );
 
-  function revealCard(index: number) {
-    const newPlayers = { ...players };
-    newPlayers[activePlayer].cards[index].hidden = false;
-    dispatch({ type: reducerCases.SET_PLAYERS, players: newPlayers });
-  }
+  const { nextTurn } = useGameRules();
 
-  function isRightAnswer(index: number) {
-    const active = parseInt(activeCard.date);
-    const before =
-      index > 0
-        ? parseInt(players[activePlayer].cards[index - 1].date)
-        : -Infinity;
-    const after =
-      index < players[activePlayer].cards.length - 1
-        ? parseInt(players[activePlayer].cards[index + 1].date)
-        : Infinity;
-
-    return before <= active && active <= after;
-  }
-
-  function removeCard(index: number) {
-    setTimeout(() => {
-      const newPlayers = { ...players };
-      newPlayers[activePlayer].cards.splice(index, 1);
-      dispatch({ type: reducerCases.SET_PLAYERS, players: newPlayers });
-    }, 1000);
-  }
-
-  function refillCards() {
-    const newCards = spareCards.map((card) => ({
-      ...card,
-      id: uuidv4(),
-      hidden: true, // cards are changed to hidden false during the process (don't know why)
-    }));
-    dispatch({ type: reducerCases.SET_CARDS, cards: newCards });
-    dispatch({
-      type: reducerCases.SET_ACTIVE_CARD,
-      activeCard: newCards[newCards.length - 1],
-    }); // use cards because react doesn't update stackCards in time to use stackCards
-  }
-
-  function nextTurn() {
-    const index = players[activePlayer].cards.indexOf(activeCard);
-    if (index === -1) return;
-
-    revealCard(index);
-
-    if (!isRightAnswer(index)) {
-      removeCard(index);
-    }
-
-    dispatch({
-      type: reducerCases.SET_ACTIVE_CARD,
-      activeCard: cards[cards.length - 1],
-    });
-
-    if (cards.length === 0) {
-      refillCards();
-    }
-  }
-
-  const stackCardsComponent = StackCards({ handleMouseDown });
-  const playerCardsComponent = PlayerCards({ isDragging, handleDeckGapDetection, handleMouseDown });
+  const stackCardsComponent = StackCards({ handleMouseDown, handleMouseLeave });
+  const playerCardsComponent = PlayerCards({
+    isDragging,
+    handleMouseDown,
+    handleMouseOver,
+    handleMouseLeave,
+  });
   const playerTokensComponent = PlayerTokens();
 
   useEffect(() => {
@@ -109,6 +48,10 @@ export default function GamePage() {
       };
     }
   }, [isDragging, handleMouseMove, handleMouseUp]);
+
+  useEffect(() => {
+    dispatch({ type: reducerCases.SET_ACTIVE_CARD, activeCard: cards.filter((card) => card.id === activeCard.id)[0] });
+  }, [activeCard, cards]);
 
   return (
     <Container>

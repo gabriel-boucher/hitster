@@ -10,7 +10,7 @@ export default function PlayerBar() {
     () => (
       <Players>
         {Object.values(players).map((player) => (
-          <PlayerInGame key={player.socketId} isActivePlayer={activePlayer === player.socketId} />
+          <PlayerInGame key={player.socketId} isActivePlayer={activePlayer === player} />
         ))}
       </Players>
     ),

@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { CardInterface } from "../../../utils/Interfaces";
-import { reducerCases } from "../../../utils/Constants";
 import { useMemo } from "react";
 
 interface CardProps {
@@ -8,7 +7,7 @@ interface CardProps {
   card: CardInterface;
   handleMouseDown: (
     e: React.MouseEvent<HTMLDivElement>,
-    card: reducerCases.SET_PLAYERS | reducerCases.SET_CARDS
+    card: CardInterface
   ) => void;
 }
 
@@ -19,13 +18,12 @@ export default function CardInStack({
 }: CardProps) {
 
   const handleMouseEvents = useMemo(() => ({
-    onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => handleMouseDown(e, reducerCases.SET_CARDS),
+    onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => handleMouseDown(e, card),
   }), [handleMouseDown]);
 
   return (
     <Card
       {...handleMouseEvents}
-      id={card.id}
       style={{
         bottom: index * 4,
         zIndex: index,

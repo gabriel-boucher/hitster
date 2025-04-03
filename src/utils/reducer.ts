@@ -1,15 +1,22 @@
-import { Action, PlayerInterface, CardInterface, State } from "./Interfaces";
+import {
+  Action,
+  PlayerInterface,
+  CardInterface,
+  State,
+  TokenInterface,
+} from "./Interfaces";
 import { cardsFetched, playersFetched, reducerCases } from "./Constants";
 import { Dispatch } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-export const playersInfo: PlayerInterface[] = playersFetched
+export const playersInfo: PlayerInterface[] = playersFetched;
 
 const cardsInfo: CardInterface[] = cardsFetched.map((card) => ({
   ...card,
   id: uuidv4(),
   hidden: true,
   playerId: null,
+  className: "",
 }));
 
 playersInfo.forEach((player, index) => {
@@ -17,13 +24,19 @@ playersInfo.forEach((player, index) => {
   cardsInfo[index].playerId = player.socketId;
 });
 
+const tokensInfo: TokenInterface[] = [];
+playersInfo.forEach((player) => {
+  tokensInfo.push({ id: uuidv4(), playerId: player.socketId });
+  tokensInfo.push({ id: uuidv4(), playerId: player.socketId });
+});
+
 export const initialState = {
   spotifyToken: "",
   players: playersInfo,
   activePlayer: playersInfo[0],
-  gapIndex: null,
   cards: cardsInfo,
   activeCard: cardsInfo[cardsInfo.length - 1],
+  tokens: tokensInfo,
 };
 
 export const defaultDispatch: Dispatch<Action> = () => {};
@@ -58,6 +71,12 @@ export const reducer = (state: State, action: Action) => {
       return {
         ...state,
         activeCard: action.activeCard,
+      };
+    }
+    case reducerCases.SET_TOKENS: {
+      return {
+        ...state,
+        tokens: action.tokens,
       };
     }
     default:

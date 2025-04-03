@@ -4,21 +4,23 @@ import TokenInDeck from "./TokenInDeck";
 import { useMemo } from "react";
 
 export default function PlayerTokens() {
-    const [{ players }] = useStateProvider();
+  const [{ activePlayer, tokens }] = useStateProvider();
 
-    return useMemo(
-        () => (
-          <PlayerTokensContainer>
-            {players["socketId1"].tokens.map((token) => (
-              <TokenInDeck key={token.id} />
-            ))}
-          </PlayerTokensContainer>
-        ),
-        [players]
-      );
-  }
+  return useMemo(
+    () => (
+      <PlayerTokensContainer>
+        {tokens
+          .filter((token) => token.playerId === activePlayer.socketId)
+          .map((token) => (
+            <TokenInDeck key={token.id} />
+          ))}
+      </PlayerTokensContainer>
+    ),
+    [activePlayer, tokens]
+  );
+}
 
-  const PlayerTokensContainer = styled.div`
+const PlayerTokensContainer = styled.div`
   height: 100%;
   max-width: 20%;
   width: 20%;

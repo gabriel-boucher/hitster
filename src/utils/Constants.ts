@@ -4,7 +4,7 @@ export enum reducerCases {
   SET_ACTIVE_PLAYER = "SET_ACTIVE_PLAYER",
   SET_CARDS = "SET_CARDS",
   SET_ACTIVE_CARD = "SET_ACTIVE_CARD",
-  SET_GAP_INDEX = "SET_GAP_INDEX",
+  SET_TOKENS = "SET_TOKENS",
 }
 
 export enum cardStates {

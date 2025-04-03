@@ -1,59 +1,46 @@
 import styled from "styled-components";
 import { CardInterface } from "../../../utils/Interfaces";
 import { useMemo, useRef } from "react";
-import { reducerCases } from "../../../utils/Constants";
-import { useStateProvider } from "../../../utils/StateProvider";
 
 interface CardProps {
-  index: number;
   playerCardsRef: React.RefObject<HTMLDivElement | null>;
   card: CardInterface;
-  isGapBefore: boolean;
-  isGapAfter: boolean;
   isDragging: boolean;
-  handleDeckGapDetection: (
-    e: React.MouseEvent<HTMLDivElement>,
-    cardIndex: number
-  ) => void;
   handleMouseDown: (
     e: React.MouseEvent<HTMLDivElement>,
-    card: reducerCases.SET_PLAYERS | reducerCases.SET_CARDS,
+    card: CardInterface
+  ) => void;
+  handleMouseOver: (
+    e: React.MouseEvent<HTMLDivElement>,
+    card: CardInterface
   ) => void;
 }
 
 export default function CardInDeck({
-  index,
-  playerCardsRef,
   card,
-  isGapBefore,
-  isGapAfter,
   isDragging,
-  handleDeckGapDetection,
+  handleMouseOver,
   handleMouseDown,
 }: CardProps) {
-  const [{players, activePlayer}, dispatch] = useStateProvider();
-  const elementRef = useRef<HTMLDivElement | null>(null);
+  const cardRef = useRef<HTMLDivElement | null>(null);
 
-  const handleMouseEvents = useMemo(() => ({
-    onMouseOver: (e: React.MouseEvent<HTMLDivElement>) => handleDeckGapDetection(e, index),
-    onMouseMove: (e: React.MouseEvent<HTMLDivElement>) => handleDeckGapDetection(e, index),
-    onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => handleMouseDown(e, reducerCases.SET_PLAYERS),
-    onMouseLeave: () => dispatch({ type: reducerCases.SET_GAP_INDEX, gapIndex: null })
-  }), [index, handleDeckGapDetection, handleMouseDown, dispatch]);
+  const handleMouseEvents = useMemo(
+    () => ({
+      onMouseOver: (e: React.MouseEvent<HTMLDivElement>) =>
+        handleMouseOver(e, card),
+      onMouseDown: (e: React.MouseEvent<HTMLDivElement>) =>
+        handleMouseDown(e, card),
+    }),
+    [handleMouseOver, handleMouseDown]
+  );
 
   return (
     <Card
       $card={card}
-      $isGapBefore={isGapBefore}
-      $isGapAfter={isGapAfter}
       $isDragging={isDragging}
-      $numberOfCards={players[activePlayer].cards.length}
-      $width={elementRef.current?.offsetWidth}
-      $containerHeight={playerCardsRef.current?.offsetHeight}
-      $containerWidth={playerCardsRef.current?.offsetWidth}
       {...handleMouseEvents}
-      id={card.id}
-      ref={elementRef}
+      ref={cardRef}
+      className={card.className}
     >
       <div className="card-container">
         {!card.hidden && (
@@ -70,24 +57,13 @@ export default function CardInDeck({
 
 const Card = styled.div<{
   $card: CardInterface;
-  $isGapBefore: boolean;
-  $isGapAfter: boolean;
   $isDragging: boolean;
-  $numberOfCards: number;
-  $width?: number;
-  $containerHeight?: number;
-  $containerWidth?: number;
 }>`
   height: 100%;
   min-width: 0;
   aspect-ratio: 1/1;
 
   flex-shrink: 1;
-
-  width: ${(props) =>
-    props.$containerWidth! >= (props.$numberOfCards + 1) * props.$containerHeight!
-      ? `${props.$containerHeight}px`
-      : `${props.$containerWidth! / (props.$numberOfCards + 1)}px`};
 
   display: flex;
   justify-content: center;
@@ -97,48 +73,25 @@ const Card = styled.div<{
   position: relative;
   user-select: none;
 
-  transition: margin ${(props) => (props.$isDragging ? "0.3s" : "0s")} ease;
-  margin-left: ${(props) =>
-    props.$isGapBefore ? `${props.$width && props.$width / 2}px` : "0"};
-  margin-right: ${(props) =>
-    props.$isGapAfter ? `${props.$width && props.$width / 2}px` : "0"};
-
-  &::before,
-  &::after {
+  &:first-child::before,
+  &:last-child::after {
     content: "";
     position: absolute;
     top: 0;
     height: 100%;
-    width: 100%;
-    z-index: 0;
+    width: 100vw;
     pointer-events: ${(props) => (props.$isDragging ? "auto" : "none")};
     user-select: none;
-    opacity: 0.5;
-    /* background-color: red; */
+    /* opacity: 0.5;
+    background-color: red; */
   }
-
+  
   &::before {
-    right: 50%;
+    right: 99%;
   }
-
+  
   &::after {
-    left: 50%;
-  }
-
-  &:first-child {
-    margin-left: ${(props) =>
-      props.$isGapBefore ? `${props.$width && props.$width}px` : "0"};
-    &::before {
-      width: 100vh;
-    }
-  }
-
-  &:last-child {
-    margin-right: ${(props) =>
-      props.$isGapAfter ? `${props.$width && props.$width}px` : "0"};
-    &::after {
-      width: 100vh;
-    }
+    left: 99%;
   }
 
   .card-container {

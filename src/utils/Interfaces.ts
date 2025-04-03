@@ -13,10 +13,12 @@ export interface CardInterface {
   albumCover: string;
   hidden: boolean;
   playerId: string | null;
+  className: string;
 }
 
 export interface TokenInterface {
   id: string;
+  playerId: string;
 }
 
 export interface State {
@@ -25,7 +27,7 @@ export interface State {
   activePlayer: PlayerInterface;
   cards: CardInterface[];
   activeCard: CardInterface;
-  gapIndex: number | null;
+  tokens: TokenInterface[];
 }
 export interface SetSpotifyTokenAction {
   type: reducerCases.SET_SPOTIFY_TOKEN;
@@ -51,6 +53,10 @@ export interface SetActiveCardAction {
   type: reducerCases.SET_ACTIVE_CARD;
   activeCard: CardInterface;
 }
+export interface SetTokensAction {
+  type: reducerCases.SET_TOKENS;
+  tokens: TokenInterface[];
+}
 
 export type Action =
   | SetSpotifyTokenAction
@@ -58,3 +64,4 @@ export type Action =
   | SetActivePlayer
   | SetCardsAction
   | SetActiveCardAction
+  | SetTokensAction;

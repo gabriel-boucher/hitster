@@ -2,25 +2,14 @@ import styled from "styled-components";
 import { useRef } from "react";
 import { useStateProvider } from "../../../utils/StateProvider";
 import CardInDeck from "./CardInDeck";
-import { CardInterface } from "../../../utils/Interfaces";
 
 interface CardProps {
   isDragging: boolean;
-  handleMouseDown: (
-    e: React.MouseEvent<HTMLDivElement>,
-    card: CardInterface
-  ) => void;
-  handleMouseOver: (
-    e: React.MouseEvent<HTMLDivElement>,
-    card: CardInterface
-  ) => void;
   handleMouseLeave: () => void;
 }
 
 export default function PlayerCards({
   isDragging,
-  handleMouseDown,
-  handleMouseOver,
   handleMouseLeave,
 }: CardProps) {
   const [{ players, cards }] = useStateProvider();
@@ -35,8 +24,6 @@ export default function PlayerCards({
             key={card.id}
             card={card}
             isDragging={isDragging}
-            handleMouseDown={handleMouseDown}
-            handleMouseOver={handleMouseOver}
           />
         ))}
     </PlayerCardsContainer>

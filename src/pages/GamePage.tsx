@@ -41,8 +41,6 @@ export default function GamePage() {
   });
   const playerCardsComponent = PlayerCards({
     isDragging,
-    handleMouseDown,
-    handleMouseOver,
     handleMouseLeave,
   });
   const playerTokensComponent = PlayerTokens();

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useRef } from "react";
 import { useStateProvider } from "../../../utils/StateProvider";
-import CardInDeck from "./CardInDeck";
+import ActiveCard from "./ActiveCard";
 import { CardInterface } from "../../../utils/Interfaces";
 
 interface CardProps {
@@ -36,7 +36,7 @@ export default function ActivePlayerCards({
         .filter((card) => card.playerId === activePlayer.socketId)
         .map((card, index) =>
           index === 0 ? (
-            <CardInDeck
+            <ActiveCard
               key={card.id}
               card={card}
               isDragging={isDragging}
@@ -46,7 +46,7 @@ export default function ActivePlayerCards({
               handleMouseOver={handleMouseOver}
             />
           ) : (
-            <CardInDeck
+            <ActiveCard
               key={card.id}
               card={card}
               isDragging={isDragging}

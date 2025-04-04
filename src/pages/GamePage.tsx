@@ -3,17 +3,19 @@ import { useState, useEffect } from "react";
 import { useMouseHandlers } from "../utils/MouseHandlers";
 import DraggableCard from "../components/GamePage/Card/DraggableCard";
 import PlayerBar from "../components/GamePage/Players/PlayerBar";
+import ActivePlayerCards from "../components/GamePage/Card/ActivePlayerCards";
 import PlayerCards from "../components/GamePage/Card/PlayerCards";
 import PlayerTokens from "../components/GamePage/Token/PlayerTokens";
 import StackCards from "../components/GamePage/Card/StackCards";
-import useGameRules from "./GameRules";
+import useGameRules from "../utils/GameRules";
 import { useStateProvider } from "../utils/StateProvider";
 import { reducerCases } from "../utils/Constants";
 
 export default function GamePage() {
-  const [{ cards, activeCard}, dispatch] = useStateProvider();
+  const [{ cards, activeCard }, dispatch] = useStateProvider();
   const [isDragging, setIsDragging] = useState(false);
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
+  const [activeCardWidth, setActiveCardWidth] = useState(0);
 
   const {
     handleMouseDown,
@@ -21,15 +23,22 @@ export default function GamePage() {
     handleMouseUp,
     handleMouseLeave,
     handleMouseOver,
-  } = useMouseHandlers(
-    isDragging,
-    setDragPosition,
-    setIsDragging
-  );
+  } = useMouseHandlers(isDragging, setDragPosition, setIsDragging);
 
   const { nextTurn } = useGameRules();
 
-  const stackCardsComponent = StackCards({ handleMouseDown, handleMouseLeave });
+  const stackCardsComponent = StackCards({
+    handleMouseDown,
+    handleMouseLeave,
+  });
+  const activePlayerCardsComponent = ActivePlayerCards({
+    isDragging,
+    setDragPosition,
+    setActiveCardWidth,
+    handleMouseDown,
+    handleMouseOver,
+    handleMouseLeave,
+  });
   const playerCardsComponent = PlayerCards({
     isDragging,
     handleMouseDown,
@@ -50,7 +59,10 @@ export default function GamePage() {
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
   useEffect(() => {
-    dispatch({ type: reducerCases.SET_ACTIVE_CARD, activeCard: cards.filter((card) => card.id === activeCard.id)[0] });
+    dispatch({
+      type: reducerCases.SET_ACTIVE_CARD,
+      activeCard: cards.filter((card) => card.id === activeCard.id)[0],
+    });
   }, [activeCard, cards]);
 
   return (
@@ -58,15 +70,20 @@ export default function GamePage() {
       <Menu>
         <button onClick={nextTurn}>Next Turn</button>
       </Menu>
-      {isDragging && <DraggableCard dragPosition={dragPosition} />}
+      {isDragging && (
+        <DraggableCard
+          dragPosition={dragPosition}
+          activeCardWidth={activeCardWidth}
+        />
+      )}
       <Board>
         <PlayerBar />
         {stackCardsComponent}
-        {playerCardsComponent}
+        {activePlayerCardsComponent}
       </Board>
       <Deck>
         {playerCardsComponent}
-        {playerTokensComponent}
+        {/* {playerTokensComponent} */}
       </Deck>
     </Container>
   );
@@ -98,4 +115,6 @@ const Menu = styled.div`
   padding: 0px 20px 0px 20px;
 `;
 
-const Container = styled.div``;
+const Container = styled.div`
+  background-color: #0a1d36;
+`;

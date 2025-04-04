@@ -1,11 +1,13 @@
 import styled from "styled-components";
 import { CardInterface } from "../../../utils/Interfaces";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
+import { useStateProvider } from "../../../utils/StateProvider";
 
 interface CardProps {
-  playerCardsRef: React.RefObject<HTMLDivElement | null>;
   card: CardInterface;
   isDragging: boolean;
+  setDragPosition?: (position: { x: number; y: number }) => void;
+  setActiveCardWidth?: (width: number) => void;
   handleMouseDown: (
     e: React.MouseEvent<HTMLDivElement>,
     card: CardInterface
@@ -19,10 +21,19 @@ interface CardProps {
 export default function CardInDeck({
   card,
   isDragging,
+  setDragPosition,
+  setActiveCardWidth,
   handleMouseOver,
   handleMouseDown,
 }: CardProps) {
+  const [{ activeCard }] = useStateProvider();
   const cardRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (setDragPosition && setActiveCardWidth && cardRef.current) {
+      setActiveCardWidth(cardRef.current.offsetWidth);
+    }
+  });
 
   const handleMouseEvents = useMemo(
     () => ({
@@ -34,16 +45,26 @@ export default function CardInDeck({
     [handleMouseOver, handleMouseDown]
   );
 
+  const style = {
+    backgroundImage: `url(${card.albumCover})`,
+    border: "none"
+  };
+  if (isDragging && card.id === activeCard.id) {
+    style.backgroundImage = "none";
+    style.border = "2px solid white"
+  } else if (card.id === activeCard.id) {
+    style.backgroundImage = `url("src/assets/hitster_logo_square.webp")`;
+    style.border = "none"
+  }
+
   return (
     <Card
-      $card={card}
       $isDragging={isDragging}
       {...handleMouseEvents}
       ref={cardRef}
-      className={card.className}
     >
-      <div className="card-container">
-        {!card.hidden && (
+      <div className="card-container" style={style}>
+        {card.id !== activeCard.id && (
           <div className="details">
             <div className="date">{card.date}</div>
             <div className="song">{card.song}</div>
@@ -56,7 +77,6 @@ export default function CardInDeck({
 }
 
 const Card = styled.div<{
-  $card: CardInterface;
   $isDragging: boolean;
 }>`
   height: 100%;
@@ -68,7 +88,6 @@ const Card = styled.div<{
   display: flex;
   justify-content: center;
   align-items: center;
-  /* background-color: pink; */
 
   position: relative;
   user-select: none;
@@ -82,14 +101,12 @@ const Card = styled.div<{
     width: 100vw;
     pointer-events: ${(props) => (props.$isDragging ? "auto" : "none")};
     user-select: none;
-    /* opacity: 0.5;
-    background-color: red; */
   }
-  
+
   &::before {
     right: 99%;
   }
-  
+
   &::after {
     left: 99%;
   }
@@ -106,12 +123,6 @@ const Card = styled.div<{
 
     border-radius: 5%;
 
-    background-image: ${(props) =>
-      `url(${
-        props.$card.hidden
-          ? "src/assets/hitster_logo_square.webp"
-          : props.$card.albumCover
-      })`};
     background-repeat: no-repeat;
     background-size: cover;
 
@@ -153,10 +164,6 @@ const Card = styled.div<{
       display: none;
       width: 100%;
     }
-  }
-
-  .hidden {
-    display: none;
   }
 
   &:hover {

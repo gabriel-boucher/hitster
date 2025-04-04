@@ -11,9 +11,7 @@ export interface CardInterface {
   artist: string;
   date: string;
   albumCover: string;
-  hidden: boolean;
   playerId: string | null;
-  className: string;
 }
 
 export interface TokenInterface {
@@ -27,6 +25,7 @@ export interface State {
   activePlayer: PlayerInterface;
   cards: CardInterface[];
   activeCard: CardInterface;
+  activeCardsWith: number;
   tokens: TokenInterface[];
 }
 export interface SetSpotifyTokenAction {

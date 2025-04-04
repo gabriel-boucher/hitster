@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 import { useStateProvider } from "./StateProvider";
 import { reducerCases } from "./Constants";
 import { CardInterface } from "./Interfaces";
@@ -9,19 +9,13 @@ export function useMouseHandlers(
   setIsDragging: (value: boolean) => void
 ) {
   const [{ activePlayer, cards, activeCard }, dispatch] = useStateProvider();
-  const dragOffset = useRef({ x: 0, y: 0 });
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent<HTMLDivElement>, downCard: CardInterface) => {
       if (downCard.id === activeCard.id) {
-        const rect = e.currentTarget.getBoundingClientRect();
-        dragOffset.current = {
-          x: rect.width / 2,
-          y: rect.height / 2,
-        };
         setDragPosition({
-          x: e.clientX - dragOffset.current.x,
-          y: e.clientY - dragOffset.current.y,
+          x: e.clientX,
+          y: e.clientY,
         });
         setIsDragging(true);
 
@@ -42,8 +36,8 @@ export function useMouseHandlers(
       if (isDragging) {
         requestAnimationFrame(() => {
           setDragPosition({
-            x: e.clientX - dragOffset.current.x,
-            y: e.clientY - dragOffset.current.y,
+            x: e.clientX,
+            y: e.clientY,
           });
         });
       }

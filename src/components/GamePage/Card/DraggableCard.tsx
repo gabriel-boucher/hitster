@@ -2,14 +2,19 @@ import styled from "styled-components";
 
 interface CardProps {
   dragPosition: { x: number; y: number };
+  activeCardWidth: number;
 }
 
-export default function DraggableCard({ dragPosition }: CardProps) {
+export default function DraggableCard({
+  dragPosition,
+  activeCardWidth,
+}: CardProps) {
   return (
     <Card
       style={{
-        left: dragPosition.x,
-        top: dragPosition.y,
+        left: dragPosition.x - (0.8 * activeCardWidth) / 2,
+        top: dragPosition.y - (0.8 * activeCardWidth) / 2,
+        width: activeCardWidth,
         position: "absolute",
         zIndex: "1000",
         pointerEvents: "none",
@@ -22,13 +27,12 @@ export default function DraggableCard({ dragPosition }: CardProps) {
 }
 
 const Card = styled.div`
-  height: 16vh;
-  width: 16vh;
+  aspect-ratio: 1/1;
   user-select: none;
 
   .card-container {
-    height: inherit;
-    width: inherit;
+    aspect-ratio: 1/1;
+    width: 80%;
 
     border: 1px solid white;
     border-radius: 5%;

@@ -16,11 +16,9 @@ const cardsInfo: CardInterface[] = cardsFetched.map((card) => ({
   id: uuidv4(),
   hidden: true,
   playerId: null,
-  className: "",
 }));
 
 playersInfo.forEach((player, index) => {
-  cardsInfo[index].hidden = false;
   cardsInfo[index].playerId = player.socketId;
 });
 

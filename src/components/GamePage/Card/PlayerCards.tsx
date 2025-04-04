@@ -23,17 +23,16 @@ export default function PlayerCards({
   handleMouseOver,
   handleMouseLeave,
 }: CardProps) {
-  const [{ activePlayer, cards }] = useStateProvider();
+  const [{ players, cards }] = useStateProvider();
   const playerCardsRef = useRef<HTMLDivElement | null>(null);
 
   return (
     <PlayerCardsContainer ref={playerCardsRef} onMouseLeave={handleMouseLeave}>
       {cards
-        .filter((card) => card.playerId === activePlayer.socketId)
+        .filter((card) => card.playerId === players[0].socketId)
         .map((card) => (
           <CardInDeck
             key={card.id}
-            playerCardsRef={playerCardsRef}
             card={card}
             isDragging={isDragging}
             handleMouseDown={handleMouseDown}
@@ -46,13 +45,12 @@ export default function PlayerCards({
 
 const PlayerCardsContainer = styled.div`
   height: 20vh;
-  max-width: 80%;
-  width: 80%;
+  max-width: 100%;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  background-color: #0a1d36;
   padding-left: 1%;
   padding-right: 1%;
 `;

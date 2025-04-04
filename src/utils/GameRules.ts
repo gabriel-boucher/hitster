@@ -1,25 +1,29 @@
 import { useRef } from "react";
-import { reducerCases } from "../utils/Constants";
-import { CardInterface } from "../utils/Interfaces";
-import { useStateProvider } from "../utils/StateProvider";
+import { reducerCases } from "./Constants";
+import { CardInterface } from "./Interfaces";
+import { useStateProvider } from "./StateProvider";
 import { v4 as uuidv4 } from "uuid";
 
 export default function useGameRules() {
-  const [{ activePlayer, cards, activeCard }, dispatch] = useStateProvider();
+  const [{ players, activePlayer, cards, activeCard }, dispatch] =
+    useStateProvider();
   const spareCards = useRef<CardInterface[]>([...cards]);
 
   function nextTurn() {
-    let newCards = revealCard();
+    if (activeCard.playerId !== null) {
+      let newCards = revealCard();
 
-    if (!isRightAnswer()) {
-      newCards = removeCard(newCards);
+      if (!isRightAnswer()) {
+        newCards = removeCard(newCards);
+      }
+
+      if (isStackEmpty(newCards)) {
+        newCards = refillCards(newCards);
+      }
+
+      setActiveCardToLast(newCards);
+      setNextActivePlayer();
     }
-
-    if (isStackEmpty(newCards)) {
-      newCards = refillCards(newCards);
-    }
-
-    setActiveCardToLast(newCards);
   }
 
   function revealCard() {
@@ -78,6 +82,16 @@ export default function useGameRules() {
     dispatch({
       type: reducerCases.SET_ACTIVE_CARD,
       activeCard: lastCard,
+    });
+  }
+
+  function setNextActivePlayer() {
+    const activePlayerIndex = players.findIndex(
+      (player) => player.socketId === activePlayer.socketId
+    );
+    dispatch({
+      type: reducerCases.SET_ACTIVE_PLAYER,
+      activePlayer: players[(activePlayerIndex + 1) % players.length],
     });
   }
 

@@ -6,7 +6,7 @@ export default function PlayerInGame({isActivePlayer}: PlayerProps) {
 
     return (
       <Player>
-        <div className="token-container" style={{backgroundImage: `url(src/assets/avatar.webp)`, border: isActivePlayer ? "2px solid yellow" : "none"}}>
+        <div className="token-container" style={{backgroundImage: `url(src/assets/avatar.webp)`, border: isActivePlayer ? "5px solid yellow" : "none"}}>
         </div>
       </Player>
     )

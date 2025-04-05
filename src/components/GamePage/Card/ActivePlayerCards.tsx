@@ -1,12 +1,10 @@
 import styled from "styled-components";
-import { useRef } from "react";
 import { useStateProvider } from "../../../utils/StateProvider";
 import ActiveCard from "./ActiveCard";
 import { CardInterface } from "../../../utils/Interfaces";
 
 interface CardProps {
   isDragging: boolean;
-  setDragPosition: (position: { x: number; y: number }) => void;
   setActiveCardWidth: (width: number) => void;
   handleMouseDown: (
     e: React.MouseEvent<HTMLDivElement>,
@@ -21,36 +19,23 @@ interface CardProps {
 
 export default function ActivePlayerCards({
   isDragging,
-  setDragPosition,
   setActiveCardWidth,
   handleMouseDown,
   handleMouseOver,
   handleMouseLeave,
 }: CardProps) {
   const [{ activePlayer, cards }] = useStateProvider();
-  const playerCardsRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <PlayerCardsContainer ref={playerCardsRef} onMouseLeave={handleMouseLeave}>
+    <PlayerCardsContainer onMouseLeave={handleMouseLeave}>
       {cards
         .filter((card) => card.playerId === activePlayer.socketId)
-        .map((card, index) =>
-          index === 0 ? (
+        .map((card, index) =>(
             <ActiveCard
               key={card.id}
+              index={index}
               card={card}
               isDragging={isDragging}
-              setDragPosition={setDragPosition}
-              setActiveCardWidth={setActiveCardWidth}
-              handleMouseDown={handleMouseDown}
-              handleMouseOver={handleMouseOver}
-            />
-          ) : (
-            <ActiveCard
-              key={card.id}
-              card={card}
-              isDragging={isDragging}
-              setDragPosition={setDragPosition}
               setActiveCardWidth={setActiveCardWidth}
               handleMouseDown={handleMouseDown}
               handleMouseOver={handleMouseOver}

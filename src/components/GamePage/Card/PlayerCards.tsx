@@ -1,22 +1,18 @@
 import styled from "styled-components";
-import { useRef } from "react";
 import { useStateProvider } from "../../../utils/StateProvider";
 import CardInDeck from "./CardInDeck";
 
 interface CardProps {
   isDragging: boolean;
-  handleMouseLeave: () => void;
 }
 
 export default function PlayerCards({
   isDragging,
-  handleMouseLeave,
 }: CardProps) {
   const [{ players, cards }] = useStateProvider();
-  const playerCardsRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <PlayerCardsContainer ref={playerCardsRef} onMouseLeave={handleMouseLeave}>
+    <PlayerCardsContainer>
       {cards
         .filter((card) => card.playerId === players[0].socketId)
         .map((card) => (

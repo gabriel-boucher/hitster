@@ -33,7 +33,6 @@ export default function GamePage() {
   });
   const activePlayerCardsComponent = ActivePlayerCards({
     isDragging,
-    setDragPosition,
     setActiveCardWidth,
     handleMouseDown,
     handleMouseOver,
@@ -41,7 +40,6 @@ export default function GamePage() {
   });
   const playerCardsComponent = PlayerCards({
     isDragging,
-    handleMouseLeave,
   });
   const playerTokensComponent = PlayerTokens();
 

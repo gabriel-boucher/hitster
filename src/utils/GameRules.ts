@@ -11,7 +11,7 @@ export default function useGameRules() {
 
   function nextTurn() {
     if (activeCard.playerId !== null) {
-      let newCards = revealCard();
+      let newCards = [...cards];
 
       if (!isRightAnswer()) {
         newCards = removeCard(newCards);
@@ -21,18 +21,9 @@ export default function useGameRules() {
         newCards = refillCards(newCards);
       }
 
-      setActiveCardToLast(newCards);
+      setNextActiveCard();
       setNextActivePlayer();
     }
-  }
-
-  function revealCard() {
-    const newCards = cards.map((card) =>
-      card.id === activeCard.id ? { ...card, hidden: false } : card
-    );
-
-    dispatch({ type: reducerCases.SET_CARDS, cards: newCards });
-    return newCards;
   }
 
   function isRightAnswer() {
@@ -69,7 +60,6 @@ export default function useGameRules() {
     const newSpareCards = spareCards.current.map((card) => ({
       ...card,
       id: uuidv4(),
-      hidden: true,
       playerId: null,
     }));
     const newCards = [...currentCards, ...newSpareCards];
@@ -77,12 +67,12 @@ export default function useGameRules() {
     return newCards;
   }
 
-  function setActiveCardToLast(currentCards: CardInterface[]) {
-    const lastCard = currentCards[currentCards.length - 1];
-    dispatch({
-      type: reducerCases.SET_ACTIVE_CARD,
-      activeCard: lastCard,
-    });
+  function setNextActiveCard() {
+    const newActiveCard = cards
+      .filter((card) => card.playerId === null)
+      .at(-1)!;
+
+    dispatch({ type: reducerCases.SET_ACTIVE_CARD, activeCard: newActiveCard });
   }
 
   function setNextActivePlayer() {

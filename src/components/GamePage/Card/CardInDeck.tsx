@@ -42,28 +42,8 @@ const Card = styled.div<{
   display: flex;
   justify-content: center;
   align-items: center;
-
-  position: relative;
+  
   user-select: none;
-
-  &:first-child::before,
-  &:last-child::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    height: 100%;
-    width: 100vw;
-    pointer-events: ${(props) => (props.$isDragging ? "auto" : "none")};
-    user-select: none;
-  }
-
-  &::before {
-    right: 99%;
-  }
-
-  &::after {
-    left: 99%;
-  }
 
   .card-container {
     aspect-ratio: 1/1;

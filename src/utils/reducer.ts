@@ -14,12 +14,11 @@ export const playersInfo: PlayerInterface[] = playersFetched;
 const cardsInfo: CardInterface[] = cardsFetched.map((card) => ({
   ...card,
   id: uuidv4(),
-  hidden: true,
   playerId: null,
 }));
 
 playersInfo.forEach((player, index) => {
-  cardsInfo[index].playerId = player.socketId;
+  cardsInfo[cardsInfo.length - 1 - index].playerId = player.socketId;
 });
 
 const tokensInfo: TokenInterface[] = [];
@@ -33,7 +32,7 @@ export const initialState = {
   players: playersInfo,
   activePlayer: playersInfo[0],
   cards: cardsInfo,
-  activeCard: cardsInfo[cardsInfo.length - 1],
+  activeCard: cardsInfo.filter((card) => card.playerId === null).at(-1),
   tokens: tokensInfo,
 };
 

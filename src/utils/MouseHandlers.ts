@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { useStateProvider } from "./StateProvider";
 import { reducerCases } from "./Constants";
 import { CardInterface } from "./Interfaces";
+import { useMouseHandlersHelpers } from "./MouseHandlersHelpers";
 
 export function useMouseHandlers(
   isDragging: boolean,
@@ -10,22 +11,20 @@ export function useMouseHandlers(
 ) {
   const [{ activePlayer, cards, activeCard }, dispatch] = useStateProvider();
 
+  const { moveActiveCardTo, isActiveCardInBoard, isActiveCardInStack, isActiveCardInPlayer } = useMouseHandlersHelpers();
+
   const handleMouseDown = useCallback(
     (e: React.MouseEvent<HTMLDivElement>, downCard: CardInterface) => {
       if (downCard.id === activeCard.id) {
+        if (isActiveCardInStack()) {
+          const newCards = moveActiveCardTo("board");
+          dispatch({ type: reducerCases.SET_CARDS, cards: newCards });
+        }
+        setIsDragging(true);
         setDragPosition({
           x: e.clientX,
           y: e.clientY,
         });
-        setIsDragging(true);
-
-        if (activeCard.playerId === null) {
-          const newCards = cards.map((card) =>
-            card.id === activeCard.id ? { ...card, playerId: "board" } : card
-          );
-
-          dispatch({ type: reducerCases.SET_CARDS, cards: newCards });
-        }
       }
     },
     [activeCard]
@@ -47,10 +46,8 @@ export function useMouseHandlers(
 
   const handleMouseUp = useCallback(() => {
     if (isDragging) {
-      if (activeCard.playerId === "board") {
-        const newCards = cards.filter((card) => card.id !== activeCard.id);
-        newCards.push({ ...activeCard, playerId: null });
-
+      if (isActiveCardInBoard()) {
+        const newCards = moveActiveCardTo(null);
         dispatch({ type: reducerCases.SET_CARDS, cards: newCards });
       }
       setIsDragging(false);
@@ -60,9 +57,7 @@ export function useMouseHandlers(
 
   const handleMouseLeave = useCallback(() => {
     if (isDragging) {
-      const newCards = cards.filter((card) => card.id !== activeCard.id);
-      newCards.push({ ...activeCard, playerId: "board" });
-
+      const newCards = moveActiveCardTo("board");
       dispatch({ type: reducerCases.SET_CARDS, cards: newCards });
     }
   }, [isDragging, cards, activeCard]);
@@ -70,9 +65,9 @@ export function useMouseHandlers(
   const handleMouseOver = useCallback(
     (e: React.MouseEvent<HTMLDivElement>, overCard: CardInterface) => {
       if (isDragging && overCard.id !== activeCard.id) {
-        const newIndex = getNewIndex(e, overCard);
-
         const newCards = cards.filter((card) => card.id !== activeCard.id);
+        const newIndex = getNewIndex(e, newCards, overCard);
+
         newCards.splice(newIndex, 0, {
           ...activeCard,
           playerId: activePlayer.socketId,
@@ -86,18 +81,21 @@ export function useMouseHandlers(
 
   function getNewIndex(
     e: React.MouseEvent<HTMLDivElement>,
+    newCards: CardInterface[],
     overCard: CardInterface
   ) {
-    const overCardIndex = cards.findIndex((card) => card.id === overCard.id);
-
     const rect = e.currentTarget.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
 
-    if (activeCard.playerId === "board") {
+    if (isActiveCardInBoard()) {
+      const overCardIndex = newCards.findIndex(
+        (card) => card.id === overCard.id
+      );
       return mouseX < rect.width / 2 ? overCardIndex : overCardIndex + 1;
+    } else {
+      const overCardIndex = cards.findIndex((card) => card.id === overCard.id);
+      return overCardIndex;
     }
-
-    return overCardIndex;
   }
 
   return {

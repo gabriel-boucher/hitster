@@ -4,10 +4,10 @@ import { useEffect, useMemo, useRef } from "react";
 import { useStateProvider } from "../../../utils/StateProvider";
 
 interface CardProps {
+  index: number;
   card: CardInterface;
   isDragging: boolean;
-  setDragPosition?: (position: { x: number; y: number }) => void;
-  setActiveCardWidth?: (width: number) => void;
+  setActiveCardWidth: (width: number) => void;
   handleMouseDown: (
     e: React.MouseEvent<HTMLDivElement>,
     card: CardInterface
@@ -19,9 +19,9 @@ interface CardProps {
 }
 
 export default function CardInDeck({
+  index,
   card,
   isDragging,
-  setDragPosition,
   setActiveCardWidth,
   handleMouseOver,
   handleMouseDown,
@@ -30,7 +30,7 @@ export default function CardInDeck({
   const cardRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (setDragPosition && setActiveCardWidth && cardRef.current) {
+    if (index === 0 && cardRef.current) {
       setActiveCardWidth(cardRef.current.offsetWidth);
     }
   });

@@ -85,10 +85,10 @@ export const playersFetched = [
     socketId: "socketId1",
     name: "player1",
   },
-  {
-    socketId: "socketId2",
-    name: "player2",
-  },
+  // {
+  //   socketId: "socketId2",
+  //   name: "player2",
+  // },
   // {
   //   socketId: "socketId3",
   //   name: "player3",

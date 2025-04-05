@@ -25,7 +25,7 @@ export default function CardInStack({
     <Card
       {...handleMouseEvents}
       style={{
-        bottom: index * 4,
+        bottom: index * 2,
         zIndex: index,
       }}
     >

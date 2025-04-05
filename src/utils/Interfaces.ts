@@ -16,14 +16,16 @@ export interface CardInterface {
 
 export interface TokenInterface {
   id: string;
-  playerId: string;
+  active: boolean;
+  activePlayerId: string | null;
+  playerId: string | null;
 }
 
 export interface State {
   spotifyToken: string;
   players: PlayerInterface[];
   activePlayer: PlayerInterface;
-  cards: CardInterface[];
+  items: (CardInterface | TokenInterface)[];
   activeCard: CardInterface;
   activeCardsWith: number;
   tokens: TokenInterface[];
@@ -43,9 +45,9 @@ export interface SetActivePlayer {
   activePlayer: PlayerInterface;
 }
 
-export interface SetCardsAction {
-  type: reducerCases.SET_CARDS;
-  cards: CardInterface[];
+export interface SetItemsAction {
+  type: reducerCases.SET_ITEMS;
+  items: (CardInterface | TokenInterface)[];
 }
 
 export interface SetActiveCardAction {
@@ -61,6 +63,6 @@ export type Action =
   | SetSpotifyTokenAction
   | SetPlayersAction
   | SetActivePlayer
-  | SetCardsAction
+  | SetItemsAction
   | SetActiveCardAction
   | SetTokensAction;

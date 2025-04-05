@@ -1,53 +1,88 @@
 import styled from "styled-components";
+import { TokenInterface } from "../../../utils/Interfaces";
+import { useMemo } from "react";
 
-export default function TokenInDeck() {
+interface TokenProps {
+  token: TokenInterface;
+  handleMouseClick: (token: TokenInterface) => void;
+  handleMouseOverToken: (
+    e: React.MouseEvent<HTMLDivElement>,
+    token: TokenInterface
+  ) => void;
+}
 
-    return (
-      <Token>
-        <div className="token-container" style={{backgroundImage: `url(src/assets/hitster_logo_square.webp)`}}>
-        </div>
-      </Token>
-    )
-  }
+export default function TokenInDeck({
+  token,
+  handleMouseClick,
+  handleMouseOverToken,
+}: TokenProps) {
+  const handleMouseEvents = useMemo(
+    () => ({
+      onClick: () => handleMouseClick(token),
+      onMouseOver: (e: React.MouseEvent<HTMLDivElement>) => handleMouseOverToken(e, token),
+    }),
+    [handleMouseClick]
+  );
+
+  const style = {
+    backgroundImage: `url(src/assets/hitster_logo_square.webp)`,
+    opacity: token.active ? 1 : 0.3,
+    border: token.active ? "none" : "2px solid white",
+  };
+
+  return (
+    <Token {...handleMouseEvents}>
+      <div className="token-container" style={style}></div>
+    </Token>
+  );
+}
 
 const Token = styled.div`
-    aspect-ratio: 1/1;
+  aspect-ratio: 1/1;
+  height: 100%;
+  width: auto;
+
+  flex-shrink: 1;
+  min-width: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: relative;
+  user-select: none;
+
+  &:first-child::before,
+  &:last-child::after {
+    content: "";
+    position: absolute;
+    top: 0;
     height: 100%;
-    width: auto;
-    
-    flex-shrink: 1;
-    min-width: 0;
-    
+    width: 100vw;
+    user-select: none;
+  }
+
+  &::before {
+    right: 99%;
+  }
+
+  &::after {
+    left: 99%;
+  }
+
+  .token-container {
+    aspect-ratio: 1/1;
+    width: 80%;
+
     display: flex;
     justify-content: center;
-    align-items: center;
-    
-    .token-container {
-        aspect-ratio: 1/1;
-        width: 80%;
+    align-content: center;
 
-        display: flex;
-        justify-content: center;
-        align-content: center;
+    border-radius: 50%;
 
-        position: relative;
+    background-repeat: no-repeat;
+    background-size: cover;
 
-        border-radius: 50%;
-
-        background-repeat: no-repeat;
-        background-size: cover;
-
-        font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-        transition: width 0.3s ease;
-        cursor: pointer;
-    }
-
-    &:hover {
-        .token-container {
-            width: 90%;
-            outline: 1px solid yellow;
-        }
-    }
-
-`
-  
+    cursor: pointer;
+  }
+`;

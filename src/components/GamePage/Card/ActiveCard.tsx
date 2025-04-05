@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef } from "react";
 import { useStateProvider } from "../../../utils/StateProvider";
 
 interface CardProps {
-  index: number;
   card: CardInterface;
   isDragging: boolean;
   setActiveCardWidth: (width: number) => void;
@@ -19,7 +18,6 @@ interface CardProps {
 }
 
 export default function CardInDeck({
-  index,
   card,
   isDragging,
   setActiveCardWidth,
@@ -30,7 +28,7 @@ export default function CardInDeck({
   const cardRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (index === 0 && cardRef.current) {
+    if (cardRef.current) {
       setActiveCardWidth(cardRef.current.offsetWidth);
     }
   });

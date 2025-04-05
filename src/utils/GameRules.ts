@@ -1,24 +1,24 @@
 import { useRef } from "react";
 import { reducerCases } from "./Constants";
-import { CardInterface } from "./Interfaces";
+import { CardInterface, TokenInterface } from "./Interfaces";
 import { useStateProvider } from "./StateProvider";
 import { v4 as uuidv4 } from "uuid";
 
 export default function useGameRules() {
-  const [{ players, activePlayer, cards, activeCard }, dispatch] =
+  const [{ players, activePlayer, items, activeCard }, dispatch] =
     useStateProvider();
-  const spareCards = useRef<CardInterface[]>([...cards]);
+  const spareCards = useRef<CardInterface[]>([...items.filter((item) => "song" in item)]);
 
   function nextTurn() {
     if (activeCard.playerId !== null) {
-      let newCards = [...cards];
+      let newItems = [...items];
 
       if (!isRightAnswer()) {
-        newCards = removeCard(newCards);
+        newItems = removeCard(newItems);
       }
 
-      if (isStackEmpty(newCards)) {
-        newCards = refillCards(newCards);
+      if (isStackEmpty(newItems)) {
+        newItems = refillCards(newItems);
       }
 
       setNextActiveCard();
@@ -27,9 +27,9 @@ export default function useGameRules() {
   }
 
   function isRightAnswer() {
-    const playerCards = cards.filter(
-      (card) => card.playerId === activePlayer.socketId
-    );
+    const playerCards = items
+      .filter((item) => "song" in item)
+      .filter((card) => card.playerId === activePlayer.socketId);
     const activeCardindex = playerCards.findIndex(
       (card) => card.id === activeCard.id
     );
@@ -46,29 +46,34 @@ export default function useGameRules() {
     return beforeDate <= activeDate && activeDate <= afterDate;
   }
 
-  function removeCard(currentCards: CardInterface[]) {
-    const newCards = currentCards.filter((card) => card.id !== activeCard.id);
-    dispatch({ type: reducerCases.SET_CARDS, cards: newCards });
+  function removeCard(currentCards: (CardInterface | TokenInterface)[]) {
+    const newCards = currentCards.filter((item) => item.id !== activeCard.id);
+    dispatch({ type: reducerCases.SET_ITEMS, items: newCards });
     return newCards;
   }
 
-  function isStackEmpty(currentCards: CardInterface[]) {
-    return currentCards.filter((card) => card.playerId === null).length === 0;
+  function isStackEmpty(currentCards: (CardInterface | TokenInterface)[]) {
+    return (
+      currentCards
+        .filter((item) => "song" in item)
+        .filter((card) => card.playerId === null).length === 0
+    );
   }
 
-  function refillCards(currentCards: CardInterface[]) {
+  function refillCards(currentCards: (CardInterface | TokenInterface)[]) {
     const newSpareCards = spareCards.current.map((card) => ({
       ...card,
       id: uuidv4(),
       playerId: null,
     }));
-    const newCards = [...currentCards, ...newSpareCards];
-    dispatch({ type: reducerCases.SET_CARDS, cards: newCards });
+    const newCards = [...newSpareCards, ...currentCards];
+    dispatch({ type: reducerCases.SET_ITEMS, items: newCards });
     return newCards;
   }
 
   function setNextActiveCard() {
-    const newActiveCard = cards
+    const newActiveCard = items
+      .filter((item) => "song" in item)
       .filter((card) => card.playerId === null)
       .at(-1)!;
 

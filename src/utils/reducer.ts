@@ -23,15 +23,17 @@ playersInfo.forEach((player, index) => {
 
 const tokensInfo: TokenInterface[] = [];
 playersInfo.forEach((player) => {
-  tokensInfo.push({ id: uuidv4(), playerId: player.socketId });
-  tokensInfo.push({ id: uuidv4(), playerId: player.socketId });
+  tokensInfo.push({ id: uuidv4(), active: false, activePlayerId: null, playerId: player.socketId });
+  tokensInfo.push({ id: uuidv4(), active: false, activePlayerId: null, playerId: player.socketId });
 });
+
+const itemsInfo = [...tokensInfo, ...cardsInfo];
 
 export const initialState = {
   spotifyToken: "",
   players: playersInfo,
   activePlayer: playersInfo[0],
-  cards: cardsInfo,
+  items: itemsInfo,
   activeCard: cardsInfo.filter((card) => card.playerId === null).at(-1),
   tokens: tokensInfo,
 };
@@ -58,10 +60,10 @@ export const reducer = (state: State, action: Action) => {
         activePlayer: action.activePlayer,
       };
     }
-    case reducerCases.SET_CARDS: {
+    case reducerCases.SET_ITEMS: {
       return {
         ...state,
-        cards: action.cards,
+        items: action.items,
       };
     }
     case reducerCases.SET_ACTIVE_CARD: {

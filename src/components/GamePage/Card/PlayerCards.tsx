@@ -9,11 +9,12 @@ interface CardProps {
 export default function PlayerCards({
   isDragging,
 }: CardProps) {
-  const [{ players, cards }] = useStateProvider();
+  const [{ players, items }] = useStateProvider();
 
   return (
     <PlayerCardsContainer>
-      {cards
+      {items
+        .filter((item) => "song" in item)
         .filter((card) => card.playerId === players[0].socketId)
         .map((card) => (
           <CardInDeck

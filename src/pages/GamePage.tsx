@@ -10,19 +10,23 @@ import StackCards from "../components/GamePage/Card/StackCards";
 import useGameRules from "../utils/GameRules";
 import { useStateProvider } from "../utils/StateProvider";
 import { reducerCases } from "../utils/Constants";
+import { CardInterface } from "../utils/Interfaces";
 
 export default function GamePage() {
-  const [{ cards, activeCard }, dispatch] = useStateProvider();
+  const [{ activePlayer, items, activeCard }, dispatch] = useStateProvider();
   const [isDragging, setIsDragging] = useState(false);
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
   const [activeCardWidth, setActiveCardWidth] = useState(0);
 
   const {
+    handleMouseClick,
     handleMouseDown,
     handleMouseMove,
     handleMouseUp,
     handleMouseLeave,
     handleMouseOver,
+    handleMouseOverToken,
+    handleTwoAdjacentTokens,
   } = useMouseHandlers(isDragging, setDragPosition, setIsDragging);
 
   const { nextTurn } = useGameRules();
@@ -34,9 +38,11 @@ export default function GamePage() {
   const activePlayerCardsComponent = ActivePlayerCards({
     isDragging,
     setActiveCardWidth,
+    handleMouseClick,
     handleMouseDown,
-    handleMouseOver,
     handleMouseLeave,
+    handleMouseOver,
+    handleMouseOverToken,
   });
   const playerCardsComponent = PlayerCards({
     isDragging,
@@ -57,9 +63,18 @@ export default function GamePage() {
   useEffect(() => {
     dispatch({
       type: reducerCases.SET_ACTIVE_CARD,
-      activeCard: cards.filter((card) => card.id === activeCard.id)[0],
+      activeCard: items
+        .filter((item) => "song" in item)
+        .filter((card) => card.id === activeCard.id)[0] as CardInterface,
     });
-  }, [activeCard, cards]);
+  }, [items, activeCard]);
+
+
+  useEffect(() => {
+    const newItems = [...items];
+    handleTwoAdjacentTokens(newItems);
+  }, [items, activePlayer]);
+  
 
   return (
     <Container>

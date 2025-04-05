@@ -11,11 +11,15 @@ interface CardProps {
   handleMouseLeave: () => void;
 }
 
-export default function StackCards({ handleMouseDown, handleMouseLeave }: CardProps) {
-  const [{ cards }] = useStateProvider();
+export default function StackCards({
+  handleMouseDown,
+  handleMouseLeave,
+}: CardProps) {
+  const [{ items }] = useStateProvider();
   return (
     <Stack onMouseLeave={handleMouseLeave}>
-      {cards
+      {items
+        .filter((item) => "song" in item)
         .filter((card) => card.playerId === null)
         .map((card, index) => (
           <CardInStack

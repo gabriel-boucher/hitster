@@ -47,21 +47,18 @@ export default function CardInDeck({
 
   const style = {
     backgroundImage: `url(${card.albumCover})`,
-    border: "none"
+    border: "none",
   };
   if (isDragging && card.id === activeCard.id) {
     style.backgroundImage = "none";
-    style.border = "2px solid white"
+    style.border = "2px solid white";
   } else if (card.id === activeCard.id) {
     style.backgroundImage = `url("src/assets/hitster_logo_square.webp")`;
-    style.border = "none"
+    style.border = "none";
   }
 
   return (
-    <Card
-      {...handleMouseEvents}
-      ref={cardRef}
-    >
+    <Card {...handleMouseEvents} ref={cardRef}>
       <div className="card-container" style={style}>
         {card.id !== activeCard.id && (
           <div className="details">

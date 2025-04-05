@@ -11,7 +11,8 @@ export function useMouseHandlers(
 ) {
   const [{ activePlayer, cards, activeCard }, dispatch] = useStateProvider();
 
-  const { moveActiveCardTo, isActiveCardInBoard, isActiveCardInStack, isActiveCardInPlayer } = useMouseHandlersHelpers();
+  const { moveActiveCardTo, isActiveCardInBoard, isActiveCardInStack } =
+    useMouseHandlersHelpers();
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent<HTMLDivElement>, downCard: CardInterface) => {

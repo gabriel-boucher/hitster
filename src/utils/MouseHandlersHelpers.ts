@@ -4,14 +4,6 @@ import { useStateProvider } from "./StateProvider";
 export function useMouseHandlersHelpers(isDragging: boolean) {
   const [{ players, activePlayer, items, activeCard }] = useStateProvider();
 
-  function moveActiveCardTo(playerId: string | null) {
-    const newCards = items.map((item) =>
-      item.id === activeCard.id ? { ...item, playerId: playerId } : item
-    );
-
-    return newCards;
-  }
-
   function isActiveCardInBoard() {
     return activeCard.playerId === "board";
   }
@@ -33,8 +25,8 @@ export function useMouseHandlersHelpers(isDragging: boolean) {
 
   function getNewIndex(
     e: React.MouseEvent<HTMLDivElement>,
-    newCards: (CardInterface | TokenInterface)[],
-    overCard: CardInterface | TokenInterface
+    newItems: (CardInterface | TokenInterface)[],
+    over: CardInterface | TokenInterface
   ) {
     const rect = e.currentTarget.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
@@ -43,18 +35,17 @@ export function useMouseHandlersHelpers(isDragging: boolean) {
       (isDragging && isActiveCardInBoard()) ||
       (!isDragging && isActiveTokenEntering())
     ) {
-      const overCardIndex = newCards.findIndex(
-        (card) => card.id === overCard.id
+      const overIndex = newItems.findIndex(
+        (item) => item.id === over.id
       );
-      return mouseX < rect.width / 2 ? overCardIndex : overCardIndex + 1;
+      return mouseX < rect.width / 2 ? overIndex : overIndex + 1;
     } else {
-      const overCardIndex = items.findIndex((card) => card.id === overCard.id);
-      return overCardIndex;
+      const overIndex = items.findIndex((item) => item.id === over.id);
+      return overIndex;
     }
   }
 
   return {
-    moveActiveCardTo,
     isActiveCardInBoard,
     isActiveCardInStack,
     getNewIndex,

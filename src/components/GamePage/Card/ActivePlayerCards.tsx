@@ -4,6 +4,7 @@ import ActiveCard from "./ActiveCard";
 import TokenInDeck from "../Token/TokenInDeck";
 import { CardInterface } from "../../../utils/Interfaces";
 import { TokenInterface } from "../../../utils/Interfaces";
+import { isCard } from "../../../utils/Items";
 
 interface CardProps {
   isDragging: boolean;
@@ -14,13 +15,13 @@ interface CardProps {
     card: CardInterface
   ) => void;
   handleMouseLeave: () => void;
+  handleMouseOverDragging: (
+    e: React.MouseEvent<HTMLDivElement>,
+    item: CardInterface | TokenInterface
+  ) => void;
   handleMouseOver: (
     e: React.MouseEvent<HTMLDivElement>,
-    card: CardInterface
-  ) => void;
-  handleMouseOverToken: (
-    e: React.MouseEvent<HTMLDivElement>,
-    token: TokenInterface
+    item: CardInterface | TokenInterface
   ) => void;
 }
 
@@ -30,44 +31,47 @@ export default function ActivePlayerCards({
   handleMouseClick,
   handleMouseDown,
   handleMouseLeave,
+  handleMouseOverDragging,
   handleMouseOver,
-  handleMouseOverToken,
 }: CardProps) {
   const [{ activePlayer, items }] = useStateProvider();
 
   return (
-    <PlayerCardsContainer onMouseLeave={handleMouseLeave}>
+    <ActivePlayerCardsContainer onMouseLeave={handleMouseLeave}>
       {items
         .filter((item) =>
-          "song" in item
+          isCard(item)
             ? item.playerId === activePlayer.socketId
             : item.activePlayerId === activePlayer.socketId &&
               item.activePlayerId !== item.playerId
         )
         .map((item) =>
-          "song" in item ? (
+          isCard(item) ? (
             <ActiveCard
               key={item.id}
               card={item}
               isDragging={isDragging}
               setActiveCardWidth={setActiveCardWidth}
               handleMouseDown={handleMouseDown}
+              handleMouseOverDragging={handleMouseOverDragging}
               handleMouseOver={handleMouseOver}
             />
           ) : (
             <TokenInDeck
               key={item.id}
               token={item}
+              isDragging={isDragging}
               handleMouseClick={handleMouseClick}
-              handleMouseOverToken={handleMouseOverToken}
+              handleMouseOverDragging={handleMouseOverDragging}
+              handleMouseOver={handleMouseOver}
             />
           )
         )}
-    </PlayerCardsContainer>
+    </ActivePlayerCardsContainer>
   );
 }
 
-const PlayerCardsContainer = styled.div`
+const ActivePlayerCardsContainer = styled.div`
   height: 20vh;
   max-width: 80%;
   width: 80%;

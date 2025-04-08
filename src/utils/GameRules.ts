@@ -3,11 +3,12 @@ import { reducerCases } from "./Constants";
 import { CardInterface, TokenInterface } from "./Interfaces";
 import { useStateProvider } from "./StateProvider";
 import { v4 as uuidv4 } from "uuid";
+import { isCard } from "./Items";
 
 export default function useGameRules() {
   const [{ players, activePlayer, items, activeCard }, dispatch] =
     useStateProvider();
-  const spareCards = useRef<CardInterface[]>([...items.filter((item) => "song" in item)]);
+  const spareCards = useRef<CardInterface[]>([...items.filter((item) => isCard(item))]);
 
   function nextTurn() {
     if (activeCard.playerId !== null) {
@@ -28,7 +29,7 @@ export default function useGameRules() {
 
   function isRightAnswer() {
     const playerCards = items
-      .filter((item) => "song" in item)
+      .filter((item) => isCard(item))
       .filter((card) => card.playerId === activePlayer.socketId);
     const activeCardindex = playerCards.findIndex(
       (card) => card.id === activeCard.id
@@ -55,7 +56,7 @@ export default function useGameRules() {
   function isStackEmpty(currentCards: (CardInterface | TokenInterface)[]) {
     return (
       currentCards
-        .filter((item) => "song" in item)
+        .filter((item) => isCard(item))
         .filter((card) => card.playerId === null).length === 0
     );
   }
@@ -73,7 +74,7 @@ export default function useGameRules() {
 
   function setNextActiveCard() {
     const newActiveCard = items
-      .filter((item) => "song" in item)
+      .filter((item) => isCard(item))
       .filter((card) => card.playerId === null)
       .at(-1)!;
 

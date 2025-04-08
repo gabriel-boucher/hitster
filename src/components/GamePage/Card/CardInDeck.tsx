@@ -7,17 +7,20 @@ interface CardProps {
   isDragging: boolean;
 }
 
-export default function CardInDeck({
-  card,
-  isDragging,
-}: CardProps) {
+export default function CardInDeck({ card, isDragging }: CardProps) {
   const [{ activeCard }] = useStateProvider();
 
   return (
-    <Card
-      $isDragging={isDragging}
-    >
-      <div className="card-container" style={{backgroundImage: card.id === activeCard.id ? `url("src/assets/hitster_logo_square.webp")` : `url(${card.albumCover})`}}>
+    <Card $isDragging={isDragging}>
+      <div
+        className="card-container"
+        style={{
+          backgroundImage:
+            card.id === activeCard.id
+              ? `url("src/assets/hitster_logo_square.webp")`
+              : `url(${card.albumCover})`,
+        }}
+      >
         {card.id !== activeCard.id && (
           <div className="details">
             <div className="date">{card.date}</div>
@@ -42,7 +45,7 @@ const Card = styled.div<{
   display: flex;
   justify-content: center;
   align-items: center;
-  
+
   user-select: none;
 
   .card-container {

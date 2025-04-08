@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { useStateProvider } from "../../../utils/StateProvider";
 import CardInStack from "./CardInStack";
 import { CardInterface } from "../../../utils/Interfaces";
+import { isCard } from "../../../utils/Items";
 
 interface CardProps {
   handleMouseDown: (
@@ -19,7 +20,7 @@ export default function StackCards({
   return (
     <Stack onMouseLeave={handleMouseLeave}>
       {items
-        .filter((item) => "song" in item)
+        .filter((item) => isCard(item))
         .filter((card) => card.playerId === null)
         .map((card, index) => (
           <CardInStack

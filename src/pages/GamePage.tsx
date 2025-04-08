@@ -5,15 +5,14 @@ import DraggableCard from "../components/GamePage/Card/DraggableCard";
 import PlayerBar from "../components/GamePage/Players/PlayerBar";
 import ActivePlayerCards from "../components/GamePage/Card/ActivePlayerCards";
 import PlayerCards from "../components/GamePage/Card/PlayerCards";
-import PlayerTokens from "../components/GamePage/Token/PlayerTokens";
 import StackCards from "../components/GamePage/Card/StackCards";
 import useGameRules from "../utils/GameRules";
 import { useStateProvider } from "../utils/StateProvider";
 import { reducerCases } from "../utils/Constants";
-import { CardInterface } from "../utils/Interfaces";
+import { isCard } from "../utils/Items";
 
 export default function GamePage() {
-  const [{ activePlayer, items, activeCard }, dispatch] = useStateProvider();
+  const [{ items, activeCard }, dispatch] = useStateProvider();
   const [isDragging, setIsDragging] = useState(false);
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
   const [activeCardWidth, setActiveCardWidth] = useState(0);
@@ -24,9 +23,8 @@ export default function GamePage() {
     handleMouseMove,
     handleMouseUp,
     handleMouseLeave,
+    handleMouseOverDragging,
     handleMouseOver,
-    handleMouseOverToken,
-    handleTwoAdjacentTokens,
   } = useMouseHandlers(isDragging, setDragPosition, setIsDragging);
 
   const { nextTurn } = useGameRules();
@@ -41,13 +39,12 @@ export default function GamePage() {
     handleMouseClick,
     handleMouseDown,
     handleMouseLeave,
+    handleMouseOverDragging,
     handleMouseOver,
-    handleMouseOverToken,
   });
   const playerCardsComponent = PlayerCards({
     isDragging,
   });
-  const playerTokensComponent = PlayerTokens();
 
   useEffect(() => {
     if (isDragging) {
@@ -64,17 +61,10 @@ export default function GamePage() {
     dispatch({
       type: reducerCases.SET_ACTIVE_CARD,
       activeCard: items
-        .filter((item) => "song" in item)
-        .filter((card) => card.id === activeCard.id)[0] as CardInterface,
+        .filter((item) => isCard(item))
+        .filter((card) => card.id === activeCard.id)[0],
     });
   }, [items, activeCard]);
-
-
-  useEffect(() => {
-    const newItems = [...items];
-    handleTwoAdjacentTokens(newItems);
-  }, [items, activePlayer]);
-  
 
   return (
     <Container>
@@ -94,7 +84,6 @@ export default function GamePage() {
       </Board>
       <Deck>
         {playerCardsComponent}
-        {/* {playerTokensComponent} */}
       </Deck>
     </Container>
   );

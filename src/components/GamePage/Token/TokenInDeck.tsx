@@ -4,8 +4,13 @@ import { useMemo } from "react";
 
 interface TokenProps {
   token: TokenInterface;
+  isDragging: boolean;
   handleMouseClick: (token: TokenInterface) => void;
-  handleMouseOverToken: (
+  handleMouseOverDragging: (
+    e: React.MouseEvent<HTMLDivElement>,
+    token: TokenInterface
+  ) => void;
+  handleMouseOver: (
     e: React.MouseEvent<HTMLDivElement>,
     token: TokenInterface
   ) => void;
@@ -13,15 +18,20 @@ interface TokenProps {
 
 export default function TokenInDeck({
   token,
+  isDragging,
   handleMouseClick,
-  handleMouseOverToken,
+  handleMouseOverDragging,
+  handleMouseOver,
 }: TokenProps) {
   const handleMouseEvents = useMemo(
     () => ({
       onClick: () => handleMouseClick(token),
-      onMouseOver: (e: React.MouseEvent<HTMLDivElement>) => handleMouseOverToken(e, token),
+      onMouseOver: (e: React.MouseEvent<HTMLDivElement>) =>
+        isDragging
+          ? handleMouseOverDragging(e, token)
+          : handleMouseOver(e, token),
     }),
-    [handleMouseClick]
+    [isDragging, handleMouseOverDragging, handleMouseOver, handleMouseClick]
   );
 
   const style = {

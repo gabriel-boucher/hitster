@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useStateProvider } from "../../../utils/StateProvider";
 import CardInDeck from "./CardInDeck";
+import { isCard } from "../../../utils/Items";
 
 interface CardProps {
   isDragging: boolean;
@@ -14,7 +15,7 @@ export default function PlayerCards({
   return (
     <PlayerCardsContainer>
       {items
-        .filter((item) => "song" in item)
+        .filter((item) => isCard(item))
         .filter((card) => card.playerId === players[0].socketId)
         .map((card) => (
           <CardInDeck

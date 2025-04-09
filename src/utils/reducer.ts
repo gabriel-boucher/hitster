@@ -34,7 +34,7 @@ export const initialState = {
   players: playersInfo,
   activePlayer: playersInfo[0],
   items: itemsInfo,
-  activeCard: cardsInfo.filter((card) => card.playerId === null).at(-1),
+  activeCard: cardsInfo.filter((card) => card.playerId === null).at(-1)!,
   tokens: tokensInfo,
 };
 

@@ -1,34 +1,42 @@
 import styled from "styled-components";
 import { useStateProvider } from "../../../utils/StateProvider";
+import { isToken } from "../../../utils/Items";
 import TokenInDeck from "./TokenInDeck";
 import { useMemo } from "react";
 
 export default function PlayerTokens() {
-  const [{ activePlayer, tokens }] = useStateProvider();
+  const [{ players, items }] = useStateProvider();
 
-  return useMemo(
-    () => (
-      <PlayerTokensContainer>
-        {tokens
-          .filter((token) => token.playerId === activePlayer.socketId)
-          .map((token) => (
-            <TokenInDeck key={token.id} />
-          ))}
-      </PlayerTokensContainer>
-    ),
-    [activePlayer, tokens]
+  const playerTokens = useMemo(
+    () =>
+      items
+        .filter((item) => isToken(item))
+        .filter(
+          (token) =>
+            token.playerId === players[0].socketId &&
+            token.activePlayerId === null
+        ),
+    [items, players]
+  );
+
+  return (
+    <PlayerTokensContainer>
+      {playerTokens.map((token) => (
+        <TokenInDeck key={token.id} numberOfTokens={playerTokens.length} />
+      ))}
+    </PlayerTokensContainer>
   );
 }
 
 const PlayerTokensContainer = styled.div`
-  height: 100%;
-  max-width: 20%;
-  width: 20%;
+  height: 20vh;
+  max-width: 5%;
+  width: 5%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  background-color: blue;
   padding-left: 1%;
   padding-right: 1%;
 `;

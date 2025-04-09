@@ -7,7 +7,8 @@ import { useMouseHandlersHelpers } from "./MouseHandlersHelpers";
 import {
   isToken,
   getActiveItems,
-  moveActiveCardTo,
+  moveActiveCardToBoard,
+  moveActiveCardToStack,
   setActiveToken,
   getPlayerToken,
   moveTokenToPlayer,
@@ -22,7 +23,7 @@ export function useMouseHandlers(
   const [{ players, activePlayer, items, activeCard }, dispatch] =
     useStateProvider();
 
-  const { isActiveCardInBoard, isActiveCardInStack, getNewIndex } =
+  const { isActiveCardInBoard, isActiveCardInStack, isOverActiveCard, getNewIndex } =
     useMouseHandlersHelpers(isDragging);
 
   const handleMouseClick = useCallback(
@@ -30,21 +31,21 @@ export function useMouseHandlers(
       const newItems = setActiveToken([...items], clickToken);
       dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
     },
-    [items]
+    [items, activeCard]
   );
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent<HTMLDivElement>, downCard: CardInterface) => {
       if (downCard.id === activeCard.id) {
-        if (isActiveCardInStack()) {
-          const newItems = moveActiveCardTo([...items], activeCard, "board");
-          dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
-        }
         setIsDragging(true);
         setDragPosition({
           x: e.clientX,
           y: e.clientY,
         });
+        if (isActiveCardInStack()) {
+          const newItems = moveActiveCardToBoard([...items], activeCard);
+          dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
+        }
       }
     },
     [items, activeCard]
@@ -69,7 +70,7 @@ export function useMouseHandlers(
       setIsDragging(false);
       setDragPosition({ x: 0, y: 0 });
       if (isActiveCardInBoard()) {
-        const newItems = moveActiveCardTo([...items], activeCard, null);
+        const newItems = moveActiveCardToStack([...items], activeCard);
         dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
       }
     }
@@ -78,7 +79,7 @@ export function useMouseHandlers(
   const handleMouseLeave = useCallback(() => {
     let newItems;
     if (isDragging) {
-      newItems = moveActiveCardTo([...items], activeCard, "board");
+      newItems = moveActiveCardToBoard([...items], activeCard);
     } else {
       newItems = moveTokenToPlayer([...items], players[0].socketId);
     }
@@ -86,12 +87,12 @@ export function useMouseHandlers(
     dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
   }, [isDragging, items, activeCard]);
 
-  const handleMouseOverDragging = useCallback(
+  const handleMouseDraggingOver = useCallback(
     (
       e: React.MouseEvent<HTMLDivElement>,
       over: CardInterface | TokenInterface
     ) => {
-      if (over.id !== activeCard.id) {
+      if (!isOverActiveCard(over)) {
         const newItems = items.filter((item) => item.id !== activeCard.id);
         const newIndex = getNewIndex(e, newItems, over);
 
@@ -118,7 +119,7 @@ export function useMouseHandlers(
         if (!result) return;
         const [newItems, activeToken] = result;
         const newIndex = getNewIndex(e, newItems, over);
-
+        
         newItems.splice(newIndex, 0, {
           ...activeToken,
           activePlayerId: activePlayer.socketId,
@@ -162,7 +163,7 @@ export function useMouseHandlers(
     handleMouseMove,
     handleMouseUp,
     handleMouseLeave,
-    handleMouseOverDragging,
+    handleMouseDraggingOver,
     handleMouseOver,
     handleTokenLogic,
   };

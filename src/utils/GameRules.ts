@@ -3,18 +3,22 @@ import { reducerCases } from "./Constants";
 import { CardInterface, TokenInterface } from "./Interfaces";
 import { useStateProvider } from "./StateProvider";
 import { v4 as uuidv4 } from "uuid";
-import { isCard } from "./Items";
+import { isCard, getActiveItems, isToken } from "./Items";
 
 export default function useGameRules() {
   const [{ players, activePlayer, items, activeCard }, dispatch] =
     useStateProvider();
-  const spareCards = useRef<CardInterface[]>([...items.filter((item) => isCard(item))]);
+  const spareCards = useRef<CardInterface[]>([
+    ...items.filter((item) => isCard(item)),
+  ]);
 
   function nextTurn() {
     if (activeCard.playerId !== null) {
       let newItems = [...items];
 
-      if (!isRightAnswer()) {
+      newItems = removeTokens(newItems);
+
+      if (!isCardRightAnswer()) {
         newItems = removeCard(newItems);
       }
 
@@ -22,12 +26,13 @@ export default function useGameRules() {
         newItems = refillCards(newItems);
       }
 
-      setNextActiveCard();
+      dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
+      setNextActiveCard(newItems);
       setNextActivePlayer();
     }
   }
 
-  function isRightAnswer() {
+  function isCardRightAnswer() {
     const playerCards = items
       .filter((item) => isCard(item))
       .filter((card) => card.playerId === activePlayer.socketId);
@@ -47,33 +52,76 @@ export default function useGameRules() {
     return beforeDate <= activeDate && activeDate <= afterDate;
   }
 
-  function removeCard(currentCards: (CardInterface | TokenInterface)[]) {
-    const newCards = currentCards.filter((item) => item.id !== activeCard.id);
-    dispatch({ type: reducerCases.SET_ITEMS, items: newCards });
+  function removeCard(currentItems: (CardInterface | TokenInterface)[]) {
+    const newCards = currentItems.filter((item) => item.id !== activeCard.id);
     return newCards;
   }
 
-  function isStackEmpty(currentCards: (CardInterface | TokenInterface)[]) {
+  function removeTokens(currentItems: (CardInterface | TokenInterface)[]) {
+    const activeItems = getActiveItems(currentItems, activePlayer.socketId);
+    const invalidTokens: TokenInterface[] = [];
+
+    for (let i = 0; i < activeItems.length; i++) {
+      const currentItem = activeItems[i];
+
+      if (isCard(currentItem)) continue;
+
+      const prevCard = i > 0 ? activeItems[i - 1] : null;
+      const nextCard = i < activeItems.length - 1 ? activeItems[i + 1] : null;
+
+      const isValidPosition =
+        // Case 1: First item, only check next card
+        (i === 0 &&
+          nextCard &&
+          isCard(nextCard) &&
+          nextCard.date >= activeCard.date) ||
+        // Case 2: Last item, only check previous card
+        (i === activeItems.length - 1 &&
+          prevCard &&
+          isCard(prevCard) &&
+          prevCard.date <= activeCard.date) ||
+        // Case 3: Between two cards with correct dates
+        (prevCard &&
+          nextCard &&
+          isCard(prevCard) &&
+          isCard(nextCard) &&
+          prevCard.date <= activeCard.date &&
+          activeCard.date <= nextCard.date);
+
+      if (!isValidPosition) {
+        invalidTokens.push(currentItem);
+      }
+    }
+
+    return currentItems
+      .filter(
+        (item) => isCard(item) || (isToken(item) && !invalidTokens.includes(item))
+      )
+      .map((item) =>
+        isToken(item) ? { ...item, active: false, activePlayerId: null } : item
+      );
+  }
+
+  function isStackEmpty(currentItems: (CardInterface | TokenInterface)[]) {
     return (
-      currentCards
+      currentItems
         .filter((item) => isCard(item))
         .filter((card) => card.playerId === null).length === 0
     );
   }
 
-  function refillCards(currentCards: (CardInterface | TokenInterface)[]) {
+  function refillCards(currentItems: (CardInterface | TokenInterface)[]) {
     const newSpareCards = spareCards.current.map((card) => ({
       ...card,
       id: uuidv4(),
       playerId: null,
     }));
-    const newCards = [...newSpareCards, ...currentCards];
-    dispatch({ type: reducerCases.SET_ITEMS, items: newCards });
+    const newCards = [...currentItems, ...newSpareCards];
     return newCards;
   }
 
-  function setNextActiveCard() {
-    const newActiveCard = items
+  function setNextActiveCard(currentItems: (CardInterface | TokenInterface)[]) {
+    const newActiveCard = currentItems
       .filter((item) => isCard(item))
       .filter((card) => card.playerId === null)
       .at(-1)!;

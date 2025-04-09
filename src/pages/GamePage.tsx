@@ -3,8 +3,9 @@ import { useState, useEffect } from "react";
 import { useMouseHandlers } from "../utils/MouseHandlers";
 import DraggableCard from "../components/GamePage/Card/DraggableCard";
 import PlayerBar from "../components/GamePage/Players/PlayerBar";
-import ActivePlayerCards from "../components/GamePage/Card/ActivePlayerCards";
+import ActivePlayerItems from "../components/GamePage/ActiveItems/ActivePlayerItems";
 import PlayerCards from "../components/GamePage/Card/PlayerCards";
+import PlayerTokens from "../components/GamePage/Token/PlayerTokens";
 import StackCards from "../components/GamePage/Card/StackCards";
 import useGameRules from "../utils/GameRules";
 import { useStateProvider } from "../utils/StateProvider";
@@ -23,7 +24,7 @@ export default function GamePage() {
     handleMouseMove,
     handleMouseUp,
     handleMouseLeave,
-    handleMouseOverDragging,
+    handleMouseDraggingOver,
     handleMouseOver,
   } = useMouseHandlers(isDragging, setDragPosition, setIsDragging);
 
@@ -33,18 +34,19 @@ export default function GamePage() {
     handleMouseDown,
     handleMouseLeave,
   });
-  const activePlayerCardsComponent = ActivePlayerCards({
+  const activePlayerItemsComponent = ActivePlayerItems({
     isDragging,
     setActiveCardWidth,
     handleMouseClick,
     handleMouseDown,
     handleMouseLeave,
-    handleMouseOverDragging,
+    handleMouseDraggingOver,
     handleMouseOver,
   });
   const playerCardsComponent = PlayerCards({
     isDragging,
   });
+  const playerTokensComponent = PlayerTokens();
 
   useEffect(() => {
     if (isDragging) {
@@ -80,10 +82,12 @@ export default function GamePage() {
       <Board>
         <PlayerBar />
         {stackCardsComponent}
-        {activePlayerCardsComponent}
+        {activePlayerItemsComponent}
       </Board>
       <Deck>
         {playerCardsComponent}
+        <Separator />
+        {playerTokensComponent}
       </Deck>
     </Container>
   );
@@ -96,6 +100,7 @@ const Deck = styled.div`
   box-shadow: 0 4px 30px hsla(0, 0%, 0%, 10%);
   background: hsla(0, 0%, 100%, 20%);
   user-select: none;
+  position: relative;
 `;
 
 const Board = styled.div`
@@ -113,6 +118,15 @@ const Menu = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 0px 20px 0px 20px;
+`;
+
+const Separator = styled.div`
+  position: absolute;
+  right: 6.8%;
+  top: 5%;
+  width: 0.1rem;
+  height: 90%;
+  background-color: #fff;
 `;
 
 const Container = styled.div`

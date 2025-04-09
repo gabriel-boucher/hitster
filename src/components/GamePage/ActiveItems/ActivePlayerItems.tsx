@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useStateProvider } from "../../../utils/StateProvider";
 import ActiveCard from "./ActiveCard";
-import TokenInDeck from "../Token/TokenInDeck";
+import ActiveToken from "./ActiveToken";
 import { CardInterface } from "../../../utils/Interfaces";
 import { TokenInterface } from "../../../utils/Interfaces";
 import { isCard } from "../../../utils/Items";
@@ -15,7 +15,7 @@ interface CardProps {
     card: CardInterface
   ) => void;
   handleMouseLeave: () => void;
-  handleMouseOverDragging: (
+  handleMouseDraggingOver: (
     e: React.MouseEvent<HTMLDivElement>,
     item: CardInterface | TokenInterface
   ) => void;
@@ -25,19 +25,19 @@ interface CardProps {
   ) => void;
 }
 
-export default function ActivePlayerCards({
+export default function ActivePlayerItems({
   isDragging,
   setActiveCardWidth,
   handleMouseClick,
   handleMouseDown,
   handleMouseLeave,
-  handleMouseOverDragging,
+  handleMouseDraggingOver,
   handleMouseOver,
 }: CardProps) {
   const [{ activePlayer, items }] = useStateProvider();
 
   return (
-    <ActivePlayerCardsContainer onMouseLeave={handleMouseLeave}>
+    <ActivePlayerItemsContainer onMouseLeave={handleMouseLeave}>
       {items
         .filter((item) =>
           isCard(item)
@@ -53,25 +53,25 @@ export default function ActivePlayerCards({
               isDragging={isDragging}
               setActiveCardWidth={setActiveCardWidth}
               handleMouseDown={handleMouseDown}
-              handleMouseOverDragging={handleMouseOverDragging}
+              handleMouseDraggingOver={handleMouseDraggingOver}
               handleMouseOver={handleMouseOver}
             />
           ) : (
-            <TokenInDeck
+            <ActiveToken
               key={item.id}
               token={item}
               isDragging={isDragging}
               handleMouseClick={handleMouseClick}
-              handleMouseOverDragging={handleMouseOverDragging}
+              handleMouseDraggingOver={handleMouseDraggingOver}
               handleMouseOver={handleMouseOver}
             />
           )
         )}
-    </ActivePlayerCardsContainer>
+    </ActivePlayerItemsContainer>
   );
 }
 
-const ActivePlayerCardsContainer = styled.div`
+const ActivePlayerItemsContainer = styled.div`
   height: 20vh;
   max-width: 80%;
   width: 80%;

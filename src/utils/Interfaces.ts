@@ -18,7 +18,7 @@ export interface TokenInterface {
   id: string;
   active: boolean;
   activePlayerId: string | null;
-  playerId: string | null;
+  playerId: string;
 }
 
 export interface State {
@@ -27,7 +27,6 @@ export interface State {
   activePlayer: PlayerInterface;
   items: (CardInterface | TokenInterface)[];
   activeCard: CardInterface;
-  activeCardsWith: number;
   tokens: TokenInterface[];
 }
 export interface SetSpotifyTokenAction {

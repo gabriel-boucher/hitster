@@ -12,6 +12,10 @@ export function useMouseHandlersHelpers(isDragging: boolean) {
     return activeCard.playerId === null;
   }
 
+  function isOverActiveCard(over: CardInterface | TokenInterface) {
+    return activeCard.id === over.id;
+  }
+
   function isActiveTokenEntering() {
     return items
       .filter((item) => "activePlayerId" in item)
@@ -48,6 +52,7 @@ export function useMouseHandlersHelpers(isDragging: boolean) {
   return {
     isActiveCardInBoard,
     isActiveCardInStack,
+    isOverActiveCard,
     getNewIndex,
   };
 }

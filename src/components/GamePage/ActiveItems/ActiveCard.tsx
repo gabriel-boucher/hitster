@@ -11,7 +11,7 @@ interface CardProps {
     e: React.MouseEvent<HTMLDivElement>,
     card: CardInterface
   ) => void;
-  handleMouseOverDragging: (
+  handleMouseDraggingOver: (
     e: React.MouseEvent<HTMLDivElement>,
     card: CardInterface
   ) => void;
@@ -25,7 +25,7 @@ export default function CardInDeck({
   card,
   isDragging,
   setActiveCardWidth,
-  handleMouseOverDragging,
+  handleMouseDraggingOver,
   handleMouseOver,
   handleMouseDown,
 }: CardProps) {
@@ -42,7 +42,7 @@ export default function CardInDeck({
     () => ({
       onMouseOver: (e: React.MouseEvent<HTMLDivElement>) =>
         isDragging
-          ? handleMouseOverDragging(e, card)
+          ? handleMouseDraggingOver(e, card)
           : handleMouseOver(e, card),
       onMouseDown: (e: React.MouseEvent<HTMLDivElement>) =>
         handleMouseDown(e, card),
@@ -65,7 +65,7 @@ export default function CardInDeck({
   return (
     <Card {...handleMouseEvents} ref={cardRef}>
       <div className="card-container" style={style}>
-        {card.id !== activeCard.id && (
+        {card.id !== activeCard.id && ( 
           <div className="details">
             <div className="date">{card.date}</div>
           </div>

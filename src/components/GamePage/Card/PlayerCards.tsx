@@ -30,8 +30,8 @@ export default function PlayerCards({
 
 const PlayerCardsContainer = styled.div`
   height: 20vh;
-  max-width: 100%;
-  width: 100%;
+  max-width: 95%;
+  width: 95%;
   display: flex;
   justify-content: center;
   align-items: center;

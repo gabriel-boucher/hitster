@@ -21,13 +21,17 @@ export function getActiveItems(
   return activeItems;
 }
 
-export function moveActiveCardTo(
-  items: (CardInterface | TokenInterface)[],
-  activeCard: CardInterface,
-  playerId: string | null
-) {
+export function moveActiveCardToBoard(items: (CardInterface | TokenInterface)[], activeCard: CardInterface) {
   const newItems = items.map((item) =>
-    item.id === activeCard.id ? { ...item, playerId: playerId } : item
+    isCard(item) && item.id === activeCard.id ? { ...item, playerId: "board" } : item
+  );
+
+  return newItems;
+}
+
+export function moveActiveCardToStack(items: (CardInterface | TokenInterface)[], activeCard: CardInterface) {
+  const newItems = items.map((item) =>
+    isCard(item) && item.id === activeCard.id ? { ...item, playerId: null } : item
   );
 
   return newItems;
@@ -55,7 +59,7 @@ export function getPlayerToken(
     (item) => isToken(item) && item.playerId === playerId && !item.active
   );
 
-  if (tokenIndex === items.length) return;
+  if (tokenIndex === -1) return;
 
   const [activeToken] = items.splice(tokenIndex, 1);
 

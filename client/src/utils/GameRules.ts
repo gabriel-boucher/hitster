@@ -13,7 +13,7 @@ export default function useGameRules() {
   ]);
 
   function nextTurn() {
-    if (activeCard.playerId !== null) {
+    if (activeCard && activeCard.playerId !== null) {
       let newItems = [...items];
 
       const validTokens = getValidTokens(newItems);

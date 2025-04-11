@@ -1,12 +1,3 @@
-export enum reducerCases {
-  SET_SPOTIFY_TOKEN = "SET_SPOTIFY_TOKEN",
-  SET_PLAYERS = "SET_PLAYERS",
-  SET_ACTIVE_PLAYER = "SET_ACTIVE_PLAYER",
-  SET_ITEMS = "SET_ITEMS",
-  SET_ACTIVE_CARD = "SET_ACTIVE_CARD",
-  SET_TOKENS = "SET_TOKENS",
-}
-
 export const cardsFetched = [
   {
     song: "Starlight",
@@ -79,23 +70,3 @@ export const cardsFetched = [
       "https://i.scdn.co/image/ab67616d0000b27326f7f19c7f0381e56156c94a",
   },
 ];
-
-export const playersFetched = [
-  {
-    socketId: "socketId1",
-    name: "player1",
-  },
-  {
-    socketId: "socketId2",
-    name: "player2",
-  },
-  // {
-  //   socketId: "socketId3",
-  //   name: "player3",
-  // },
-  // {
-  //   socketId: "socketId4",
-  //   name: "player4",
-  // },
-];
-

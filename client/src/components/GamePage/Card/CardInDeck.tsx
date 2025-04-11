@@ -16,12 +16,12 @@ export default function CardInDeck({ card, isDragging }: CardProps) {
         className="card-container"
         style={{
           backgroundImage:
-            card.id === activeCard.id
+          activeCard && card.id === activeCard.id
               ? `url("src/assets/hitster_logo_square.webp")`
               : `url(${card.albumCover})`,
         }}
       >
-        {card.id !== activeCard.id && (
+        {activeCard && card.id !== activeCard.id && (
           <div className="details">
             <div className="date">{card.date}</div>
             <div className="song">{card.song}</div>

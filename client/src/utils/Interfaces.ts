@@ -1,3 +1,4 @@
+import { Socket } from "socket.io-client";
 import { reducerCases } from "./Constants";
 
 export interface PlayerInterface {
@@ -23,15 +24,20 @@ export interface TokenInterface {
 
 export interface State {
   spotifyToken: string;
+  socket: Socket;
   players: PlayerInterface[];
-  activePlayer: PlayerInterface;
+  activePlayer: PlayerInterface | null;
   items: (CardInterface | TokenInterface)[];
-  activeCard: CardInterface;
-  tokens: TokenInterface[];
+  activeCard: CardInterface | null;
 }
 export interface SetSpotifyTokenAction {
   type: reducerCases.SET_SPOTIFY_TOKEN;
   spotifyToken: string;
+}
+
+export interface SetSocketAction {
+  type: reducerCases.SET_SOCKET;
+  socket: Socket;
 }
 
 export interface SetPlayersAction {
@@ -53,15 +59,11 @@ export interface SetActiveCardAction {
   type: reducerCases.SET_ACTIVE_CARD;
   activeCard: CardInterface;
 }
-export interface SetTokensAction {
-  type: reducerCases.SET_TOKENS;
-  tokens: TokenInterface[];
-}
 
 export type Action =
   | SetSpotifyTokenAction
+  | SetSocketAction
   | SetPlayersAction
   | SetActivePlayer
   | SetItemsAction
   | SetActiveCardAction
-  | SetTokensAction;

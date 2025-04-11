@@ -10,13 +10,13 @@ interface CardProps {
 export default function PlayerCards({
   isDragging,
 }: CardProps) {
-  const [{ players, items }] = useStateProvider();
+  const [{ socket, items }] = useStateProvider();
 
   return (
     <PlayerCardsContainer>
       {items
         .filter((item) => isCard(item))
-        .filter((card) => card.playerId === players[0].socketId)
+        .filter((card) => card.playerId === socket.id)
         .map((card) => (
           <CardInDeck
             key={card.id}

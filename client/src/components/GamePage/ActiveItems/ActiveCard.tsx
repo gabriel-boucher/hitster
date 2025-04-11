@@ -54,10 +54,10 @@ export default function CardInDeck({
     backgroundImage: `url(${card.albumCover})`,
     border: "none",
   };
-  if (isDragging && card.id === activeCard.id) {
+  if (isDragging && activeCard && card.id === activeCard.id) {
     style.backgroundImage = "none";
     style.border = "2px solid white";
-  } else if (card.id === activeCard.id) {
+  } else if (activeCard && card.id === activeCard.id) {
     style.backgroundImage = `url("src/assets/hitster_logo_square.webp")`;
     style.border = "none";
   }

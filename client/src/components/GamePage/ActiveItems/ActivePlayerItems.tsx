@@ -41,8 +41,8 @@ export default function ActivePlayerItems({
       {items
         .filter((item) =>
           isCard(item)
-            ? item.playerId === activePlayer.socketId
-            : item.activePlayerId === activePlayer.socketId &&
+            ? activePlayer && item.playerId === activePlayer.socketId
+            : activePlayer && item.activePlayerId === activePlayer.socketId &&
               item.activePlayerId !== item.playerId
         )
         .map((item) =>

@@ -64,7 +64,7 @@ export default function GamePage() {
       type: reducerCases.SET_ACTIVE_CARD,
       activeCard: items
         .filter((item) => isCard(item))
-        .filter((card) => card.id === activeCard.id)[0],
+        .filter((card) => activeCard && card.id === activeCard.id)[0],
     });
   }, [items, activeCard, dispatch]);
 

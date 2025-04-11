@@ -5,7 +5,7 @@ import TokenInDeck from "./TokenInDeck";
 import { useMemo } from "react";
 
 export default function PlayerTokens() {
-  const [{ players, items }] = useStateProvider();
+  const [{ socket, items }] = useStateProvider();
 
   const playerTokens = useMemo(
     () =>
@@ -13,10 +13,10 @@ export default function PlayerTokens() {
         .filter((item) => isToken(item))
         .filter(
           (token) =>
-            token.playerId === players[0].socketId &&
+            token.playerId === socket.id &&
             token.activePlayerId === null
         ),
-    [items, players]
+    [items, socket]
   );
 
   return (

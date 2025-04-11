@@ -19,7 +19,7 @@ export default function CardInStack({
 
   const handleMouseEvents = useMemo(() => ({
     onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => handleMouseDown(e, card),
-  }), [handleMouseDown]);
+  }), [card, handleMouseDown]);
 
   return (
     <Card

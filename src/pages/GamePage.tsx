@@ -66,7 +66,7 @@ export default function GamePage() {
         .filter((item) => isCard(item))
         .filter((card) => card.id === activeCard.id)[0],
     });
-  }, [items, activeCard]);
+  }, [items, activeCard, dispatch]);
 
   return (
     <Container>

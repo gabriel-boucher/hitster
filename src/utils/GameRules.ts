@@ -16,10 +16,12 @@ export default function useGameRules() {
     if (activeCard.playerId !== null) {
       let newItems = [...items];
 
-      newItems = removeTokens(newItems);
+      const validTokens = getValidTokens(newItems);
 
-      if (!isCardRightAnswer()) {
-        newItems = removeCard(newItems);
+      if (isCardRightAnswer(newItems)) {
+        newItems = rightAnswer(newItems, validTokens);
+      } else {
+        newItems = wrongAnswer(newItems, validTokens);
       }
 
       if (isStackEmpty(newItems)) {
@@ -32,8 +34,8 @@ export default function useGameRules() {
     }
   }
 
-  function isCardRightAnswer() {
-    const playerCards = items
+  function isCardRightAnswer(newItems: (CardInterface | TokenInterface)[]) {
+    const playerCards = newItems
       .filter((item) => isCard(item))
       .filter((card) => card.playerId === activePlayer.socketId);
     const activeCardindex = playerCards.findIndex(
@@ -52,14 +54,65 @@ export default function useGameRules() {
     return beforeDate <= activeDate && activeDate <= afterDate;
   }
 
-  function removeCard(currentItems: (CardInterface | TokenInterface)[]) {
-    const newCards = currentItems.filter((item) => item.id !== activeCard.id);
-    return newCards;
+  function rightAnswer(
+    newItems: (CardInterface | TokenInterface)[],
+    validTokens: TokenInterface[]
+  ) {
+    const newTokens = newItems
+      .filter((item) => isToken(item))
+      .filter((token) => !token.active || validTokens.includes(token))
+      .map(
+        (token) => token && { ...token, active: false, activePlayerId: null }
+      );
+    const newStackCards = newItems
+      .filter((item) => isCard(item))
+      .filter((card) => card.playerId === null);
+    const newPlayerCards = newItems
+      .filter((item) => isCard(item))
+      .filter((card) => card.playerId !== null);
+
+    return [...newTokens, ...newStackCards, ...newPlayerCards];
   }
 
-  function removeTokens(currentItems: (CardInterface | TokenInterface)[]) {
-    const activeItems = getActiveItems(currentItems, activePlayer.socketId);
-    const invalidTokens: TokenInterface[] = [];
+  function wrongAnswer(
+    newItems: (CardInterface | TokenInterface)[],
+    validTokens: TokenInterface[]
+  ) {
+    const newTokens = newItems
+      .filter((item) => isToken(item))
+      .filter((token) => !token.active);
+    const newStackCards = newItems
+      .filter((item) => isCard(item))
+      .filter((card) => card.playerId === null);
+    const newPlayerCards = newItems
+      .filter((item) => isCard(item))
+      .filter((card) => card.playerId !== null && card.id !== activeCard.id);
+
+    // Duplicate the active card for each player
+    validTokens.forEach((token) => {
+      newPlayerCards.push({
+        ...activeCard,
+        id: uuidv4(),
+        playerId: token.playerId,
+      });
+    });
+
+    const sortedCards = newPlayerCards.sort((a, b) => {
+      if (
+        a.playerId !== b.playerId &&
+        a.playerId !== null &&
+        b.playerId !== null
+      )
+        return a.playerId.localeCompare(b.playerId);
+      return parseInt(a.date) - parseInt(b.date);
+    });
+
+    return [...newTokens, ...newStackCards, ...sortedCards];
+  }
+
+  function getValidTokens(newItems: (CardInterface | TokenInterface)[]) {
+    const activeItems = getActiveItems(newItems, activePlayer.socketId);
+    const validTokens: TokenInterface[] = [];
 
     for (let i = 0; i < activeItems.length; i++) {
       const currentItem = activeItems[i];
@@ -88,40 +141,34 @@ export default function useGameRules() {
           prevCard.date <= activeCard.date &&
           activeCard.date <= nextCard.date);
 
-      if (!isValidPosition) {
-        invalidTokens.push(currentItem);
+      if (isValidPosition) {
+        validTokens.push(currentItem);
       }
     }
 
-    return currentItems
-      .filter(
-        (item) => isCard(item) || (isToken(item) && !invalidTokens.includes(item))
-      )
-      .map((item) =>
-        isToken(item) ? { ...item, active: false, activePlayerId: null } : item
-      );
+    return validTokens;
   }
 
-  function isStackEmpty(currentItems: (CardInterface | TokenInterface)[]) {
+  function isStackEmpty(newItems: (CardInterface | TokenInterface)[]) {
     return (
-      currentItems
+      newItems
         .filter((item) => isCard(item))
         .filter((card) => card.playerId === null).length === 0
     );
   }
 
-  function refillCards(currentItems: (CardInterface | TokenInterface)[]) {
+  function refillCards(newItems: (CardInterface | TokenInterface)[]) {
     const newSpareCards = spareCards.current.map((card) => ({
       ...card,
       id: uuidv4(),
       playerId: null,
     }));
-    const newCards = [...currentItems, ...newSpareCards];
+    const newCards = [...newItems, ...newSpareCards];
     return newCards;
   }
 
-  function setNextActiveCard(currentItems: (CardInterface | TokenInterface)[]) {
-    const newActiveCard = currentItems
+  function setNextActiveCard(newItems: (CardInterface | TokenInterface)[]) {
+    const newActiveCard = newItems
       .filter((item) => isCard(item))
       .filter((card) => card.playerId === null)
       .at(-1)!;

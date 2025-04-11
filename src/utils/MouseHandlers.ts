@@ -23,15 +23,46 @@ export function useMouseHandlers(
   const [{ players, activePlayer, items, activeCard }, dispatch] =
     useStateProvider();
 
-  const { isActiveCardInBoard, isActiveCardInStack, isOverActiveCard, getNewIndex } =
-    useMouseHandlersHelpers(isDragging);
+  const {
+    isActiveCardInBoard,
+    isActiveCardInStack,
+    isOverActiveCard,
+    getNewIndex,
+  } = useMouseHandlersHelpers(isDragging);
+
+  const handleTokenLogic = useCallback(
+    (newItems: (CardInterface | TokenInterface)[]) => {
+      const activeItems = getActiveItems(newItems, activePlayer.socketId);
+
+      for (let i = 0; i < activeItems.length - 1; i++) {
+        const current = activeItems[i];
+        const next = activeItems[i + 1];
+
+        let active;
+
+        if (isToken(current) && isToken(next)) {
+          active = current.active ? next : current;
+        } else if (
+          (isToken(current) && activeCard.id === next.id) ||
+          (isToken(next) && activeCard.id === current.id)
+        ) {
+          active = isToken(current) ? current : next;
+        }
+
+        if (active) {
+          moveTokensWithWrongPositionToPlayers(newItems, active);
+        }
+      }
+    },
+    [activePlayer, activeCard]
+  );
 
   const handleMouseClick = useCallback(
     (clickToken: TokenInterface) => {
       const newItems = setActiveToken([...items], clickToken);
       dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
     },
-    [items, activeCard]
+    [items, dispatch]
   );
 
   const handleMouseDown = useCallback(
@@ -48,7 +79,14 @@ export function useMouseHandlers(
         }
       }
     },
-    [items, activeCard]
+    [
+      items,
+      activeCard,
+      setIsDragging,
+      setDragPosition,
+      isActiveCardInStack,
+      dispatch,
+    ]
   );
 
   const handleMouseMove = useCallback(
@@ -62,7 +100,7 @@ export function useMouseHandlers(
         });
       }
     },
-    [isDragging]
+    [isDragging, setDragPosition]
   );
 
   const handleMouseUp = useCallback(() => {
@@ -74,7 +112,15 @@ export function useMouseHandlers(
         dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
       }
     }
-  }, [isDragging, items, activeCard]);
+  }, [
+    isDragging,
+    items,
+    activeCard,
+    setIsDragging,
+    setDragPosition,
+    isActiveCardInBoard,
+    dispatch,
+  ]);
 
   const handleMouseLeave = useCallback(() => {
     let newItems;
@@ -85,7 +131,7 @@ export function useMouseHandlers(
     }
 
     dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
-  }, [isDragging, items, activeCard]);
+  }, [isDragging, items, activeCard, players, dispatch]);
 
   const handleMouseDraggingOver = useCallback(
     (
@@ -106,7 +152,15 @@ export function useMouseHandlers(
         dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
       }
     },
-    [players, activePlayer, items, activeCard]
+    [
+      activePlayer,
+      items,
+      activeCard,
+      isOverActiveCard,
+      getNewIndex,
+      handleTokenLogic,
+      dispatch,
+    ]
   );
 
   const handleMouseOver = useCallback(
@@ -119,7 +173,7 @@ export function useMouseHandlers(
         if (!result) return;
         const [newItems, activeToken] = result;
         const newIndex = getNewIndex(e, newItems, over);
-        
+
         newItems.splice(newIndex, 0, {
           ...activeToken,
           activePlayerId: activePlayer.socketId,
@@ -130,32 +184,8 @@ export function useMouseHandlers(
         dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
       }
     },
-    [players, activePlayer, items, activeCard]
+    [players, activePlayer, items, getNewIndex, handleTokenLogic, dispatch]
   );
-
-  function handleTokenLogic(newItems: (CardInterface | TokenInterface)[]) {
-    const activeItems = getActiveItems(newItems, activePlayer.socketId);
-
-    for (let i = 0; i < activeItems.length - 1; i++) {
-      const current = activeItems[i];
-      const next = activeItems[i + 1];
-
-      let active;
-
-      if (isToken(current) && isToken(next)) {
-        active = current.active ? next : current;
-      } else if (
-        (isToken(current) && activeCard.id === next.id) ||
-        (isToken(next) && activeCard.id === current.id)
-      ) {
-        active = isToken(current) ? current : next;
-      }
-
-      if (active) {
-        moveTokensWithWrongPositionToPlayers(newItems, active);
-      }
-    }
-  }
 
   return {
     handleMouseClick,

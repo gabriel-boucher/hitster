@@ -34,7 +34,7 @@ export default function ActiveToken({
           ? handleMouseDraggingOver(e, token)
           : handleMouseOver(e, token),
     }),
-    [isDragging, handleMouseDraggingOver, handleMouseOver, handleMouseClick]
+    [token, isDragging, handleMouseDraggingOver, handleMouseOver, handleMouseClick]
   );
 
   const style = {

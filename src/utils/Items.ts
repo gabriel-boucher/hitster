@@ -21,17 +21,27 @@ export function getActiveItems(
   return activeItems;
 }
 
-export function moveActiveCardToBoard(items: (CardInterface | TokenInterface)[], activeCard: CardInterface) {
+export function moveActiveCardToBoard(
+  items: (CardInterface | TokenInterface)[],
+  activeCard: CardInterface
+) {
   const newItems = items.map((item) =>
-    isCard(item) && item.id === activeCard.id ? { ...item, playerId: "board" } : item
+    isCard(item) && item.id === activeCard.id
+      ? { ...item, playerId: "board" }
+      : item
   );
 
   return newItems;
 }
 
-export function moveActiveCardToStack(items: (CardInterface | TokenInterface)[], activeCard: CardInterface) {
+export function moveActiveCardToStack(
+  items: (CardInterface | TokenInterface)[],
+  activeCard: CardInterface
+) {
   const newItems = items.map((item) =>
-    isCard(item) && item.id === activeCard.id ? { ...item, playerId: null } : item
+    isCard(item) && item.id === activeCard.id
+      ? { ...item, playerId: null }
+      : item
   );
 
   return newItems;

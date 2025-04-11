@@ -47,7 +47,7 @@ export default function CardInDeck({
       onMouseDown: (e: React.MouseEvent<HTMLDivElement>) =>
         handleMouseDown(e, card),
     }),
-    [isDragging, handleMouseOver, handleMouseDown]
+    [card, isDragging, handleMouseOver, handleMouseDraggingOver, handleMouseDown]
   );
 
   const style = {
@@ -65,11 +65,11 @@ export default function CardInDeck({
   return (
     <Card {...handleMouseEvents} ref={cardRef}>
       <div className="card-container" style={style}>
-        {card.id !== activeCard.id && ( 
+        {/* {card.id !== activeCard.id && (  */}
           <div className="details">
             <div className="date">{card.date}</div>
           </div>
-        )}
+        {/* )} */}
       </div>
     </Card>
   );

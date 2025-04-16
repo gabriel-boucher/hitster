@@ -1,12 +1,12 @@
 import { useRef } from "react";
 import { reducerCases } from "./Constants";
-import { CardInterface, TokenInterface } from "./Interfaces";
+import { CardInterface, TokenInterface } from "../../../Interfaces";
 import { useStateProvider } from "./StateProvider";
 import { v4 as uuidv4 } from "uuid";
 import { isCard, getActiveItems, isToken } from "./Items";
 
 export default function useGameRules() {
-  const [{ players, activePlayer, items, activeCard }, dispatch] =
+  const [{ socket, gameState, players, activePlayer, items, activeCard }, dispatch] =
     useStateProvider();
   const spareCards = useRef<CardInterface[]>([
     ...items.filter((item) => isCard(item)),
@@ -28,9 +28,17 @@ export default function useGameRules() {
         newItems = refillCards(newItems);
       }
 
-      dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
-      setNextActiveCard(newItems);
-      setNextActivePlayer();
+      // dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
+      const newActiveCard = setNextActiveCard(newItems);
+      const newActivePlayer = setNextActivePlayer();
+
+      socket.emit("updateGameState", {
+        gameState,
+        players,
+        activePlayer: newActivePlayer,
+        items: newItems,
+        activeCard: newActiveCard,
+      });
     }
   }
 
@@ -173,6 +181,7 @@ export default function useGameRules() {
       .filter((card) => card.playerId === null)
       .at(-1)!;
 
+    return newActiveCard;
     dispatch({ type: reducerCases.SET_ACTIVE_CARD, activeCard: newActiveCard });
   }
 
@@ -180,9 +189,12 @@ export default function useGameRules() {
     const activePlayerIndex = players.findIndex(
       (player) => player.socketId === activePlayer.socketId
     );
+
+    const newActivePlayer = players[(activePlayerIndex + 1) % players.length];
+    return newActivePlayer;
     dispatch({
       type: reducerCases.SET_ACTIVE_PLAYER,
-      activePlayer: players[(activePlayerIndex + 1) % players.length],
+      activePlayer: newActivePlayer,
     });
   }
 

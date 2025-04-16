@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { TokenInterface } from "../../../utils/Interfaces";
+import { TokenInterface } from "../../../../../Interfaces";
 import { useMemo } from "react";
 import { useStateProvider } from "../../../utils/StateProvider";
 

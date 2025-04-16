@@ -1,8 +1,8 @@
-import { CardInterface, TokenInterface } from "./Interfaces";
+import { CardInterface, TokenInterface } from "../../../Interfaces";
 import { useStateProvider } from "./StateProvider";
 
 export function useMouseHandlersHelpers(isDragging: boolean) {
-  const [{ players, activePlayer, items, activeCard }] = useStateProvider();
+  const [{ socket, activePlayer, items, activeCard }] = useStateProvider();
 
   function isActiveCardInBoard() {
     return activeCard.playerId === "board";
@@ -21,7 +21,7 @@ export function useMouseHandlersHelpers(isDragging: boolean) {
       .filter((item) => "activePlayerId" in item)
       .filter(
         (token) =>
-          token.playerId === players[0].socketId &&
+          token.playerId === socket.id &&
           token.activePlayerId === activePlayer.socketId &&
           token.active === false
       ).length === 0;

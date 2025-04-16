@@ -2,8 +2,7 @@ import styled from "styled-components";
 import { useStateProvider } from "../../../utils/StateProvider";
 import ActiveCard from "./ActiveCard";
 import ActiveToken from "./ActiveToken";
-import { CardInterface } from "../../../utils/Interfaces";
-import { TokenInterface } from "../../../utils/Interfaces";
+import { CardInterface, TokenInterface } from "../../../../../Interfaces";
 import { isCard } from "../../../utils/Items";
 
 interface CardProps {
@@ -41,8 +40,8 @@ export default function ActivePlayerItems({
       {items
         .filter((item) =>
           isCard(item)
-            ? activePlayer && item.playerId === activePlayer.socketId
-            : activePlayer && item.activePlayerId === activePlayer.socketId &&
+            ? item.playerId === activePlayer.socketId
+            : item.activePlayerId === activePlayer.socketId &&
               item.activePlayerId !== item.playerId
         )
         .map((item) =>

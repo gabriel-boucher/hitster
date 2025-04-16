@@ -8,12 +8,12 @@
     "dev": "ts-node-dev --respawn src/server.ts"
   },
   "dependencies": {
-    "nodemon": "^3.1.9",
     "socket.io": "^4.8.1",
     "uuidv4": "^6.2.13"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
+    "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.8.3"
   }

@@ -1,43 +1,19 @@
 import { Socket } from "socket.io-client";
 import { reducerCases } from "./Constants";
+import { GameInterface, gameStates, CardInterface, PlayerInterface, TokenInterface } from "../../../Interfaces";
 
-export interface PlayerInterface {
-  socketId: string;
-  name: string;
-}
-
-export interface CardInterface {
-  id: string;
-  song: string;
-  artist: string;
-  date: string;
-  albumCover: string;
-  playerId: string | null;
-}
-
-export interface TokenInterface {
-  id: string;
-  active: boolean;
-  activePlayerId: string | null;
-  playerId: string;
-}
-
-export interface State {
-  spotifyToken: string;
+export interface State extends GameInterface {
   socket: Socket;
-  players: PlayerInterface[];
-  activePlayer: PlayerInterface | null;
-  items: (CardInterface | TokenInterface)[];
-  activeCard: CardInterface | null;
-}
-export interface SetSpotifyTokenAction {
-  type: reducerCases.SET_SPOTIFY_TOKEN;
-  spotifyToken: string;
 }
 
 export interface SetSocketAction {
   type: reducerCases.SET_SOCKET;
   socket: Socket;
+}
+
+export interface SetGameStateAction {
+  type: reducerCases.SET_GAME_STATE;
+  gameState: gameStates;
 }
 
 export interface SetPlayersAction {
@@ -61,8 +37,8 @@ export interface SetActiveCardAction {
 }
 
 export type Action =
-  | SetSpotifyTokenAction
   | SetSocketAction
+  | SetGameStateAction
   | SetPlayersAction
   | SetActivePlayer
   | SetItemsAction

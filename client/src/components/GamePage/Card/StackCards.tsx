@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useStateProvider } from "../../../utils/StateProvider";
 import CardInStack from "./CardInStack";
-import { CardInterface } from "../../../utils/Interfaces";
+import { CardInterface } from "../../../../../Interfaces";
 import { isCard } from "../../../utils/Items";
 
 interface CardProps {

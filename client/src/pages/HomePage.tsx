@@ -1,42 +1,49 @@
 import styled from "styled-components";
+import { useNavigate, useParams } from 'react-router-dom';
 import { useStateProvider } from "../utils/StateProvider";
-import { reducerCases } from "../utils/Constants";
+import { useState } from "react";
 
 export default function HomePage() {
-  const [{ socket, players }, dispatch] = useStateProvider();
+  const [{ socket }] = useStateProvider();
+  const [userName, setUserName] = useState("");
+  const [isUsernameTaken, setIsUsernameTaken] = useState(false);
 
-  socket.on(
-    "updateGameState",
-    ({ players, activePlayer, items, activeCard }) => {
-      console.log("Players received:", players);
-      dispatch({ type: reducerCases.SET_PLAYERS, players });
-      dispatch({ type: reducerCases.SET_ACTIVE_PLAYER, activePlayer });
-      dispatch({ type: reducerCases.SET_ITEMS, items });
-      dispatch({ type: reducerCases.SET_ACTIVE_CARD, activeCard });
-    }
-  );
+  const navigate = useNavigate();
+  const { roomId } = useParams();
 
   function createRoom() {
-    socket.emit("createRoom");
+    if (userName === "") return;
+    socket.emit("createRoom", userName, (roomId: string) => {
+      joinRoom(roomId);
+    });
+  }
+
+  function joinRoom(roomId: string) {
+    if (userName === "") return;
+    socket.emit("joinRoom", roomId, userName, (message: string) => {
+      if (message === "Name already taken") {
+        setIsUsernameTaken(true);
+        setTimeout(() => {
+          setIsUsernameTaken(false);
+        }, 3000);
+      } else {
+        navigate(`/${roomId}`);
+      }
+    });
   }
 
   return (
     <Container>
       <img src="src/assets/hitster_title_logo.png" alt="Hitster Title Logo" />
       <div className="entries">
-        <input className="nickname" placeholder="Nickname"></input>
-        <button className="create-room" onClick={createRoom}>Create a room</button>
+        <input className="nickname" type="text" value={userName} onChange={(e) => setUserName(e.target.value)} placeholder="Nickname"></input>
+        {roomId === undefined ? (
+          <button className="create-room" onClick={createRoom}>Create a room</button>
+        ) : (
+          <button className="create-room" onClick={() => joinRoom(roomId)}>Join room</button>
+        )}
       </div>
-      <div className="player-list">
-        <h3>Connected Players:</h3>
-        <ul>
-          {players.map((player) => (
-            <li key={player.socketId}>
-              Player ID: {player.socketId} - Name: {player.name}
-            </li>
-          ))}
-        </ul>
-      </div>
+      {isUsernameTaken && <p className="username-taken">Name already taken</p>}
     </Container>
   );
 }
@@ -49,6 +56,9 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   gap: 3%;
+  background-color: #0a1d36;
+  color: white;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
 
   img {
     height: 20%;
@@ -103,5 +113,9 @@ const Container = styled.div`
         border-bottom: 1px solid #f0f0f0;
       }
     }
+  }
+
+  .username-taken {
+    color: red;
   }
 `;

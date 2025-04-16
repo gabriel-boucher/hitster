@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { CardInterface } from "../../../utils/Interfaces";
+import { CardInterface } from "../../../../../Interfaces";
 import { useStateProvider } from "../../../utils/StateProvider";
 
 interface CardProps {
@@ -16,12 +16,12 @@ export default function CardInDeck({ card, isDragging }: CardProps) {
         className="card-container"
         style={{
           backgroundImage:
-          activeCard && card.id === activeCard.id
+          card.id === activeCard.id
               ? `url("src/assets/hitster_logo_square.webp")`
               : `url(${card.albumCover})`,
         }}
       >
-        {activeCard && card.id !== activeCard.id && (
+        {card.id !== activeCard.id && (
           <div className="details">
             <div className="date">{card.date}</div>
             <div className="song">{card.song}</div>

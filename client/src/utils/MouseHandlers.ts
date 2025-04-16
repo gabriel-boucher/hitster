@@ -1,8 +1,7 @@
 import { useCallback } from "react";
 import { useStateProvider } from "./StateProvider";
-import { reducerCases } from "./Constants";
-import { CardInterface } from "./Interfaces";
-import { TokenInterface } from "./Interfaces";
+// import { reducerCases } from "./Constants";
+import { CardInterface, TokenInterface } from "../../../Interfaces";
 import { useMouseHandlersHelpers } from "./MouseHandlersHelpers";
 import {
   isToken,
@@ -20,8 +19,10 @@ export function useMouseHandlers(
   setDragPosition: (position: { x: number; y: number }) => void,
   setIsDragging: (value: boolean) => void
 ) {
-  const [{ players, activePlayer, items, activeCard }, dispatch] =
-    useStateProvider();
+  const [
+    { socket, gameState, players, activePlayer, items, activeCard },
+    // dispatch,
+  ] = useStateProvider();
 
   const {
     isActiveCardInBoard,
@@ -60,14 +61,26 @@ export function useMouseHandlers(
   const handleMouseClick = useCallback(
     (clickToken: TokenInterface) => {
       const newItems = setActiveToken([...items], clickToken);
-      dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
+      // dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
+      socket.emit("updateGameState", {
+        gameState,
+        players,
+        activePlayer,
+        items: newItems,
+        activeCard,
+      });
     },
-    [items, dispatch]
+    [socket, gameState, players, activePlayer, items, activeCard
+      // dispatch,
+    ]
   );
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent<HTMLDivElement>, downCard: CardInterface) => {
-      if (downCard.id === activeCard.id) {
+      if (
+        socket.id === activePlayer.socketId &&
+        downCard.id === activeCard.id
+      ) {
         setIsDragging(true);
         setDragPosition({
           x: e.clientX,
@@ -75,17 +88,28 @@ export function useMouseHandlers(
         });
         if (isActiveCardInStack()) {
           const newItems = moveActiveCardToBoard([...items], activeCard);
-          dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
+          // dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
+          socket.emit("updateGameState", {
+            gameState,
+            players,
+            activePlayer,
+            items: newItems,
+            activeCard,
+          });
         }
       }
     },
     [
+      socket,
+      gameState,
+      players,
+      activePlayer,
       items,
       activeCard,
       setIsDragging,
       setDragPosition,
       isActiveCardInStack,
-      dispatch,
+      // dispatch,
     ]
   );
 
@@ -109,29 +133,58 @@ export function useMouseHandlers(
       setDragPosition({ x: 0, y: 0 });
       if (isActiveCardInBoard()) {
         const newItems = moveActiveCardToStack([...items], activeCard);
-        dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
+        // dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
+        socket.emit("updateGameState", {
+          gameState,
+          players,
+          activePlayer,
+          items: newItems,
+          activeCard,
+        });
       }
     }
   }, [
     isDragging,
+    socket,
+    gameState,
+    players,
+    activePlayer,
     items,
     activeCard,
     setIsDragging,
     setDragPosition,
     isActiveCardInBoard,
-    dispatch,
+    // dispatch,
   ]);
 
   const handleMouseLeave = useCallback(() => {
+    if (!socket.id) return;
     let newItems;
     if (isDragging) {
       newItems = moveActiveCardToBoard([...items], activeCard);
     } else {
-      newItems = moveTokenToPlayer([...items], players[0].socketId);
+      newItems = moveTokenToPlayer([...items], socket.id);
     }
 
-    dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
-  }, [isDragging, items, activeCard, players, dispatch]);
+    // dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
+
+    socket.emit("updateGameState", {
+      gameState,
+      players,
+      activePlayer,
+      items: newItems,
+      activeCard,
+    });
+  }, [
+    isDragging,
+    socket,
+    gameState,
+    players,
+    activePlayer,
+    items,
+    activeCard,
+    // dispatch,
+  ]);
 
   const handleMouseDraggingOver = useCallback(
     (
@@ -149,17 +202,28 @@ export function useMouseHandlers(
 
         handleTokenLogic(newItems);
 
-        dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
+        // dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
+
+        socket.emit("updateGameState", {
+          gameState,
+          players,
+          activePlayer,
+          items: newItems,
+          activeCard,
+        });
       }
     },
     [
+      socket,
+      gameState,
+      players,
       activePlayer,
       items,
       activeCard,
       isOverActiveCard,
       getNewIndex,
       handleTokenLogic,
-      dispatch,
+      // dispatch,
     ]
   );
 
@@ -168,8 +232,9 @@ export function useMouseHandlers(
       e: React.MouseEvent<HTMLDivElement>,
       over: CardInterface | TokenInterface
     ) => {
-      if (activePlayer.socketId !== players[0].socketId) {
-        const result = getPlayerToken([...items], players[0].socketId);
+      if (!socket.id) return;
+      if (activePlayer.socketId !== socket.id) {
+        const result = getPlayerToken([...items], socket.id);
         if (!result) return;
         const [newItems, activeToken] = result;
         const newIndex = getNewIndex(e, newItems, over);
@@ -181,10 +246,28 @@ export function useMouseHandlers(
 
         handleTokenLogic(newItems);
 
-        dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
+        // dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
+
+        socket.emit("updateGameState", {
+          gameState,
+          players,
+          activePlayer,
+          items: newItems,
+          activeCard,
+        });
       }
     },
-    [players, activePlayer, items, getNewIndex, handleTokenLogic, dispatch]
+    [
+      socket,
+      gameState,
+      players,
+      activePlayer,
+      items,
+      activeCard,
+      getNewIndex,
+      handleTokenLogic,
+      // dispatch,
+    ]
   );
 
   return {

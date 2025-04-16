@@ -1,4 +1,5 @@
 import { Action, State } from "./Interfaces";
+import { gameStates, PlayerInterface, CardInterface } from "../../../Interfaces";
 import { reducerCases } from "./Constants";
 import { Dispatch } from "react";
 import { io } from "socket.io-client";
@@ -6,28 +7,28 @@ import { io } from "socket.io-client";
 const socket = io("http://localhost:3000");
 
 export const initialState = {
-  spotifyToken: "",
   socket,
+  gameState: gameStates.LOBBY,
   players: [],
-  activePlayer: null,
+  activePlayer: {} as PlayerInterface,
   items: [],
-  activeCard: null,
+  activeCard: {} as CardInterface,
 };
 
 export const defaultDispatch: Dispatch<Action> = () => {};
 
 export const reducer = (state: State, action: Action) => {
   switch (action.type) {
-    case reducerCases.SET_SPOTIFY_TOKEN: {
-      return {
-        ...state,
-        spotifyToken: action.spotifyToken,
-      };
-    }
     case reducerCases.SET_SOCKET: {
       return {
         ...state,
         socket: action.socket,
+      };
+    }
+    case reducerCases.SET_GAME_STATE: {
+      return {
+        ...state,
+        gameState: action.gameState,
       };
     }
     case reducerCases.SET_PLAYERS: {

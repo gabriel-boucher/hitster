@@ -1,3 +1,5 @@
+import { gameStates } from "./Constants";
+
 export interface PlayerInterface {
   socketId: string;
   name: string;
@@ -17,12 +19,6 @@ export interface TokenInterface {
   active: boolean;
   activePlayerId: string | null;
   playerId: string;
-}
-
-export enum gameStates {
-  LOBBY = "LOBBY",
-  PLAYING = "PLAYING",
-  OVER = "OVER",
 }
 
 export interface GameInterface {

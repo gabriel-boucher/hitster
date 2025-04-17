@@ -1,10 +1,9 @@
 import { useCallback } from "react";
 import { useStateProvider } from "./StateProvider";
-// import { reducerCases } from "./Constants";
 import { CardInterface, TokenInterface } from "../../../Interfaces";
+import { socketEvents } from "../../../Constants";
 import { useMouseHandlersHelpers } from "./MouseHandlersHelpers";
 import {
-  isToken,
   getActiveItems,
   moveActiveCardToBoard,
   moveActiveCardToStack,
@@ -12,16 +11,16 @@ import {
   getPlayerToken,
   moveTokenToPlayer,
   moveTokensWithWrongPositionToPlayers,
-} from "./Items";
+} from "./ItemsManipulation";
+import { isToken } from "../../../utils";
 
-export function useMouseHandlers(
+export default function useMouseHandlers(
   isDragging: boolean,
   setDragPosition: (position: { x: number; y: number }) => void,
   setIsDragging: (value: boolean) => void
 ) {
   const [
-    { socket, gameState, players, activePlayer, items, activeCard },
-    // dispatch,
+    { socket, gameState, players, activePlayer, items, activeCard }
   ] = useStateProvider();
 
   const {
@@ -61,8 +60,7 @@ export function useMouseHandlers(
   const handleMouseClick = useCallback(
     (clickToken: TokenInterface) => {
       const newItems = setActiveToken([...items], clickToken);
-      // dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
-      socket.emit("updateGameState", {
+      socket.emit(socketEvents.UPDATE_GAME_STATE, {
         gameState,
         players,
         activePlayer,
@@ -70,9 +68,7 @@ export function useMouseHandlers(
         activeCard,
       });
     },
-    [socket, gameState, players, activePlayer, items, activeCard
-      // dispatch,
-    ]
+    [socket, gameState, players, activePlayer, items, activeCard]
   );
 
   const handleMouseDown = useCallback(
@@ -88,8 +84,7 @@ export function useMouseHandlers(
         });
         if (isActiveCardInStack()) {
           const newItems = moveActiveCardToBoard([...items], activeCard);
-          // dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
-          socket.emit("updateGameState", {
+          socket.emit(socketEvents.UPDATE_GAME_STATE, {
             gameState,
             players,
             activePlayer,
@@ -109,7 +104,6 @@ export function useMouseHandlers(
       setIsDragging,
       setDragPosition,
       isActiveCardInStack,
-      // dispatch,
     ]
   );
 
@@ -133,8 +127,7 @@ export function useMouseHandlers(
       setDragPosition({ x: 0, y: 0 });
       if (isActiveCardInBoard()) {
         const newItems = moveActiveCardToStack([...items], activeCard);
-        // dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
-        socket.emit("updateGameState", {
+        socket.emit(socketEvents.UPDATE_GAME_STATE, {
           gameState,
           players,
           activePlayer,
@@ -154,7 +147,6 @@ export function useMouseHandlers(
     setIsDragging,
     setDragPosition,
     isActiveCardInBoard,
-    // dispatch,
   ]);
 
   const handleMouseLeave = useCallback(() => {
@@ -166,9 +158,7 @@ export function useMouseHandlers(
       newItems = moveTokenToPlayer([...items], socket.id);
     }
 
-    // dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
-
-    socket.emit("updateGameState", {
+    socket.emit(socketEvents.UPDATE_GAME_STATE, {
       gameState,
       players,
       activePlayer,
@@ -183,7 +173,6 @@ export function useMouseHandlers(
     activePlayer,
     items,
     activeCard,
-    // dispatch,
   ]);
 
   const handleMouseDraggingOver = useCallback(
@@ -202,9 +191,7 @@ export function useMouseHandlers(
 
         handleTokenLogic(newItems);
 
-        // dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
-
-        socket.emit("updateGameState", {
+        socket.emit(socketEvents.UPDATE_GAME_STATE, {
           gameState,
           players,
           activePlayer,
@@ -223,7 +210,6 @@ export function useMouseHandlers(
       isOverActiveCard,
       getNewIndex,
       handleTokenLogic,
-      // dispatch,
     ]
   );
 
@@ -246,9 +232,7 @@ export function useMouseHandlers(
 
         handleTokenLogic(newItems);
 
-        // dispatch({ type: reducerCases.SET_ITEMS, items: newItems });
-
-        socket.emit("updateGameState", {
+        socket.emit(socketEvents.UPDATE_GAME_STATE, {
           gameState,
           players,
           activePlayer,
@@ -266,7 +250,6 @@ export function useMouseHandlers(
       activeCard,
       getNewIndex,
       handleTokenLogic,
-      // dispatch,
     ]
   );
 

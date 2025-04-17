@@ -5,7 +5,7 @@ import LobbyPage from "./pages/LobbyPage";
 import GamePage from "./pages/GamePage";
 import { useStateProvider } from "./utils/StateProvider";
 import { reducerCases } from "./utils/Constants";
-import { gameStates } from "../../Interfaces";
+import { gameStates, socketEvents } from "../../Constants";
 import { useRef } from "react";
 
 export default function App() {
@@ -16,7 +16,7 @@ export default function App() {
   const isUpdatingFromServer = useRef(false);
 
   socket.on(
-    "updateGameState",
+    socketEvents.UPDATE_GAME_STATE,
     ({ gameState, players, activePlayer, items, activeCard }) => {
       isUpdatingFromServer.current = true;
       dispatch({ type: reducerCases.SET_GAME_STATE, gameState });
@@ -26,10 +26,6 @@ export default function App() {
       dispatch({ type: reducerCases.SET_ACTIVE_CARD, activeCard });
     }
   );
-
-  socket.on("room-error", (message) => {
-    alert(message);
-  });
 
   function page() {
     if (players.find((player) => player.socketId === socket.id)) {

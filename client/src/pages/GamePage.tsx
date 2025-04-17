@@ -1,19 +1,22 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import { useMouseHandlers } from "../utils/MouseHandlers";
+import useMouseHandlers from "../utils/MouseHandlers";
 import DraggableCard from "../components/GamePage/Card/DraggableCard";
 import PlayerBar from "../components/GamePage/Players/PlayerBar";
 import ActivePlayerItems from "../components/GamePage/ActiveItems/ActivePlayerItems";
 import PlayerCards from "../components/GamePage/Card/PlayerCards";
 import PlayerTokens from "../components/GamePage/Token/PlayerTokens";
 import StackCards from "../components/GamePage/Card/StackCards";
-import useGameRules from "../utils/GameRules";
 import { useStateProvider } from "../utils/StateProvider";
 import { reducerCases } from "../utils/Constants";
-import { isCard } from "../utils/Items";
+import { isCard } from "../../../utils";
+import { socketEvents } from "../../../Constants";
 
 export default function GamePage() {
-  const [{ items, activeCard }, dispatch] = useStateProvider();
+  const [
+    { socket, gameState, players, activePlayer, items, activeCard },
+    dispatch,
+  ] = useStateProvider();
   const [isDragging, setIsDragging] = useState(false);
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
   const [activeCardWidth, setActiveCardWidth] = useState(0);
@@ -27,8 +30,6 @@ export default function GamePage() {
     handleMouseDraggingOver,
     handleMouseOver,
   } = useMouseHandlers(isDragging, setDragPosition, setIsDragging);
-
-  const { nextTurn } = useGameRules();
 
   const stackCardsComponent = StackCards({
     handleMouseDown,
@@ -48,6 +49,16 @@ export default function GamePage() {
   });
   const playerTokensComponent = PlayerTokens();
 
+  function handleNextTurn() {
+    socket.emit(socketEvents.NEXT_TURN, {
+      gameState,
+      players,
+      activePlayer,
+      items,
+      activeCard,
+    });
+  }
+
   useEffect(() => {
     if (isDragging) {
       window.addEventListener("mousemove", handleMouseMove);
@@ -59,6 +70,7 @@ export default function GamePage() {
     }
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
+  // Otherwise the card movement is fucked
   useEffect(() => {
     dispatch({
       type: reducerCases.SET_ACTIVE_CARD,
@@ -71,7 +83,9 @@ export default function GamePage() {
   return (
     <Container>
       <Menu>
-        <button onClick={nextTurn}>Next Turn</button>
+        {socket.id === activePlayer.socketId && (
+          <button onClick={handleNextTurn}>Next Turn</button>
+        )}
       </Menu>
       {isDragging && (
         <DraggableCard

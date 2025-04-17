@@ -1,11 +1,12 @@
 import styled from "styled-components";
 import { useStateProvider } from "../utils/StateProvider";
+import { socketEvents } from "../../../Constants";
 
 export default function LobbyPage() {
   const [{ socket, players }] = useStateProvider();
 
   function startGame() {
-    socket.emit("startGame");
+    socket.emit(socketEvents.START_GAME);
   }
 
   return (

@@ -2,29 +2,30 @@ import styled from "styled-components";
 import { useNavigate, useParams } from 'react-router-dom';
 import { useStateProvider } from "../utils/StateProvider";
 import { useState } from "react";
+import { socketEvents } from "../../../Constants";
 
 export default function HomePage() {
   const [{ socket }] = useStateProvider();
   const [userName, setUserName] = useState("");
-  const [isUsernameTaken, setIsUsernameTaken] = useState(false);
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
   const { roomId } = useParams();
 
   function createRoom() {
     if (userName === "") return;
-    socket.emit("createRoom", userName, (roomId: string) => {
+    socket.emit(socketEvents.CREATE_ROOM, (roomId: string) => {
       joinRoom(roomId);
     });
   }
 
   function joinRoom(roomId: string) {
     if (userName === "") return;
-    socket.emit("joinRoom", roomId, userName, (message: string) => {
-      if (message === "Name already taken") {
-        setIsUsernameTaken(true);
+    socket.emit(socketEvents.JOIN_ROOM, roomId, userName, (message: string) => {
+      if (message) {
+        setError(message);
         setTimeout(() => {
-          setIsUsernameTaken(false);
+          setError("");
         }, 3000);
       } else {
         navigate(`/${roomId}`);
@@ -36,14 +37,14 @@ export default function HomePage() {
     <Container>
       <img src="src/assets/hitster_title_logo.png" alt="Hitster Title Logo" />
       <div className="entries">
-        <input className="nickname" type="text" value={userName} onChange={(e) => setUserName(e.target.value)} placeholder="Nickname"></input>
+        <input className="username" type="text" value={userName} onChange={(e) => setUserName(e.target.value)} placeholder="Username"></input>
         {roomId === undefined ? (
-          <button className="create-room" onClick={createRoom}>Create a room</button>
+          <button className="room-button" onClick={createRoom}>Create a room</button>
         ) : (
-          <button className="create-room" onClick={() => joinRoom(roomId)}>Join room</button>
+          <button className="room-button" onClick={() => joinRoom(roomId)}>Join room</button>
         )}
       </div>
-      {isUsernameTaken && <p className="username-taken">Name already taken</p>}
+      {error && <p className="error-message">{error}</p>}
     </Container>
   );
 }
@@ -73,7 +74,7 @@ const Container = styled.div`
     height: 8%;
     width: 50%;
 
-    .nickname {
+    .username {
       width: 80%;
       font-size: 2rem;
       padding: 0px 0px 0px 10px;
@@ -81,7 +82,7 @@ const Container = styled.div`
       border: 5px solid rgb(255, 0, 98);
     }
 
-    .create-room {
+    .room-button {
       width: 20%;
       background-color: rgb(255, 0, 98);
       border: 5px solid rgb(255, 0, 98);
@@ -115,7 +116,7 @@ const Container = styled.div`
     }
   }
 
-  .username-taken {
+  .error-message {
     color: red;
   }
 `;

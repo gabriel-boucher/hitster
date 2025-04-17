@@ -1,3 +1,8 @@
+export enum errorMessages {
+  ROOM_NOT_FOUND = "Room not found",
+  NAME_ALREADY_TAKEN = "Name already taken",
+}
+
 export const cardsFetched = [
   {
     song: "Starlight",

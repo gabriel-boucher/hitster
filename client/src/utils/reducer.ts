@@ -1,18 +1,14 @@
 import { Action, State } from "./Interfaces";
-import { gameStates, PlayerInterface, CardInterface } from "../../../Interfaces";
+import { initialGameState } from "../../../Constants";
 import { reducerCases } from "./Constants";
 import { Dispatch } from "react";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3000");
+const socket = io("http://192.168.2.209:3000");
 
 export const initialState = {
+  ...initialGameState,
   socket,
-  gameState: gameStates.LOBBY,
-  players: [],
-  activePlayer: {} as PlayerInterface,
-  items: [],
-  activeCard: {} as CardInterface,
 };
 
 export const defaultDispatch: Dispatch<Action> = () => {};

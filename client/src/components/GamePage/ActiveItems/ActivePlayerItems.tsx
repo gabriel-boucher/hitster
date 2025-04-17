@@ -3,7 +3,7 @@ import { useStateProvider } from "../../../utils/StateProvider";
 import ActiveCard from "./ActiveCard";
 import ActiveToken from "./ActiveToken";
 import { CardInterface, TokenInterface } from "../../../../../Interfaces";
-import { isCard } from "../../../utils/Items";
+import { isCard } from "../../../../../utils";
 
 interface CardProps {
   isDragging: boolean;

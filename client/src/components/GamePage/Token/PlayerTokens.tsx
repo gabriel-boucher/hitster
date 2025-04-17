@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useStateProvider } from "../../../utils/StateProvider";
-import { isToken } from "../../../utils/Items";
+import { isToken } from "../../../../../utils";
 import TokenInDeck from "./TokenInDeck";
 import { useMemo } from "react";
 

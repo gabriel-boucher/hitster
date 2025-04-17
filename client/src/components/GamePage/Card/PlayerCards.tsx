@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useStateProvider } from "../../../utils/StateProvider";
 import CardInDeck from "./CardInDeck";
-import { isCard } from "../../../../../utils";
+import { isCard } from "@shared/utils";
 
 interface CardProps {
   isDragging: boolean;

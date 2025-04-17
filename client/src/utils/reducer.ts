@@ -1,5 +1,5 @@
 import { Action, State } from "./Interfaces";
-import { initialGameState } from "../../../Constants";
+import { initialGameState } from "../../../shared/Constants";
 import { reducerCases } from "./Constants";
 import { Dispatch } from "react";
 import { io } from "socket.io-client";

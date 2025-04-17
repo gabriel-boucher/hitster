@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useStateProvider } from "./StateProvider";
-import { CardInterface, TokenInterface } from "../../../Interfaces";
-import { socketEvents } from "../../../Constants";
+import { CardInterface, TokenInterface } from "@shared/Interfaces";
+import { socketEvents } from "@shared/Constants";
 import { useMouseHandlersHelpers } from "./MouseHandlersHelpers";
 import {
   getActiveItems,
@@ -12,7 +12,7 @@ import {
   moveTokenToPlayer,
   moveTokensWithWrongPositionToPlayers,
 } from "./ItemsManipulation";
-import { isToken } from "../../../utils";
+import { isToken } from "@shared/utils";
 
 export default function useMouseHandlers(
   isDragging: boolean,

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { CardInterface } from "../../../../../Interfaces";
+import { CardInterface } from "@shared/Interfaces";
 import { useStateProvider } from "../../../utils/StateProvider";
 
 interface CardProps {

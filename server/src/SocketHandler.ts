@@ -1,13 +1,8 @@
 import { Server, Socket } from "socket.io";
 import { v4 as uuidv4 } from "uuid";
-import {
-  GameInterface,
-  PlayerInterface,
-  CardInterface,
-  TokenInterface,
-} from "../../Interfaces";
-import { gameStates, socketEvents, initialGameState } from "../../Constants";
-import { isCard } from "../../utils";
+import {GameInterface, CardInterface, TokenInterface} from "../../shared/Interfaces";
+import { gameStates, socketEvents, initialGameState } from "../../shared/Constants";
+import { isCard } from "../../shared/utils";
 import { cardsFetched, errorMessages } from "./Constants";
 import useGameRules from "./GameRules";
 
@@ -152,5 +147,12 @@ export default function useSocketHandler(
     io.to(roomId).emit(socketEvents.UPDATE_GAME_STATE, game);
   }
 
-  return { createRoom, joinRoom, startGame, updateGameState, nextTurn, disconnect };
+  return {
+    createRoom,
+    joinRoom,
+    startGame,
+    updateGameState,
+    nextTurn,
+    disconnect,
+  };
 }

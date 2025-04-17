@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useNavigate, useParams } from 'react-router-dom';
 import { useStateProvider } from "../utils/StateProvider";
 import { useState } from "react";
-import { socketEvents } from "../../../Constants";
+import { socketEvents } from "@shared/Constants";
 
 export default function HomePage() {
   const [{ socket }] = useStateProvider();

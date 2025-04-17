@@ -9,8 +9,8 @@ import PlayerTokens from "../components/GamePage/Token/PlayerTokens";
 import StackCards from "../components/GamePage/Card/StackCards";
 import { useStateProvider } from "../utils/StateProvider";
 import { reducerCases } from "../utils/Constants";
-import { isCard } from "../../../utils";
-import { socketEvents } from "../../../Constants";
+import { isCard } from "@shared/utils";
+import { socketEvents } from "@shared/Constants";
 
 export default function GamePage() {
   const [

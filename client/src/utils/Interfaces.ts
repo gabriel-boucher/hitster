@@ -1,7 +1,7 @@
 import { Socket } from "socket.io-client";
 import { reducerCases } from "./Constants";
-import { GameInterface, CardInterface, PlayerInterface, TokenInterface } from "../../../Interfaces";
-import { gameStates } from "../../../Constants";
+import { GameInterface, CardInterface, PlayerInterface, TokenInterface } from "@shared/Interfaces";
+import { gameStates } from "@shared/Constants";
 
 export interface State extends GameInterface {
   socket: Socket;

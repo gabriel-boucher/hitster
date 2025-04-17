@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useStateProvider } from "../utils/StateProvider";
-import { socketEvents } from "../../../Constants";
+import { socketEvents } from "@shared/Constants";
 
 export default function LobbyPage() {
   const [{ socket, players }] = useStateProvider();

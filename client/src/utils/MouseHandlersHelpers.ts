@@ -1,6 +1,6 @@
-import { CardInterface, TokenInterface } from "../../../Interfaces";
+import { CardInterface, TokenInterface } from "@shared/Interfaces";
 import { useStateProvider } from "./StateProvider";
-import { isToken } from "../../../utils";
+import { isToken } from "@shared/utils";
 
 export function useMouseHandlersHelpers(isDragging: boolean) {
   const [{ socket, activePlayer, items, activeCard }] = useStateProvider();

@@ -1,7 +1,7 @@
 import http from "http";
 import { Server } from "socket.io";
-import { GameInterface } from "../../Interfaces";
-import { socketEvents } from "../../Constants";
+import { GameInterface } from "../../shared/Interfaces";
+import { socketEvents } from "../../shared/Constants";
 import useSocketHandler from "./SocketHandler";
 
 const server = http.createServer();

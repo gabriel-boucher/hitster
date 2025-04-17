@@ -5,7 +5,7 @@ import LobbyPage from "./pages/LobbyPage";
 import GamePage from "./pages/GamePage";
 import { useStateProvider } from "./utils/StateProvider";
 import { reducerCases } from "./utils/Constants";
-import { gameStates, socketEvents } from "../../Constants";
+import { gameStates, socketEvents } from "@shared/Constants";
 import { useRef } from "react";
 
 export default function App() {

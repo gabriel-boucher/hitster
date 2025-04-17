@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { useStateProvider } from "../../../utils/StateProvider";
 import CardInStack from "./CardInStack";
-import { CardInterface } from "../../../../../Interfaces";
-import { isCard } from "../../../../../utils";
+import { CardInterface } from "@shared/Interfaces";
+import { isCard } from "@shared/utils";
 
 interface CardProps {
   handleMouseDown: (

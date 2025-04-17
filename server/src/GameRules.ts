@@ -1,6 +1,6 @@
-import { CardInterface, GameInterface, TokenInterface } from "../../Interfaces";
 import { v4 as uuidv4 } from "uuid";
-import { isCard, isToken } from "../../utils";
+import { CardInterface, GameInterface, TokenInterface } from "../../shared/Interfaces";
+import { isCard, isToken } from "../../shared/utils";
 
 export default function useGameRules({
   gameState,

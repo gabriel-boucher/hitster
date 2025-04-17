@@ -1,5 +1,5 @@
-import { CardInterface, TokenInterface } from "../../../Interfaces";
-import { isCard, isToken } from "../../../utils";
+import { CardInterface, TokenInterface } from "@shared/Interfaces";
+import { isCard, isToken } from "@shared/utils";
 
 export function getActiveItems(
   items: (CardInterface | TokenInterface)[],

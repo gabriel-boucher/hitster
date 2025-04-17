@@ -2,8 +2,8 @@ import styled from "styled-components";
 import { useStateProvider } from "../../../utils/StateProvider";
 import ActiveCard from "./ActiveCard";
 import ActiveToken from "./ActiveToken";
-import { CardInterface, TokenInterface } from "../../../../../Interfaces";
-import { isCard } from "../../../../../utils";
+import { CardInterface, TokenInterface } from "@shared/Interfaces";
+import { isCard } from "@shared/utils";
 
 interface CardProps {
   isDragging: boolean;

@@ -4,7 +4,10 @@ import { reducerCases } from "./Constants";
 import { Dispatch } from "react";
 import { io } from "socket.io-client";
 
-const socket = io("http://192.168.2.209:3000");
+const HOST = import.meta.env.VITE_SERVER_HOST;
+const PORT = import.meta.env.VITE_SERVER_PORT;
+
+const socket = io(`http://${HOST}:${PORT}`);
 
 export const initialState = {
   ...initialGameState,

@@ -16,8 +16,7 @@ server/pnpm-debug.log*
 server/lerna-debug.log*
 
 # Node modules
-client/node_modules
-server/node_modules
+*node_modules
 
 # Build output
 client/dist
@@ -29,6 +28,7 @@ server/dist-ssr
 # Local env / dev files
 client/*.local
 server/*.local
+*.env
 
 # Editor directories and files
 .vscode/*

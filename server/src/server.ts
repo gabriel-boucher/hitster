@@ -3,13 +3,17 @@ import { Server } from "socket.io";
 import { GameInterface } from "../../shared/Interfaces";
 import { socketEvents } from "../../shared/Constants";
 import useSocketHandler from "./SocketHandler";
+import dotenv from 'dotenv';
+import path from 'path';
+
+dotenv.config({ path: path.resolve(__dirname, './environments/.env') });
 
 const server = http.createServer();
-const IP = '0.0.0.0';
-const PORT = 3000;
+const HOST = process.env.SERVER_HOST || 'localhost';
+const PORT = parseInt(process.env.SERVER_PORT || "3000");
 
-server.listen(PORT, IP, () => {
-  console.log(`Server listening on http://${IP}:${PORT}`);
+server.listen(PORT, HOST, () => {
+  console.log(`Server listening on http://${HOST}:${PORT}`);
 });
 
 const io = new Server(server, {

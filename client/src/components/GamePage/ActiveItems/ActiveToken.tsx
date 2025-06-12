@@ -56,7 +56,7 @@ export default function ActiveToken({
 }
 
 const Token = styled.div`
-  aspect-ratio: 1/1;
+  aspect-ratio: 0.7;
   height: 100%;
   width: auto;
 

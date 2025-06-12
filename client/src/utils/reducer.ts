@@ -4,8 +4,8 @@ import { reducerCases } from "./Constants";
 import { Dispatch } from "react";
 import { io } from "socket.io-client";
 
-const HOST = import.meta.env.VITE_SERVER_HOST;
-const PORT = import.meta.env.VITE_SERVER_PORT;
+const HOST = import.meta.env.VITE_SERVER_HOST || 'localhost';
+const PORT = parseInt(import.meta.env.VITE_SERVER_PORT || "3000");
 
 const socket = io(`http://${HOST}:${PORT}`);
 

@@ -2,27 +2,25 @@ import styled from "styled-components";
 import { useStateProvider } from "../../../utils/StateProvider";
 import CardInDeck from "./CardInDeck";
 import { isCard } from "@shared/utils";
+import { CardInterface } from "@shared/Interfaces";
 
 interface CardProps {
   isDragging: boolean;
+  clickedPlayerId: string;
 }
 
-export default function PlayerCards({
-  isDragging,
-}: CardProps) {
-  const [{ socket, items }] = useStateProvider();
+export default function PlayerCards({ isDragging, clickedPlayerId }: CardProps) {
+  const [{ items }] = useStateProvider();
 
   return (
     <PlayerCardsContainer>
       {items
-        .filter((item) => isCard(item))
-        .filter((card) => card.playerId === socket.id)
+        .filter(
+          (item): item is CardInterface =>
+            isCard(item) && item.playerId === clickedPlayerId
+        )
         .map((card) => (
-          <CardInDeck
-            key={card.id}
-            card={card}
-            isDragging={isDragging}
-          />
+          <CardInDeck key={card.id} card={card} isDragging={isDragging} />
         ))}
     </PlayerCardsContainer>
   );

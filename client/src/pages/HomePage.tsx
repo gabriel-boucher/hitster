@@ -1,8 +1,11 @@
 import styled from "styled-components";
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from "react-router-dom";
 import { useStateProvider } from "../utils/StateProvider";
 import { useState } from "react";
 import { socketEvents } from "@shared/Constants";
+
+// Album qui défile dans le background
+// User images
 
 export default function HomePage() {
   const [{ socket }] = useStateProvider();
@@ -35,16 +38,28 @@ export default function HomePage() {
 
   return (
     <Container>
-      <img src="src/assets/hitster_title_logo.png" alt="Hitster Title Logo" />
-      <div className="entries">
-        <input className="username" type="text" value={userName} onChange={(e) => setUserName(e.target.value)} placeholder="Username"></input>
+      <Logo>
+        <img src="src/assets/hitster_title_logo.png" alt="Hitster Title Logo" />
+      </Logo>
+      <Entries>
+        <input
+          className="username"
+          type="text"
+          value={userName}
+          onChange={(e) => setUserName(e.target.value)}
+          placeholder="Username"
+        ></input>
         {roomId === undefined ? (
-          <button className="room-button" onClick={createRoom}>Create a room</button>
+          <button className="room-button" onClick={createRoom}>
+            Create room
+          </button>
         ) : (
-          <button className="room-button" onClick={() => joinRoom(roomId)}>Join room</button>
+          <button className="room-button" onClick={() => joinRoom(roomId)}>
+            Join room
+          </button>
         )}
-      </div>
-      {error && <p className="error-message">{error}</p>}
+      </Entries>
+      {error && <Error>{error}</Error>}
     </Container>
   );
 }
@@ -56,67 +71,88 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 3%;
-  background-color: #0a1d36;
-  color: white;
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  gap: 10%;
+
+  &::before {
+    content: "";
+    position: absolute;
+    background: linear-gradient(purple, orangered);
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    z-index: -1;
+  }
+`;
+
+const Logo = styled.div`
+  height: 20%;
+  width: 60%;
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 20px;
+  box-sizing: border-box;
+  border-radius: 10px;
+
+  &::before {
+    content: "";
+    position: absolute;
+    background: linear-gradient(cyan, yellow);
+    border-radius: 10px;
+    top: -10px;
+    left: -10px;
+    bottom: -10px;
+    right: -10px;
+    z-index: -1;
+    border: 1px solid black;
+  }
 
   img {
-    height: 20%;
-    aspect-ratio: 401/112;
-    margin-bottom: 50px;
+    max-width: 100%;
+    max-height: 100%;
   }
+`;
 
-  .entries {
-    display: flex;
-    justify-content: center;
-    align-content: center;
-    height: 8%;
-    width: 50%;
-
-    .username {
-      width: 80%;
-      font-size: 2rem;
-      padding: 0px 0px 0px 10px;
-      border-radius: 10px 0px 0px 10px;
-      border: 5px solid rgb(255, 0, 98);
-    }
-
-    .room-button {
-      width: 20%;
-      background-color: rgb(255, 0, 98);
-      border: 5px solid rgb(255, 0, 98);
-      border-radius: 0px 10px 10px 0px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      cursor: pointer;
+const Entries = styled.div`
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  height: 8%;
+  width: 50%;
+  
+  .username {
+    width: 80%;
+    font-size: 2rem;
+    padding: 0px 0px 0px 10px;
+    border-radius: 10px 0px 0px 10px;
+    /* border: 5px solid rgb(255, 0, 98); */
+    /* border: 5px solid black; */
+    border-right: none;
+    &:focus {
+      outline: none;
     }
   }
 
-  .player-list {
-    margin-top: 20px;
-    padding: 20px;
-    border: 2px solid rgb(255, 0, 98);
-    border-radius: 10px;
-    width: 50%;
-    
-    h3 {
-      margin-top: 0;
-      margin-bottom: 10px;
-    }
-    
-    ul {
-      list-style-type: none;
-      padding: 0;
-      
-      li {
-        padding: 5px 0;
-        border-bottom: 1px solid #f0f0f0;
-      }
+  .room-button {
+    width: 20%;
+    font-size: 1.5rem;
+    background-color: rgb(255, 0, 98);
+    background-color: cyan;
+    /* border: 5px solid rgb(255, 0, 98); */
+    /* border: 5px solid black; */
+    border-left: none;
+    border-radius: 0px 10px 10px 0px;
+    font-weight: bold;
+    cursor: pointer;
+    &:hover {
+      background-color: #03e9e9;
     }
   }
+`;
 
-  .error-message {
-    color: red;
-  }
+const Error = styled.p`
+  color: red;
 `;

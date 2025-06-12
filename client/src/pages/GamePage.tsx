@@ -7,6 +7,8 @@ import ActivePlayerItems from "../components/GamePage/ActiveItems/ActivePlayerIt
 import PlayerCards from "../components/GamePage/Card/PlayerCards";
 import PlayerTokens from "../components/GamePage/Token/PlayerTokens";
 import StackCards from "../components/GamePage/Card/StackCards";
+import NextTurnButton from "src/components/Buttons/NextTurnButton";
+import SpotifyPlayer from "src/components/GamePage/SpotifyPlayer/SpotifyPlayer";
 import { useStateProvider } from "../utils/StateProvider";
 import { reducerCases } from "../utils/Constants";
 import { isCard } from "@shared/utils";
@@ -20,6 +22,7 @@ export default function GamePage() {
   const [isDragging, setIsDragging] = useState(false);
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
   const [activeCardWidth, setActiveCardWidth] = useState(0);
+  const [clickedPlayerId, setClickedPlayerId] = useState(socket.id!);
 
   const {
     handleMouseClick,
@@ -31,10 +34,6 @@ export default function GamePage() {
     handleMouseOver,
   } = useMouseHandlers(isDragging, setDragPosition, setIsDragging);
 
-  const stackCardsComponent = StackCards({
-    handleMouseDown,
-    handleMouseLeave,
-  });
   const activePlayerItemsComponent = ActivePlayerItems({
     isDragging,
     setActiveCardWidth,
@@ -44,10 +43,6 @@ export default function GamePage() {
     handleMouseDraggingOver,
     handleMouseOver,
   });
-  const playerCardsComponent = PlayerCards({
-    isDragging,
-  });
-  const playerTokensComponent = PlayerTokens();
 
   function handleNextTurn() {
     socket.emit(socketEvents.NEXT_TURN, {
@@ -82,11 +77,6 @@ export default function GamePage() {
 
   return (
     <Container>
-      <Menu>
-        {socket.id === activePlayer.socketId && (
-          <button onClick={handleNextTurn}>Next Turn</button>
-        )}
-      </Menu>
       {isDragging && (
         <DraggableCard
           dragPosition={dragPosition}
@@ -94,14 +84,29 @@ export default function GamePage() {
         />
       )}
       <Board>
-        <PlayerBar />
-        {stackCardsComponent}
-        {activePlayerItemsComponent}
+        <PlayerBar setClickedPlayerId={setClickedPlayerId} />
+        <Middle>
+          {socket.id === activePlayer.socketId ? (
+            <>
+              <StackCards handleMouseDown={handleMouseDown} handleMouseLeave={handleMouseLeave}/>
+              <NextTurnButton handleNextTurn={handleNextTurn} />
+            </>
+          ) : (
+            activePlayerItemsComponent
+          )}
+        </Middle>
+        <SpotifyPlayer />
       </Board>
       <Deck>
-        {playerCardsComponent}
-        <Separator />
-        {playerTokensComponent}
+        {socket.id === activePlayer.socketId
+          ? activePlayerItemsComponent
+          : (
+            <>
+              <PlayerCards isDragging={isDragging} clickedPlayerId={clickedPlayerId} />
+              <Separator />
+              <PlayerTokens />
+            </>
+          )}
       </Deck>
     </Container>
   );
@@ -109,6 +114,7 @@ export default function GamePage() {
 
 const Deck = styled.div`
   display: flex;
+  justify-content: center;
   height: 20vh;
   border-radius: 16px 16px 0px 0px;
   box-shadow: 0 4px 30px hsla(0, 0%, 0%, 10%);
@@ -118,20 +124,10 @@ const Deck = styled.div`
 `;
 
 const Board = styled.div`
-  height: 70vh;
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-`;
-
-const Menu = styled.div`
-  height: 10vh;
-  background-color: black;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0px 20px 0px 20px;
 `;
 
 const Separator = styled.div`
@@ -143,6 +139,19 @@ const Separator = styled.div`
   background-color: #fff;
 `;
 
+const Middle = styled.div`
+  width: 100%;
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+`;
+
 const Container = styled.div`
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   background-color: #0a1d36;
 `;

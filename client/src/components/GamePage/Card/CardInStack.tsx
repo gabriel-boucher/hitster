@@ -38,7 +38,6 @@ const Card = styled.div`
   height: 16vh;
   width: 16vh;
   position: absolute;
-  margin-bottom: 40px;
   user-select: none;
   transition: box-shadow 0.2s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);

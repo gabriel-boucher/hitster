@@ -33,10 +33,19 @@ export default function ActivePlayerItems({
   handleMouseDraggingOver,
   handleMouseOver,
 }: CardProps) {
-  const [{ activePlayer, items }] = useStateProvider();
+  const [{ socket, activePlayer, items }] = useStateProvider();
+
+  const isInDeck = socket.id === activePlayer.socketId;
 
   return (
-    <ActivePlayerItemsContainer onMouseLeave={handleMouseLeave}>
+    <ActivePlayerItemsContainer
+      onMouseLeave={handleMouseLeave}
+      style={{
+        backgroundColor: isInDeck ? 'transparent' : '#07245a',
+        maxWidth: isInDeck ? '95%' : 'none',
+        width: isInDeck ? '95%' : '80vw',
+      }}
+    >
       {items
         .filter((item) =>
           isCard(item)
@@ -71,14 +80,21 @@ export default function ActivePlayerItems({
 }
 
 const ActivePlayerItemsContainer = styled.div`
-  height: 20vh;
-  max-width: 80%;
-  width: 80%;
+  /* height: 20vh;
+  width: 80vw;
+  background-color: #07245a;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  background-color: #07245a;
+  padding-left: 1%;
+  padding-right: 1%; */
+  height: 20vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
   padding-left: 1%;
   padding-right: 1%;
+  border-radius: 1rem;
 `;

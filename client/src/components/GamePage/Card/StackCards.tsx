@@ -18,29 +18,34 @@ export default function StackCards({
 }: CardProps) {
   const [{ items }] = useStateProvider();
   return (
-    <Stack onMouseLeave={handleMouseLeave}>
-      {items
-        .filter((item) => isCard(item))
-        .filter((card) => card.playerId === null)
-        .map((card, index) => (
-          <CardInStack
-            key={card.id}
-            index={index}
-            card={card}
-            handleMouseDown={handleMouseDown}
-          />
-        ))}
-    </Stack>
+    <Container>
+      <Stack onMouseLeave={handleMouseLeave}>
+        {items
+          .filter((item): item is CardInterface => isCard(item) && item.playerId === null)
+          .map((card, index) => (
+            <CardInStack
+              key={card.id}
+              index={index}
+              card={card}
+              handleMouseDown={handleMouseDown}
+            />
+          ))}
+      </Stack>
+    </Container>
   );
 }
 
 const Stack = styled.div`
-  position: relative;
-  width: 100%;
-  height: 200px;
-  width: fit-content;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  height: 16vh;
+  width: 16vh;
   user-select: none;
+  position: relative;
+`;
+
+const Container = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  margin-right: -16vh;
 `;

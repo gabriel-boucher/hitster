@@ -3,32 +3,32 @@ import { useMemo } from "react";
 import PlayerInGame from "./PlayerInGame";
 import { useStateProvider } from "../../../utils/StateProvider";
 
-export default function PlayerBar() {
+interface PlayerProps {
+  setClickedPlayerId: (playerId: string) => void
+} 
+
+export default function PlayerBar({ setClickedPlayerId }: PlayerProps) {
   const [{ players, activePlayer }] = useStateProvider();
 
   return useMemo(
     () => (
       <Players>
         {Object.values(players).map((player) => (
-          <PlayerInGame key={player.socketId} isActivePlayer={activePlayer === player} />
+          <PlayerInGame key={player.socketId} playerId={player.socketId} isActivePlayer={activePlayer.socketId === player.socketId} setClickedPlayerId={setClickedPlayerId}/>
         ))}
       </Players>
     ),
-    [players, activePlayer]
+    [players, activePlayer, setClickedPlayerId]
   );
 }
 
 const Players = styled.div`
-  position: absolute;
-  top: 10vh;
-  height: 10%;
-  max-width: 20%;
-  width: 20%;
+  height: 7vh;
+  width: 100vw;
   display: flex;
-  justify-content: center;
+  justify-content: left;
   align-items: center;
   overflow: hidden;
-  background-color: blue;
-  padding-left: 1%;
-  padding-right: 1%;
+  margin: 1rem;
+  gap: 1rem;
 `;

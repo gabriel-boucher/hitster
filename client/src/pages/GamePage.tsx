@@ -7,12 +7,12 @@ import ActivePlayerItems from "../components/GamePage/ActiveItems/ActivePlayerIt
 import PlayerCards from "../components/GamePage/Card/PlayerCards";
 import PlayerTokens from "../components/GamePage/Token/PlayerTokens";
 import StackCards from "../components/GamePage/Card/StackCards";
-import NextTurnButton from "src/components/Buttons/NextTurnButton";
 import SpotifyPlayer from "src/components/GamePage/SpotifyPlayer/SpotifyPlayer";
 import { useStateProvider } from "../utils/StateProvider";
 import { reducerCases } from "../utils/Constants";
 import { isCard } from "@shared/utils";
 import { socketEvents } from "@shared/Constants";
+import Button from "src/components/elements/Button";
 
 export default function GamePage() {
   const [
@@ -89,7 +89,7 @@ export default function GamePage() {
           {socket.id === activePlayer.socketId ? (
             <>
               <StackCards handleMouseDown={handleMouseDown} handleMouseLeave={handleMouseLeave}/>
-              <NextTurnButton handleNextTurn={handleNextTurn} />
+              <Button iconSrc="./src/assets/next-button.png" handleClick={handleNextTurn} />
             </>
           ) : (
             activePlayerItemsComponent

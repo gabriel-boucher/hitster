@@ -45,7 +45,7 @@ const Stack = styled.div`
 const Container = styled.div`
   flex: 1;
   display: flex;
-  justify-content: right;
+  /* justify-content: right; */
   align-items: center;
   margin-right: -16vh;
 `;

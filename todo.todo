@@ -1,0 +1,47 @@
+Spotify Player:
+    ✔ Make SongPlayer and VolumePlayer components in the SpotifyPlayer folder @done(25-06-19 23:14)
+    ✔ Add button to show vertical sound bar for every players @done(25-06-19 23:14)
+    ☐ Align PlayButton icon
+    ☐ Disable MiniPlayer for non active players
+
+Game Logic:
+    ☐ Player wins logic
+    ☐ Prevent player from closing/reloading page
+
+GamePage UI:
+    ✔ Make a Button component @started(25-06-19 23:38) @done(25-06-20 00:46) @lasted(1h8m34s)
+    ☐ Make Button component glow when hovering over the ButtonContainer
+    ☐ Center Middle Components (Cards, MiniPlayer)
+    ☐ Prevent hover animations on components when dragging card
+
+HomePage/LobbyPage UI:
+    ☐ Better UI (AI background image)
+    ☐ Select player picture
+
+Player UI:
+    ☐ Better UI
+    ☐ Hovering on a player shows his cards with dates, and clicking on a player shows his cards with song/artist (resets when stop hovering)
+
+Server Logic:
+    ☐ Connection logic when everybody leaves
+    ☐ Reconnect player after leaving (cache with player id)
+
+Card and token UI:
+    ☐ Flickering bug when trying to place a token
+    ☐ Token in deck size overflowing
+    ☐ Cards drag and drop limited by window size
+
+Clean Code:
+    ☐ Remove logic from HTML (use function)
+    ☐ Constants (colors, url)
+    ☐ CSS is all over the place
+
+Spotify API:
+
+Settings:
+    ☐ Theme (ThemeProvider for colors)
+
+Song/Artist Guesser:
+
+Chat with logs:
+

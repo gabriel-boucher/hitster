@@ -9,7 +9,7 @@ import PlayerTokens from "../components/GamePage/Token/PlayerTokens";
 import StackCards from "../components/GamePage/Card/StackCards";
 import SpotifyPlayer from "src/components/GamePage/SpotifyPlayer/SpotifyPlayer";
 import { useStateProvider } from "../utils/StateProvider";
-import { reducerCases } from "../utils/Constants";
+import { NEXT_BUTTON_URL, reducerCases } from "../utils/Constants";
 import { isCard } from "@shared/utils";
 import { socketEvents } from "@shared/Constants";
 import Button from "src/components/elements/Button";
@@ -83,20 +83,22 @@ export default function GamePage() {
           activeCardWidth={activeCardWidth}
         />
       )}
-      <Board>
+      <Header>
         <PlayerBar setClickedPlayerId={setClickedPlayerId} />
-        <Middle>
-          {socket.id === activePlayer.socketId ? (
-            <>
-              <StackCards handleMouseDown={handleMouseDown} handleMouseLeave={handleMouseLeave}/>
-              <Button iconSrc="./src/assets/next-button.png" handleClick={handleNextTurn} />
-            </>
-          ) : (
-            activePlayerItemsComponent
-          )}
-        </Middle>
-        <SpotifyPlayer />
+      </Header>
+      <Board>
+        {socket.id === activePlayer.socketId ? (
+          <>
+            <StackCards handleMouseDown={handleMouseDown} handleMouseLeave={handleMouseLeave}/>
+            <NextButton>
+              <Button iconSrc={NEXT_BUTTON_URL} handleClick={handleNextTurn} />
+            </NextButton>
+          </>
+        ) : (
+          activePlayerItemsComponent
+        )}
       </Board>
+      <SpotifyPlayer />
       <Deck>
         {socket.id === activePlayer.socketId
           ? activePlayerItemsComponent
@@ -112,6 +114,15 @@ export default function GamePage() {
   );
 }
 
+const NextButton = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 1vh;
+  position: absolute;
+  right: 3vw;
+`;
+
 const Deck = styled.div`
   display: flex;
   justify-content: center;
@@ -126,8 +137,8 @@ const Deck = styled.div`
 const Board = styled.div`
   flex: 1;
   display: flex;
-  flex-direction: column;
   justify-content: center;
+  align-items: center;
 `;
 
 const Separator = styled.div`
@@ -139,14 +150,9 @@ const Separator = styled.div`
   background-color: #fff;
 `;
 
-const Middle = styled.div`
-  width: 100%;
-  display: flex;
-  flex: 1;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-`;
+const Header = styled.div`
+
+`
 
 const Container = styled.div`
   height: 100vh;

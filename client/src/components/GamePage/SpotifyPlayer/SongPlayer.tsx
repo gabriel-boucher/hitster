@@ -1,6 +1,7 @@
 import { ChangeEvent, useState } from "react";
 import Button from "src/components/elements/Button";
 import Slider from "src/components/elements/Slider";
+import { PAUSE_BUTTON_URL, PLAY_BUTTON_URL, WHITE_COLOR__HEX } from "src/utils/Constants";
 import styled from "styled-components";
 
 export default function SongPlayer() {
@@ -16,8 +17,8 @@ export default function SongPlayer() {
   };
 
   const iconSrc = playing
-    ? "./src/assets/pause-button.png"
-    : "./src/assets/play-button.png";
+    ? PAUSE_BUTTON_URL
+    : PLAY_BUTTON_URL;
 
   return (
     <Player>
@@ -41,7 +42,7 @@ const Playback = styled.div`
   justify-content: center;
   align-items: center;
   gap: 1rem;
-  color: white;
+  color: ${WHITE_COLOR__HEX};
 
   .time {
     width: 2rem;

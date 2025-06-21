@@ -1,3 +1,4 @@
+import { PINK_COLOR__HEX, WHITE_COLOR__HEX } from "src/utils/Constants";
 import styled from "styled-components";
 
 interface ButtonProps {
@@ -32,14 +33,9 @@ const Glow = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  border: 0.4vh solid white;
-  box-shadow: 0 0 0.2rem #fe13a4, 0 0 0.5rem #fe13a4, 0 0 1rem #fe13a4,
-    inset 0 0 0.2rem #fe13a4, inset 0 0 0.5rem #fe13a4, inset 0 0 1rem #fe13a4;
-
-  &:hover {
-    box-shadow: 0 0 0.4rem #fe13a4, 0 0 0.7rem #fe13a4, 0 0 1.2rem #fe13a4,
-      inset 0 0 0.4rem #fe13a4, inset 0 0 0.7rem #fe13a4, inset 0 0 1.2rem #fe13a4;
-  }
+  border: 0.4vh solid ${WHITE_COLOR__HEX};
+  box-shadow: 0 0 0.2rem ${PINK_COLOR__HEX}, 0 0 0.5rem ${PINK_COLOR__HEX}, 0 0 1rem ${PINK_COLOR__HEX},
+    inset 0 0 0.2rem ${PINK_COLOR__HEX}, inset 0 0 0.5rem ${PINK_COLOR__HEX}, inset 0 0 1rem ${PINK_COLOR__HEX};
 `;
 
 const ButtonContainer = styled.button`
@@ -53,6 +49,11 @@ const ButtonContainer = styled.button`
   &:hover {
     cursor: pointer;
     height: 100%;
+
+    ${Glow} {
+      box-shadow: 0 0 0.4rem ${PINK_COLOR__HEX}, 0 0 0.7rem ${PINK_COLOR__HEX}, 0 0 1.2rem ${PINK_COLOR__HEX},
+        inset 0 0 0.4rem ${PINK_COLOR__HEX}, inset 0 0 0.7rem ${PINK_COLOR__HEX}, inset 0 0 1.2rem ${PINK_COLOR__HEX};
+    }
   }
 `;
 

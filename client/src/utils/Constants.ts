@@ -5,6 +5,7 @@ export enum reducerCases {
   SET_ACTIVE_PLAYER = "SET_ACTIVE_PLAYER",
   SET_ITEMS = "SET_ITEMS",
   SET_ACTIVE_CARD = "SET_ACTIVE_CARD",
+  SET_IS_DRAGGING = "SET_IS_DRAGGING",
 };
 
 export const NEXT_BUTTON_URL = "./src/assets/next-button.png";

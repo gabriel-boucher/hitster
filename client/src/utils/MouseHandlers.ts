@@ -13,14 +13,13 @@ import {
   moveTokensWithWrongPositionToPlayers,
 } from "./ItemsManipulation";
 import { isToken } from "@shared/utils";
+import { reducerCases } from "./Constants";
 
 export default function useMouseHandlers(
-  isDragging: boolean,
   setDragPosition: (position: { x: number; y: number }) => void,
-  setIsDragging: (value: boolean) => void
 ) {
   const [
-    { socket, gameState, players, activePlayer, items, activeCard }
+    { socket, gameState, players, activePlayer, items, activeCard, isDragging }, dispatch
   ] = useStateProvider();
 
   const {
@@ -28,7 +27,7 @@ export default function useMouseHandlers(
     isActiveCardInStack,
     isOverActiveCard,
     getNewIndex,
-  } = useMouseHandlersHelpers(isDragging);
+  } = useMouseHandlersHelpers();
 
   const handleTokenLogic = useCallback(
     (newItems: (CardInterface | TokenInterface)[]) => {
@@ -77,7 +76,7 @@ export default function useMouseHandlers(
         socket.id === activePlayer.socketId &&
         downCard.id === activeCard.id
       ) {
-        setIsDragging(true);
+        dispatch({ type: reducerCases.SET_IS_DRAGGING, isDragging: true });
         setDragPosition({
           x: e.clientX,
           y: e.clientY,
@@ -101,7 +100,7 @@ export default function useMouseHandlers(
       activePlayer,
       items,
       activeCard,
-      setIsDragging,
+      dispatch,
       setDragPosition,
       isActiveCardInStack,
     ]
@@ -123,7 +122,7 @@ export default function useMouseHandlers(
 
   const handleMouseUp = useCallback(() => {
     if (isDragging) {
-      setIsDragging(false);
+      dispatch({ type: reducerCases.SET_IS_DRAGGING, isDragging: false });
       setDragPosition({ x: 0, y: 0 });
       if (isActiveCardInBoard()) {
         const newItems = moveActiveCardToStack([...items], activeCard);
@@ -144,7 +143,7 @@ export default function useMouseHandlers(
     activePlayer,
     items,
     activeCard,
-    setIsDragging,
+    dispatch,
     setDragPosition,
     isActiveCardInBoard,
   ]);

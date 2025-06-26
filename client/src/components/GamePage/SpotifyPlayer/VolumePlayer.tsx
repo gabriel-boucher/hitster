@@ -112,7 +112,4 @@ const PlayerContainer = styled.div`
 
   height: 20vh;
   width: 4vw;
-
-  position: absolute;
-  right: 34vw;
 `;

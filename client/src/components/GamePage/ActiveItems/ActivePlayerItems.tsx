@@ -6,7 +6,6 @@ import { CardInterface, TokenInterface } from "@shared/Interfaces";
 import { isCard } from "@shared/utils";
 
 interface CardProps {
-  isDragging: boolean;
   setActiveCardWidth: (width: number) => void;
   handleMouseClick: (token: TokenInterface) => void;
   handleMouseDown: (
@@ -25,7 +24,6 @@ interface CardProps {
 }
 
 export default function ActivePlayerItems({
-  isDragging,
   setActiveCardWidth,
   handleMouseClick,
   handleMouseDown,
@@ -58,7 +56,6 @@ export default function ActivePlayerItems({
             <ActiveCard
               key={item.id}
               card={item}
-              isDragging={isDragging}
               setActiveCardWidth={setActiveCardWidth}
               handleMouseDown={handleMouseDown}
               handleMouseDraggingOver={handleMouseDraggingOver}
@@ -68,7 +65,6 @@ export default function ActivePlayerItems({
             <ActiveToken
               key={item.id}
               token={item}
-              isDragging={isDragging}
               handleMouseClick={handleMouseClick}
               handleMouseDraggingOver={handleMouseDraggingOver}
               handleMouseOver={handleMouseOver}

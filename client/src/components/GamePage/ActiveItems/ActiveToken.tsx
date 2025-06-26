@@ -5,7 +5,6 @@ import { useStateProvider } from "../../../utils/StateProvider";
 
 interface TokenProps {
   token: TokenInterface;
-  isDragging: boolean;
   handleMouseClick: (token: TokenInterface) => void;
   handleMouseDraggingOver: (
     e: React.MouseEvent<HTMLDivElement>,
@@ -19,12 +18,11 @@ interface TokenProps {
 
 export default function ActiveToken({
   token,
-  isDragging,
   handleMouseClick,
   handleMouseDraggingOver,
   handleMouseOver,
 }: TokenProps) {
-  const [{ players }] = useStateProvider();
+  const [{ players, isDragging }] = useStateProvider();
 
   const handleMouseEvents = useMemo(
     () => ({

@@ -5,7 +5,6 @@ import { useStateProvider } from "../../../utils/StateProvider";
 
 interface CardProps {
   card: CardInterface;
-  isDragging: boolean;
   setActiveCardWidth: (width: number) => void;
   handleMouseDown: (
     e: React.MouseEvent<HTMLDivElement>,
@@ -23,13 +22,12 @@ interface CardProps {
 
 export default function CardInDeck({
   card,
-  isDragging,
   setActiveCardWidth,
   handleMouseDraggingOver,
   handleMouseOver,
   handleMouseDown,
 }: CardProps) {
-  const [{ activeCard }] = useStateProvider();
+  const [{ activeCard, isDragging }] = useStateProvider();
   const cardRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {

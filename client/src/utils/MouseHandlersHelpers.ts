@@ -2,8 +2,8 @@ import { CardInterface, TokenInterface } from "@shared/Interfaces";
 import { useStateProvider } from "./StateProvider";
 import { isToken } from "@shared/utils";
 
-export function useMouseHandlersHelpers(isDragging: boolean) {
-  const [{ socket, activePlayer, items, activeCard }] = useStateProvider();
+export function useMouseHandlersHelpers() {
+  const [{ socket, activePlayer, items, activeCard, isDragging }] = useStateProvider();
 
   function isActiveCardInBoard() {
     return activeCard.playerId === "board";

@@ -16,10 +16,9 @@ import Button from "src/components/elements/Button";
 
 export default function GamePage() {
   const [
-    { socket, gameState, players, activePlayer, items, activeCard },
+    { socket, gameState, players, activePlayer, items, activeCard, isDragging },
     dispatch,
   ] = useStateProvider();
-  const [isDragging, setIsDragging] = useState(false);
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
   const [activeCardWidth, setActiveCardWidth] = useState(0);
   const [clickedPlayerId, setClickedPlayerId] = useState(socket.id!);
@@ -32,10 +31,9 @@ export default function GamePage() {
     handleMouseLeave,
     handleMouseDraggingOver,
     handleMouseOver,
-  } = useMouseHandlers(isDragging, setDragPosition, setIsDragging);
+  } = useMouseHandlers(setDragPosition);
 
   const activePlayerItemsComponent = ActivePlayerItems({
-    isDragging,
     setActiveCardWidth,
     handleMouseClick,
     handleMouseDown,
@@ -77,39 +75,41 @@ export default function GamePage() {
 
   return (
     <Container>
+      <DisableHoverContainer className={isDragging ? "disable-hover" : ""}>
+        <Header >
+          <PlayerBar setClickedPlayerId={setClickedPlayerId} />
+        </Header>
+        <Board >
+          {socket.id === activePlayer.socketId ? (
+            <>
+              <StackCards handleMouseDown={handleMouseDown} handleMouseLeave={handleMouseLeave}/>
+              <NextButton>
+                <Button iconSrc={NEXT_BUTTON_URL} handleClick={handleNextTurn} />
+              </NextButton>
+            </>
+          ) : (
+            activePlayerItemsComponent
+          )}
+        </Board>
+        <SpotifyPlayer />
+      </DisableHoverContainer>
+      <Deck>
+        {socket.id === activePlayer.socketId
+          ? activePlayerItemsComponent
+          : (
+            <>
+              <PlayerCards clickedPlayerId={clickedPlayerId} />
+              <Separator />
+              <PlayerTokens />
+            </>
+          )}
+      </Deck>
       {isDragging && (
         <DraggableCard
           dragPosition={dragPosition}
           activeCardWidth={activeCardWidth}
         />
       )}
-      <Header>
-        <PlayerBar setClickedPlayerId={setClickedPlayerId} />
-      </Header>
-      <Board>
-        {socket.id === activePlayer.socketId ? (
-          <>
-            <StackCards handleMouseDown={handleMouseDown} handleMouseLeave={handleMouseLeave}/>
-            <NextButton>
-              <Button iconSrc={NEXT_BUTTON_URL} handleClick={handleNextTurn} />
-            </NextButton>
-          </>
-        ) : (
-          activePlayerItemsComponent
-        )}
-      </Board>
-      <SpotifyPlayer />
-      <Deck>
-        {socket.id === activePlayer.socketId
-          ? activePlayerItemsComponent
-          : (
-            <>
-              <PlayerCards isDragging={isDragging} clickedPlayerId={clickedPlayerId} />
-              <Separator />
-              <PlayerTokens />
-            </>
-          )}
-      </Deck>
     </Container>
   );
 }
@@ -150,14 +150,31 @@ const Separator = styled.div`
   background-color: #fff;
 `;
 
-const Header = styled.div`
+const Header = styled.div``
 
+const DisableHoverContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 80vh;
+
+  &.disable-hover {
+    pointer-events: none;
+  }
 `
 
 const Container = styled.div`
   height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   background-color: #0a1d36;
+
+  /* &::before {
+    content: "";
+    position: absolute;
+    background: linear-gradient(purple, orangered);
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    z-index: -1;
+  } */
 `;

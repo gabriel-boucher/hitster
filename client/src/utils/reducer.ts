@@ -11,6 +11,7 @@ const socket = io(`http://${HOST}:${PORT}`);
 
 export const initialState = {
   ...initialGameState,
+  isDragging: false,
   socket,
 };
 
@@ -52,6 +53,12 @@ export const reducer = (state: State, action: Action) => {
       return {
         ...state,
         activeCard: action.activeCard,
+      };
+    }
+    case reducerCases.SET_IS_DRAGGING: {
+      return {
+        ...state,
+        isDragging: action.isDragging,
       };
     }
     default:

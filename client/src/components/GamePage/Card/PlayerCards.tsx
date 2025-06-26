@@ -5,12 +5,11 @@ import { isCard } from "@shared/utils";
 import { CardInterface } from "@shared/Interfaces";
 
 interface CardProps {
-  isDragging: boolean;
   clickedPlayerId: string;
 }
 
-export default function PlayerCards({ isDragging, clickedPlayerId }: CardProps) {
-  const [{ items }] = useStateProvider();
+export default function PlayerCards({ clickedPlayerId }: CardProps) {
+  const [{ items, isDragging }] = useStateProvider();
 
   return (
     <PlayerCardsContainer>

@@ -5,6 +5,7 @@ import { gameStates } from "@shared/Constants";
 
 export interface State extends GameInterface {
   socket: Socket;
+  isDragging: boolean;
 }
 
 export interface SetSocketAction {
@@ -37,6 +38,11 @@ export interface SetActiveCardAction {
   activeCard: CardInterface;
 }
 
+export interface SetIsDragging {
+  type: reducerCases.SET_IS_DRAGGING;
+  isDragging: boolean;
+}
+
 export type Action =
   | SetSocketAction
   | SetGameStateAction
@@ -44,3 +50,4 @@ export type Action =
   | SetActivePlayer
   | SetItemsAction
   | SetActiveCardAction
+  | SetIsDragging;

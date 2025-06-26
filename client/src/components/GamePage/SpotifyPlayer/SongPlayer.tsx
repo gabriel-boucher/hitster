@@ -45,7 +45,7 @@ const Playback = styled.div`
   color: ${WHITE_COLOR__HEX};
 
   .time {
-    width: 2rem;
+    width: 2.5rem;
   }
 
   .left {

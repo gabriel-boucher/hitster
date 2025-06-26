@@ -2,7 +2,7 @@ Spotify Player:
     ✔ Make SongPlayer and VolumePlayer components in the SpotifyPlayer folder @done(25-06-19 23:14)
     ✔ Add button to show vertical sound bar for every players @done(25-06-19 23:14)
     ✔ Align PlayButton icon @done(25-06-20 15:44)
-    ☐ Disable MiniPlayer for non active players
+    ☐ Sync song with active player @started(25-06-25 20:53)
 
 Game Logic:
     ☐ Player wins logic
@@ -12,7 +12,7 @@ GamePage UI:
     ✔ Make a Button component @started(25-06-19 23:38) @done(25-06-20 00:46) @lasted(1h8m34s)
     ✔ Make Button component glow when hovering over the ButtonContainer @done(25-06-20 14:57)
     ✔ Center Middle Components (Cards, MiniPlayer) @started(25-06-20 15:44) @done(25-06-21 18:01) @lasted(1d2h17m39s)
-    ☐ Prevent hover animations on components when dragging card
+    ✔ Prevent hover animations on components when dragging card @started(25-06-21 18:06) @done(25-06-25 20:48) @lasted(4d2h42m30s)
 
 HomePage/LobbyPage UI:
     ☐ Better UI (AI background image)

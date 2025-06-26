@@ -21,7 +21,8 @@ export default function GamePage() {
   ] = useStateProvider();
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
   const [activeCardWidth, setActiveCardWidth] = useState(0);
-  const [clickedPlayerId, setClickedPlayerId] = useState(socket.id!);
+  const [hoveredPlayerId, setHoveredPlayerId] = useState(socket.id!);
+  const [isClickedPlayer, setIsClickedPlayer] = useState(false);
 
   const {
     handleMouseClick,
@@ -77,7 +78,7 @@ export default function GamePage() {
     <Container>
       <DisableHoverContainer className={isDragging ? "disable-hover" : ""}>
         <Header >
-          <PlayerBar setClickedPlayerId={setClickedPlayerId} />
+          <PlayerBar setHoveredPlayerId={setHoveredPlayerId} setIsClickedPlayer={setIsClickedPlayer} />
         </Header>
         <Board >
           {socket.id === activePlayer.socketId ? (
@@ -98,7 +99,7 @@ export default function GamePage() {
           ? activePlayerItemsComponent
           : (
             <>
-              <PlayerCards clickedPlayerId={clickedPlayerId} />
+              <PlayerCards hoveredPlayerId={hoveredPlayerId} isClickedPlayer={isClickedPlayer}/>
               <Separator />
               <PlayerTokens />
             </>

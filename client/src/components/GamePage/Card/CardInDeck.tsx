@@ -4,14 +4,14 @@ import { useStateProvider } from "../../../utils/StateProvider";
 
 interface CardProps {
   card: CardInterface;
-  isDragging: boolean;
+  isClickedPlayer: boolean;
 }
 
-export default function CardInDeck({ card, isDragging }: CardProps) {
-  const [{ activeCard }] = useStateProvider();
+export default function CardInDeck({ card, isClickedPlayer }: CardProps) {
+  const [{ activeCard, isDragging }] = useStateProvider();
 
   return (
-    <Card $isDragging={isDragging}>
+    <Card $isDragging={isDragging} $isClickedPlayer={isClickedPlayer}>
       <div
         className="card-container"
         style={{
@@ -35,6 +35,7 @@ export default function CardInDeck({ card, isDragging }: CardProps) {
 
 const Card = styled.div<{
   $isDragging: boolean;
+  $isClickedPlayer: boolean;
 }>`
   height: 100%;
   min-width: 0;
@@ -69,12 +70,12 @@ const Card = styled.div<{
   }
 
   .details {
-    width: 70%;
+    width: ${({ $isClickedPlayer }) => ($isClickedPlayer ? "80%" : "70%")};
 
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: ${({ $isClickedPlayer }) => ($isClickedPlayer ? "flex-start" : "center")};
     flex-wrap: nowrap;
 
     flex-shrink: 1;
@@ -92,45 +93,47 @@ const Card = styled.div<{
     user-select: none;
 
     .date {
+      display: ${({ $isClickedPlayer }) => ($isClickedPlayer ? "none" : "block")};
       font-size: 1.5rem;
       font-weight: bold;
       line-height: 1;
     }
+
     .song,
     .artist {
-      display: none;
+      display: ${({ $isClickedPlayer }) => ($isClickedPlayer ? "block" : "none")};
+      font-size: 12px;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      word-wrap: break-word;
       width: 100%;
+    }
+
+    .song {
+      font-weight: bold;
     }
   }
 
   &:hover {
-    ${(props) =>
-      !props.$isDragging &&
-      `
+    ${({$isDragging}) => !$isDragging && `
       .card-container {
-        width: 90%;
+        width: 89%;
       }
 
       .details {
         width: 80%;
-        align-items: flex-start;
       }
+
       .date {
         display: none;
       }
+
       .song,
       .artist {
-        font-size: 12px;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        word-wrap: break-word;
-      }
-      .song {
-        font-weight: bold;
+        display: block;
       }
     `}
   }

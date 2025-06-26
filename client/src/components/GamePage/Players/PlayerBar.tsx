@@ -4,21 +4,22 @@ import PlayerInGame from "./PlayerInGame";
 import { useStateProvider } from "../../../utils/StateProvider";
 
 interface PlayerProps {
-  setClickedPlayerId: (playerId: string) => void
+  setHoveredPlayerId: (playerId: string) => void
+  setIsClickedPlayer: (isClicked: boolean) => void
 } 
 
-export default function PlayerBar({ setClickedPlayerId }: PlayerProps) {
+export default function PlayerBar({ setHoveredPlayerId, setIsClickedPlayer }: PlayerProps) {
   const [{ players, activePlayer }] = useStateProvider();
 
   return useMemo(
     () => (
       <Players>
         {Object.values(players).map((player) => (
-          <PlayerInGame key={player.socketId} playerId={player.socketId} isActivePlayer={activePlayer.socketId === player.socketId} setClickedPlayerId={setClickedPlayerId}/>
+          <PlayerInGame key={player.socketId} playerId={player.socketId} isActivePlayer={activePlayer.socketId === player.socketId} setHoveredPlayerId={setHoveredPlayerId} setIsClickedPlayer={setIsClickedPlayer}/>
         ))}
       </Players>
     ),
-    [players, activePlayer, setClickedPlayerId]
+    [players, activePlayer, setHoveredPlayerId, setIsClickedPlayer]
   );
 }
 

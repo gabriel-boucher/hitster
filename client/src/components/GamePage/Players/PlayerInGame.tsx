@@ -5,11 +5,26 @@ import styled from "styled-components";
 interface PlayerProps {
   playerId: string;
   isActivePlayer: boolean;
-  setClickedPlayerId: (playerId: string) => void
+  setHoveredPlayerId: (playerId: string) => void
+  setIsClickedPlayer: (isClicked: boolean) => void
 }
 
-export default function PlayerInGame({ playerId, isActivePlayer, setClickedPlayerId }: PlayerProps) {
+export default function PlayerInGame({ playerId, isActivePlayer, setHoveredPlayerId, setIsClickedPlayer }: PlayerProps) {
   const [{ socket }] = useStateProvider();
+
+  const handleMouseClick = () => {
+    setIsClickedPlayer(true);
+  }
+
+  const handleMouseOver = () => {
+    setHoveredPlayerId(playerId);
+  }
+
+  const handleMouseLeave = () => {
+    setHoveredPlayerId(socket.id!);
+    setIsClickedPlayer(false);
+  }
+
   return (
     <Player>
       <div
@@ -18,8 +33,9 @@ export default function PlayerInGame({ playerId, isActivePlayer, setClickedPlaye
           backgroundImage: `url(src/assets/avatar.webp)`,
           border: isActivePlayer ? "5px solid yellow" : "",
         }}
-        onMouseOver={() => setClickedPlayerId(playerId)}
-        onMouseLeave={() => setClickedPlayerId(socket.id!)}
+        onClick={handleMouseClick}
+        onMouseOver={handleMouseOver}
+        onMouseLeave={handleMouseLeave}
       ></div>
     </Player>
   );

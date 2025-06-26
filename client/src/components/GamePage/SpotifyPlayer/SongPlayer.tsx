@@ -1,7 +1,9 @@
 import { ChangeEvent, useState } from "react";
 import Button from "src/components/elements/Button";
 import Slider from "src/components/elements/Slider";
-import { PAUSE_BUTTON_URL, PLAY_BUTTON_URL, WHITE_COLOR__HEX } from "src/utils/Constants";
+import Pause from "src/components/icons/Pause";
+import Play from "src/components/icons/Play";
+import { WHITE_COLOR__HEX } from "src/utils/Constants";
 import styled from "styled-components";
 
 export default function SongPlayer() {
@@ -16,13 +18,13 @@ export default function SongPlayer() {
     setSongProgress(parseInt(e.target.value));
   };
 
-  const iconSrc = playing
-    ? PAUSE_BUTTON_URL
-    : PLAY_BUTTON_URL;
+  const iconComponent = playing
+    ? Pause()
+    : Play();
 
   return (
     <Player>
-        <Button iconSrc={iconSrc} handleClick={handlePlay} />
+        <Button iconComponent={iconComponent} handleClick={handlePlay} />
         <Playback>
             <span className="time left">{songProgress}</span>
             <Slider

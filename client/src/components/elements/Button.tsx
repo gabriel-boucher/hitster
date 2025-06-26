@@ -1,31 +1,23 @@
+import { JSX } from "react";
 import { PINK_COLOR__HEX, WHITE_COLOR__HEX } from "src/utils/Constants";
 import styled from "styled-components";
 
 interface ButtonProps {
-    iconSrc: string;
+    iconComponent: JSX.Element;
     handleClick: () => void;
 }
 
-export default function Button({ iconSrc, handleClick }: ButtonProps) {
+export default function Button({ iconComponent, handleClick }: ButtonProps) {
   return (
     <ButtonWrapper>
         <ButtonContainer onClick={handleClick}>
             <Glow>
-                <Icon src={iconSrc} />
+                {iconComponent}
             </Glow>
         </ButtonContainer>
     </ButtonWrapper>
   );
 }
-
-const Icon = styled.img`
-  aspect-ratio: 1/1;
-  max-height:50%; 
-  max-width:50%;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-`;
 
 const Glow = styled.div`
   aspect-ratio: 1/1;

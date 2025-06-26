@@ -14,15 +14,15 @@ GamePage UI:
     ✔ Make Button component glow when hovering over the ButtonContainer @done(25-06-20 14:57)
     ✔ Center Middle Components (Cards, MiniPlayer) @started(25-06-20 15:44) @done(25-06-21 18:01) @lasted(1d2h17m39s)
     ✔ Prevent hover animations on components when dragging card @started(25-06-21 18:06) @done(25-06-25 20:48) @lasted(4d2h42m30s)
-    ☐ Use SVG for icons
+    ✔ Use SVG for icons @started(25-06-25 23:35) @done(25-06-26 00:32) @lasted(57m42s)
 
 HomePage/LobbyPage UI:
-    ☐ Better UI (AI background image)
     ☐ Select player picture
+    ☐ Better UI (AI background image)
 
 Player UI:
-    ☐ Better UI
     ✔ Hovering on a player shows his cards with dates, and clicking on a player shows his cards with song/artist (resets when stop hovering) @started(25-06-25 22:01) @done(25-06-25 23:23) @lasted(1h22m12s)
+    ☐ Better UI
 
 Server Logic:
     ☐ Connection logic when everybody leaves

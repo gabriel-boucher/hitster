@@ -9,10 +9,11 @@ import PlayerTokens from "../components/GamePage/Token/PlayerTokens";
 import StackCards from "../components/GamePage/Card/StackCards";
 import SpotifyPlayer from "src/components/GamePage/SpotifyPlayer/SpotifyPlayer";
 import { useStateProvider } from "../utils/StateProvider";
-import { NEXT_BUTTON_URL, reducerCases } from "../utils/Constants";
+import { reducerCases } from "../utils/Constants";
 import { isCard } from "@shared/utils";
 import { socketEvents } from "@shared/Constants";
 import Button from "src/components/elements/Button";
+import Next from "src/components/icons/Next";
 
 export default function GamePage() {
   const [
@@ -85,7 +86,7 @@ export default function GamePage() {
             <>
               <StackCards handleMouseDown={handleMouseDown} handleMouseLeave={handleMouseLeave}/>
               <NextButton>
-                <Button iconSrc={NEXT_BUTTON_URL} handleClick={handleNextTurn} />
+                <Button iconComponent={Next()} handleClick={handleNextTurn} />
               </NextButton>
             </>
           ) : (

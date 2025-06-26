@@ -2,8 +2,10 @@ import { ChangeEvent, useState } from "react";
 import styled from "styled-components";
 import Slider from "src/components/elements/Slider";
 import { PINK_COLOR__HEX } from "src/utils/Constants";
-
-const volumeLevels = [0, 1, 2, 3];
+import Volume0 from "src/components/icons/Volume0";
+import Volume3 from "src/components/icons/Volume3";
+import Volume2 from "src/components/icons/Volume2";
+import Volume1 from "src/components/icons/Volume1";
 
 export default function VolumePlayer() {
   const [mute, setMute] = useState(false);
@@ -25,29 +27,24 @@ export default function VolumePlayer() {
     }
   };
 
-  let volumeLevel = 0;
-  if (volumeProgress === 0) volumeLevel = 0;
-  else if (volumeProgress <= 33) volumeLevel = 1;
-  else if (volumeProgress <= 66) volumeLevel = 2;
-  else volumeLevel = 3;
+  const VolumeIcon = () => {
+    if (volumeProgress === 0) return <Volume0 />;
+    else if (volumeProgress <= 33) return <Volume1 />;
+    else if (volumeProgress <= 66) return <Volume2 />;
+    else return <Volume3 />;
+  };
 
   return (
     <PlayerContainer>
-      {/* Preload icons to avoid flicker */}
-      {volumeLevels.map((level) => (
-        <div key={level} style={{ display: "none" }}>
-          <img src={`./src/assets/volume-${level}-white.png`} alt="" />
-          <img src={`./src/assets/volume-${level}-pink.png`} alt="" />
-        </div>
-      ))}
-
       <Player $sliderProgress={volumeProgress}>
         <VolumeSlider
           sliderProgress={volumeProgress}
           handleSliderProgress={handleVolumeProgress}
           vertical={true}
         />
-        <VolumeIcon $level={volumeLevel} onClick={handleVolumeMute} />
+        <Volume onClick={handleVolumeMute}>
+          {VolumeIcon()}
+        </Volume>
       </Player>
     </PlayerContainer>
   );
@@ -57,26 +54,16 @@ export default function VolumePlayer() {
 const VolumeSlider = styled(Slider)`
 `;
 
-const VolumeIcon = styled.img<{ $level: number }>`
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-  content: url(${({ $level }) => `./src/assets/volume-${$level}-white.png`});
-
-  &:hover {
-    content: url(${({ $level }) => `./src/assets/volume-${$level}-pink.png`});
-  }
-
-  &~input[type="range"] {
-    opacity: 0;
-  }
-`;
+const Volume = styled.div`
+  display: flex;
+`
 
 const Player = styled.div<{ $sliderProgress: number }>`
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+  cursor: pointer;
 
   input[type="range"] {
     height: 0px;
@@ -97,7 +84,11 @@ const Player = styled.div<{ $sliderProgress: number }>`
   }
 
   // Hover on volume icon to edit volume slider (prevents using a state variable)
-  &:has(${VolumeIcon}:hover) input[type="range"] {
+  /* &:has(svg:hover) input[type="range"] {
+    background: ${({ $sliderProgress }) =>
+      `linear-gradient(to top, ${PINK_COLOR__HEX} ${$sliderProgress}%, hsla(0, 0%, 100%, 20%) ${$sliderProgress}%)`};
+  } */
+  &:hover input[type="range"] {
     background: ${({ $sliderProgress }) =>
       `linear-gradient(to top, ${PINK_COLOR__HEX} ${$sliderProgress}%, hsla(0, 0%, 100%, 20%) ${$sliderProgress}%)`};
   }

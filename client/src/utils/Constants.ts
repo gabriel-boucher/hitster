@@ -8,9 +8,5 @@ export enum reducerCases {
   SET_IS_DRAGGING = "SET_IS_DRAGGING",
 };
 
-export const NEXT_BUTTON_URL = "./src/assets/next-button.png";
-export const PLAY_BUTTON_URL = "./src/assets/play-button.png";
-export const PAUSE_BUTTON_URL = "./src/assets/pause-button.png";
-
 export const WHITE_COLOR__HEX = "#FFFFFF";
 export const PINK_COLOR__HEX = "#FE13A4";

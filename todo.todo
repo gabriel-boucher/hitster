@@ -2,12 +2,8 @@ Spotify Player:
     ✔ Make SongPlayer and VolumePlayer components in the SpotifyPlayer folder @done(25-06-19 23:14)
     ✔ Add button to show vertical sound bar for every players @done(25-06-19 23:14)
     ✔ Align PlayButton icon @done(25-06-20 15:44)
-    ☐ Volume icon/slider gap stops hover
+    ✔ Volume icon/slider gap stops hover @done(25-06-26 00:33)
     ☐ Sync song with active player
-
-Game Logic:
-    ☐ Player wins logic
-    ☐ Prevent player from closing/reloading page
 
 GamePage UI:
     ✔ Make a Button component @started(25-06-19 23:38) @done(25-06-20 00:46) @lasted(1h8m34s)
@@ -22,15 +18,23 @@ HomePage/LobbyPage UI:
 
 Player UI:
     ✔ Hovering on a player shows his cards with dates, and clicking on a player shows his cards with song/artist (resets when stop hovering) @started(25-06-25 22:01) @done(25-06-25 23:23) @lasted(1h22m12s)
-    ☐ Better UI
+    ☐ Hovering on a player shows his tokens
+    ☐ Show name, number of cards/tokens under player picture
+    ☐ Change active player circle
+
+Architecture:
+    ✔ Use one command to start client and server at once @done(25-06-27 14:59)
+    ✔ Better organize GamePage and components file @started(25-06-27 15:00) @done(25-06-27 16:01) @lasted(1h1m44s)
 
 Server Logic:
+    ☐ Player wins logic
+    ☐ Prevent player from closing/reloading page
     ☐ Connection logic when everybody leaves
     ☐ Reconnect player after leaving (cache with player id)
 
 Card and token UI:
+    ☐ Token in deck size overflowing (move tokens horizontally)
     ☐ Flickering bug when trying to place a token
-    ☐ Token in deck size overflowing
     ☐ Cards drag and drop limited by window size
 
 Clean Code:
@@ -42,6 +46,7 @@ Spotify API:
 
 Settings:
     ☐ Theme (ThemeProvider for colors)
+    ☐ Game rules
 
 Song/Artist Guesser:
 

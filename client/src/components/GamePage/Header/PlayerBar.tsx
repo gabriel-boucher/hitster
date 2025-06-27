@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useMemo } from "react";
-import PlayerInGame from "./PlayerInGame";
+import PlayerInGame from "../Players/PlayerInGame";
 import { useStateProvider } from "../../../utils/StateProvider";
 
 interface PlayerProps {

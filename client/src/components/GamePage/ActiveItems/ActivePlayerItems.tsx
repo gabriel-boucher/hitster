@@ -1,9 +1,10 @@
 import styled from "styled-components";
-import { useStateProvider } from "../../../utils/StateProvider";
-import ActiveCard from "./ActiveCard";
-import ActiveToken from "./ActiveToken";
+
 import { CardInterface, TokenInterface } from "@shared/Interfaces";
 import { isCard } from "@shared/utils";
+import { useStateProvider } from "src/utils/StateProvider";
+import ActiveCard from "src/components/elements/Card/ActiveCard";
+import ActiveToken from "src/components/elements/Token/ActiveToken";
 
 interface CardProps {
   setActiveCardWidth: (width: number) => void;

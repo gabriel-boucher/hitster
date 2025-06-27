@@ -1,3 +1,4 @@
+import { useStateProvider } from "src/utils/StateProvider";
 import styled from "styled-components";
 
 interface CardProps {
@@ -9,20 +10,25 @@ export default function DraggableCard({
   dragPosition,
   activeCardWidth,
 }: CardProps) {
+  const [{ isDragging }] = useStateProvider();
   return (
-    <Card
-      style={{
-        left: dragPosition.x - (0.8 * activeCardWidth) / 2,
-        top: dragPosition.y - (0.8 * activeCardWidth) / 2,
-        width: activeCardWidth,
-        position: "absolute",
-        zIndex: "1000",
-        pointerEvents: "none",
-        willChange: "transform",
-      }}
-    >
-      <div className="card-container"></div>
-    </Card>
+    <>
+    {isDragging && (
+      <Card
+        style={{
+          left: dragPosition.x - (0.8 * activeCardWidth) / 2,
+          top: dragPosition.y - (0.8 * activeCardWidth) / 2,
+          width: activeCardWidth,
+          position: "absolute",
+          zIndex: "1000",
+          pointerEvents: "none",
+          willChange: "transform",
+        }}
+      >
+        <div className="card-container"></div>
+      </Card>
+    )}
+    </>
   );
 }
 

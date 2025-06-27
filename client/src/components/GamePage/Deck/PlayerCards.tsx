@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useStateProvider } from "../../../utils/StateProvider";
-import CardInDeck from "./CardInDeck";
+import CardInDeck from "../../elements/Card/CardInDeck";
 import { isCard } from "@shared/utils";
 import { CardInterface } from "@shared/Interfaces";
 

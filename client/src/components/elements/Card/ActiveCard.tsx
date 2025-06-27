@@ -20,7 +20,7 @@ interface CardProps {
   ) => void;
 }
 
-export default function CardInDeck({
+export default function ActiveCard({
   card,
   setActiveCardWidth,
   handleMouseDraggingOver,

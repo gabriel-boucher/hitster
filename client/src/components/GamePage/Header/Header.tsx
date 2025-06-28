@@ -15,6 +15,6 @@ export default function Header({ setHoveredPlayerId, setIsClickedPlayer }: Playe
 }
 
 const Container = styled.div`
-
+  height: 10vh;
 `;
 

@@ -10,38 +10,61 @@ interface PlayerProps {
   activePlayerItemsComponent: JSX.Element;
 }
 
-export default function Deck({ hoveredPlayerId, isClickedPlayer, activePlayerItemsComponent }: PlayerProps) {
+export default function Deck({
+  hoveredPlayerId,
+  isClickedPlayer,
+  activePlayerItemsComponent,
+}: PlayerProps) {
   const [{ socket, activePlayer }] = useStateProvider();
-    
-  return <Container>
-    {socket.id === activePlayer.socketId
-          ? activePlayerItemsComponent
-          : (
-            <>
-              <PlayerCards hoveredPlayerId={hoveredPlayerId} isClickedPlayer={isClickedPlayer}/>
-              <Separator />
-              <PlayerTokens />
-            </>
-          )}
-  </Container>;
+
+  return (
+    <Container>
+        <DeckTokens>
+            <PlayerTokens 
+                hoveredPlayerId={hoveredPlayerId}
+            />
+        </DeckTokens>
+        <DeckCards>
+            {socket.id === activePlayer.socketId ? (
+                activePlayerItemsComponent
+            ) : (
+                <PlayerCards
+                    hoveredPlayerId={hoveredPlayerId}
+                    isClickedPlayer={isClickedPlayer}
+                />
+            )}
+        </DeckCards>
+    </Container>
+  );
 }
 
-const Separator = styled.div`
-  position: absolute;
-  right: 6.8%;
-  top: 5%;
-  width: 0.1rem;
-  height: 90%;
-  background-color: #fff;
-`;
-
-const Container = styled.div`
+const DeckGeneric = styled.div`
   display: flex;
   justify-content: center;
-  height: 20vh;
-  border-radius: 16px 16px 0px 0px;
   box-shadow: 0 4px 30px hsla(0, 0%, 0%, 10%);
   background: hsla(0, 0%, 100%, 20%);
   user-select: none;
   position: relative;
+  margin: 0vw 1vw 0 1vw;
+`
+
+const DeckTokens = styled(DeckGeneric)`
+  height: 5vh;
+  border-radius: 16px 16px 16px 16px;
+`
+
+const DeckCards = styled(DeckGeneric)`
+  height: 20vh;
+  width: 98vw;
+  border-radius: 16px 16px 0px 0px;
 `;
+
+const Container = styled.div`
+  height: 26vh;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 1vh;
+`

@@ -10,89 +10,54 @@ interface CardProps {
 export default function CardInDeck({ card, isClickedPlayer }: CardProps) {
   const [{ activeCard, isDragging }] = useStateProvider();
 
-  return (
-    <Card $isDragging={isDragging} $isClickedPlayer={isClickedPlayer}>
-      <div
-        className="card-container"
-        style={{
-          backgroundImage:
+  const cardStyle = {
+    backgroundImage:
           card.id === activeCard.id
               ? `url("src/assets/hitster_logo_square.webp")`
-              : `url(${card.albumCover})`,
-        }}
-      >
+              : `url(${card.albumCover})`
+  };
+
+  return (
+    <Container $isDragging={isDragging}>
+      <Card style={{...cardStyle}}>
         {card.id !== activeCard.id && (
-          <div className="details">
+          <Details $isClickedPlayer={isClickedPlayer}>
             <div className="date">{card.date}</div>
             <div className="song">{card.song}</div>
             <div className="artist">{card.artist}</div>
-          </div>
+          </Details>
         )}
-      </div>
-    </Card>
+      </Card>
+    </Container>
   );
 }
 
-const Card = styled.div<{
-  $isDragging: boolean;
+const Details = styled.div<{
   $isClickedPlayer: boolean;
 }>`
-  height: 100%;
-  min-width: 0;
-  aspect-ratio: 1/1;
-
-  flex-shrink: 1;
+  width: ${({ $isClickedPlayer }) => ($isClickedPlayer ? "80%" : "70%")};
 
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: ${({ $isClickedPlayer }) => ($isClickedPlayer ? "flex-start" : "center")};
+  flex-wrap: nowrap;
+
+  flex-shrink: 1;
+  min-width: 0;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  background-color: hsla(0, 0%, 100%, 90%);
+  border-radius: inherit;
+  padding: 0px 4px 4px 4px;
 
   user-select: none;
 
-  .card-container {
-    aspect-ratio: 1/1;
-    width: 80%;
-
-    display: flex;
-    justify-content: center;
-    align-content: center;
-
-    position: relative;
-
-    border-radius: 5%;
-
-    background-repeat: no-repeat;
-    background-size: cover;
-
-    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-    transition: width 0.3s ease;
-    cursor: pointer;
-  }
-
-  .details {
-    width: ${({ $isClickedPlayer }) => ($isClickedPlayer ? "80%" : "70%")};
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: ${({ $isClickedPlayer }) => ($isClickedPlayer ? "flex-start" : "center")};
-    flex-wrap: nowrap;
-
-    flex-shrink: 1;
-    min-width: 0;
-
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-
-    background-color: hsla(0, 0%, 100%, 90%);
-    border-radius: inherit;
-    padding: 0px 4px 4px 4px;
-
-    user-select: none;
-
-    .date {
+  .date {
       display: ${({ $isClickedPlayer }) => ($isClickedPlayer ? "none" : "block")};
       font-size: 1.5rem;
       font-weight: bold;
@@ -115,15 +80,50 @@ const Card = styled.div<{
     .song {
       font-weight: bold;
     }
-  }
+`
+
+const Card = styled.div`
+  aspect-ratio: 1/1;
+  width: 80%;
+
+  display: flex;
+  justify-content: center;
+  align-content: center;
+
+  position: relative;
+
+  border-radius: 5%;
+
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  transition: width 0.3s ease;
+  cursor: pointer;
+`
+
+const Container = styled.div<{
+  $isDragging: boolean;
+}>`
+  height: 100%;
+  min-width: 0;
+  aspect-ratio: 1/1;
+
+  flex-shrink: 1;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  user-select: none;
 
   &:hover {
     ${({$isDragging}) => !$isDragging && `
-      .card-container {
+      ${Card} {
         width: 89%;
       }
 
-      .details {
+      ${Details} {
         width: 80%;
       }
 

@@ -2,38 +2,33 @@ import styled from "styled-components";
 import { useStateProvider } from "../../../utils/StateProvider";
 import { isToken } from "@shared/utils";
 import TokenInDeck from "../../elements/Token/TokenInDeck";
-import { useMemo } from "react";
+import { TokenInterface } from "@shared/Interfaces";
 
-export default function PlayerTokens() {
-  const [{ socket, items }] = useStateProvider();
+interface TokenProps {
+  hoveredPlayerId: string;
+}
 
-  const playerTokens = useMemo(
-    () =>
-      items
-        .filter((item) => isToken(item))
-        .filter(
-          (token) =>
-            token.playerId === socket.id &&
-            token.activePlayerId === null
-        ),
-    [items, socket]
-  );
+export default function PlayerTokens({hoveredPlayerId}: TokenProps) {
+  const [{ items }] = useStateProvider();
 
   return (
     <PlayerTokensContainer>
-      {playerTokens.map((token) => (
-        <TokenInDeck key={token.id} numberOfTokens={playerTokens.length} />
-      ))}
+      {items
+        .filter(
+          (item): item is TokenInterface =>
+            isToken(item) && item.playerId === hoveredPlayerId && item.activePlayerId === null
+        )
+        .map((token) => (
+          <TokenInDeck key={token.id}/>
+        ))}
     </PlayerTokensContainer>
   );
 }
 
 const PlayerTokensContainer = styled.div`
-  height: 20vh;
-  max-width: 5%;
-  width: 5%;
+  height: 5vh;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
   overflow: hidden;

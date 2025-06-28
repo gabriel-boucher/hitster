@@ -18,7 +18,7 @@ HomePage/LobbyPage UI:
 
 Player UI:
     ✔ Hovering on a player shows his cards with dates, and clicking on a player shows his cards with song/artist (resets when stop hovering) @started(25-06-25 22:01) @done(25-06-25 23:23) @lasted(1h22m12s)
-    ☐ Hovering on a player shows his tokens
+    ✔ Hovering on a player shows his tokens @done(25-06-27 21:00)
     ☐ Show name, number of cards/tokens under player picture
     ☐ Change active player circle
 
@@ -33,7 +33,8 @@ Server Logic:
     ☐ Reconnect player after leaving (cache with player id)
 
 Card and token UI:
-    ☐ Token in deck size overflowing (move tokens horizontally)
+    ✔ Token in deck size overflowing (move tokens horizontally) @started(25-06-27 19:07) @done(25-06-27 19:52) @lasted(45m11s)
+    ☐ Make PlayerCards and ActivePlayerItems the same thing
     ☐ Flickering bug when trying to place a token
     ☐ Cards drag and drop limited by window size
 

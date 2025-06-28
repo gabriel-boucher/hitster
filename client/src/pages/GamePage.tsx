@@ -78,7 +78,7 @@ const DisableHoverContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 80vh;
+  height: 74vh;
 
   &.disable-hover {
     pointer-events: none;

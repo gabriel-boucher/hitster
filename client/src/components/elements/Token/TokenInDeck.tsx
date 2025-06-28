@@ -1,34 +1,16 @@
 import styled from "styled-components";
 
-interface TokenProps {
-  numberOfTokens: number;
-}
-
-export default function TokenInDeck({ numberOfTokens }: TokenProps) {
+export default function TokenInDeck() {
   return (
-    <Token>
-      <div
-        className="token-container"
-        style={{ height: numberOfTokens === 1 ? "48%" : "80%" }}
-      />
-    </Token>
+    <Container>
+      <Token />
+    </Container>
   );
 }
 
 const Token = styled.div`
-  aspect-ratio: 1/1;
-  height: 100%;
-  width: auto;
-
-  flex-shrink: 1;
-  min-width: 0;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  .token-container {
     aspect-ratio: 1/1;
+    height: 80%;
 
     display: flex;
     justify-content: center;
@@ -39,5 +21,17 @@ const Token = styled.div`
     background-image: url("src/assets/hitster_logo_square.webp");
     background-repeat: no-repeat;
     background-size: cover;
-  }
+`;
+
+const Container = styled.div`
+  aspect-ratio: 1/1;
+  height: 100%;
+  width: auto;
+
+  flex-shrink: 1;
+  min-width: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;

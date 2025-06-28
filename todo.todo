@@ -19,8 +19,8 @@ HomePage/LobbyPage UI:
 Player UI:
     ✔ Hovering on a player shows his cards with dates, and clicking on a player shows his cards with song/artist (resets when stop hovering) @started(25-06-25 22:01) @done(25-06-25 23:23) @lasted(1h22m12s)
     ✔ Hovering on a player shows his tokens @done(25-06-27 21:00)
-    ☐ Show name, number of cards/tokens under player picture
-    ☐ Change active player circle
+    ✔ Change active player circle @started(25-06-27 21:04) @done(25-06-27 21:20) @lasted(16m59s)
+    ✔ Show name under player picture @started(25-06-27 21:33) @done(25-06-28 16:01) @lasted(18h28m15s)
 
 Architecture:
     ✔ Use one command to start client and server at once @done(25-06-27 14:59)
@@ -31,11 +31,13 @@ Server Logic:
     ☐ Prevent player from closing/reloading page
     ☐ Connection logic when everybody leaves
     ☐ Reconnect player after leaving (cache with player id)
+    ☐ Playing in teams
 
 Card and token UI:
     ✔ Token in deck size overflowing (move tokens horizontally) @started(25-06-27 19:07) @done(25-06-27 19:52) @lasted(45m11s)
     ☐ Make PlayerCards and ActivePlayerItems the same thing
     ☐ Flickering bug when trying to place a token
+    ☐ Drag slows down after playing a token (place a token then next)
     ☐ Cards drag and drop limited by window size
 
 Clean Code:

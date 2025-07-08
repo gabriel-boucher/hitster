@@ -23,19 +23,9 @@ export interface SetPlayersAction {
   players: PlayerInterface[];
 }
 
-export interface SetActivePlayer {
-  type: reducerCases.SET_ACTIVE_PLAYER;
-  activePlayer: PlayerInterface;
-}
-
 export interface SetItemsAction {
   type: reducerCases.SET_ITEMS;
   items: (CardInterface | TokenInterface)[];
-}
-
-export interface SetActiveCardAction {
-  type: reducerCases.SET_ACTIVE_CARD;
-  activeCard: CardInterface;
 }
 
 export interface SetIsDragging {
@@ -47,7 +37,5 @@ export type Action =
   | SetSocketAction
   | SetGameStateAction
   | SetPlayersAction
-  | SetActivePlayer
   | SetItemsAction
-  | SetActiveCardAction
   | SetIsDragging;

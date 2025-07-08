@@ -1,20 +1,20 @@
 import { CardInterface, TokenInterface } from "@shared/Interfaces";
 import { useStateProvider } from "./StateProvider";
-import { isToken } from "@shared/utils";
+import { getActiveCard, getActivePlayerId, isCard, isToken } from "@shared/utils";
 
 export function useMouseHandlersHelpers() {
-  const [{ socket, activePlayer, items, activeCard, isDragging }] = useStateProvider();
+  const [{ socket, items, players, isDragging }] = useStateProvider();
 
   function isActiveCardInBoard() {
-    return activeCard.playerId === "board";
+    return getActiveCard(items).playerId === "board";
   }
 
   function isActiveCardInStack() {
-    return activeCard.playerId === null;
+    return getActiveCard(items).playerId === null;
   }
 
   function isOverActiveCard(over: CardInterface | TokenInterface) {
-    return activeCard.id === over.id;
+    return isCard(over) && over.active;
   }
 
   function isActiveTokenEntering() {
@@ -22,7 +22,7 @@ export function useMouseHandlersHelpers() {
       (item) =>
         isToken(item) &&
         item.playerId === socket.id &&
-        item.activePlayerId === activePlayer.socketId &&
+        item.activePlayerId === getActivePlayerId(players) &&
         item.active === false
     );
   }

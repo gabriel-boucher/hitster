@@ -3,8 +3,6 @@ import { useState, useEffect } from "react";
 import useMouseHandlers from "../utils/MouseHandlers";
 import SpotifyPlayer from "src/components/GamePage/SpotifyPlayer/SpotifyPlayer";
 import { useStateProvider } from "../utils/StateProvider";
-import { reducerCases } from "../utils/Constants";
-import { isCard } from "@shared/utils";
 import Header from "src/components/GamePage/Header/Header";
 import Deck from "src/components/GamePage/Deck/Deck";
 import DraggingOverlay from "src/components/GamePage/DraggingOverlay/DraggingOverlay";
@@ -13,8 +11,7 @@ import ActivePlayerItems from "src/components/GamePage/ActiveItems/ActivePlayerI
 
 export default function GamePage() {
   const [
-    { socket, items, activeCard, isDragging },
-    dispatch,
+    { socket, isDragging }
   ] = useStateProvider();
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
   const [activeCardWidth, setActiveCardWidth] = useState(0);
@@ -50,16 +47,6 @@ export default function GamePage() {
       };
     }
   }, [isDragging, handleMouseMove, handleMouseUp]);
-
-  // Otherwise the card movement is fucked
-  useEffect(() => {
-    dispatch({
-      type: reducerCases.SET_ACTIVE_CARD,
-      activeCard: items
-        .filter((item) => isCard(item))
-        .filter((card) => card.id === activeCard.id)[0],
-    });
-  }, [items, activeCard, dispatch]);
 
   return (
     <Container>

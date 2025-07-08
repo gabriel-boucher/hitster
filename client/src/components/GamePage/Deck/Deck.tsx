@@ -3,6 +3,7 @@ import styled from "styled-components";
 import PlayerCards from "./PlayerCards";
 import PlayerTokens from "./PlayerTokens";
 import { JSX } from "react";
+import { getActivePlayerId } from "@shared/utils";
 
 interface PlayerProps {
   hoveredPlayerId: string;
@@ -15,7 +16,7 @@ export default function Deck({
   isClickedPlayer,
   activePlayerItemsComponent,
 }: PlayerProps) {
-  const [{ socket, activePlayer }] = useStateProvider();
+  const [{ socket, players }] = useStateProvider();
 
   return (
     <Container>
@@ -25,7 +26,7 @@ export default function Deck({
             />
         </DeckTokens>
         <DeckCards>
-            {socket.id === activePlayer.socketId ? (
+            {socket.id === getActivePlayerId(players) ? (
                 activePlayerItemsComponent
             ) : (
                 <PlayerCards

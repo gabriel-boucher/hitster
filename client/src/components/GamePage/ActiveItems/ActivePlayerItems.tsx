@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 import { CardInterface, TokenInterface } from "@shared/Interfaces";
-import { isCard } from "@shared/utils";
+import { getActivePlayerId, isCard } from "@shared/utils";
 import { useStateProvider } from "src/utils/StateProvider";
 import ActiveCard from "src/components/elements/Card/ActiveCard";
 import ActiveToken from "src/components/elements/Token/ActiveToken";
@@ -32,9 +32,9 @@ export default function ActivePlayerItems({
   handleMouseDraggingOver,
   handleMouseOver,
 }: CardProps) {
-  const [{ socket, activePlayer, items }] = useStateProvider();
+  const [{ socket, items, players }] = useStateProvider();
 
-  const isInDeck = socket.id === activePlayer.socketId;
+  const isInDeck = socket.id === getActivePlayerId(players);
 
   return (
     <ActivePlayerItemsContainer
@@ -48,8 +48,8 @@ export default function ActivePlayerItems({
       {items
         .filter((item) =>
           isCard(item)
-            ? item.playerId === activePlayer.socketId
-            : item.activePlayerId === activePlayer.socketId &&
+            ? item.playerId === getActivePlayerId(players)
+            : item.activePlayerId === getActivePlayerId(players)&&
               item.activePlayerId !== item.playerId
         )
         .map((item) =>

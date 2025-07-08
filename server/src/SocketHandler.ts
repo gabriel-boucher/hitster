@@ -2,7 +2,7 @@ import { Server, Socket } from "socket.io";
 import { v4 as uuidv4 } from "uuid";
 import {GameInterface, CardInterface, TokenInterface} from "../../shared/Interfaces";
 import { gameStates, socketEvents, initialGameState } from "../../shared/Constants";
-import { isCard } from "../../shared/utils";
+import { getActivePlayerId, isCard, isToken } from "../../shared/utils";
 import { cardsFetched, errorMessages } from "./Constants";
 import useGameRules from "./GameRules";
 
@@ -35,15 +35,19 @@ export default function useSocketHandler(
       socket.join(roomId);
       socket.data.roomId = roomId;
 
-      game.players.push({ socketId: socket.id, name: playerName });
+      if (game.players.length === 0) {
+        game.players.push({ socketId: socket.id, name: playerName, active: true });
+      } else {
+        game.players.push({ socketId: socket.id, name: playerName, active: false });
+      }
 
       if (game.gameState === gameStates.PLAYING) {
-        // Assign a starting card to new player
+        // Assign a starting card to the new player
         game.items.findLast(
-          (item) => !item.playerId && item.id !== game.activeCard.id
+          (item) => isCard(item) && !item.playerId && !item.active
         )!.playerId = socket.id;
 
-        // Adds two tokens assigned the new players
+        // Assigns two tokens to the new player
         Array.from({ length: 2 }).forEach(() => {
           game.items.unshift({
             id: uuidv4(),
@@ -67,11 +71,16 @@ export default function useSocketHandler(
     const cards: CardInterface[] = cardsFetched.map((card, index, arr) => ({
       ...card,
       id: uuidv4(),
+      active: false,
       playerId:
         index >= arr.length - game.players.length
           ? game.players[arr.length - 1 - index].socketId
           : null,
     }));
+
+    cards.findLast(
+      (item): item is CardInterface => isCard(item) && item.playerId === null
+    )!.active = true;
 
     const tokens: TokenInterface[] = game.players.flatMap((player) =>
       Array.from({ length: 2 }, () => ({
@@ -85,9 +94,7 @@ export default function useSocketHandler(
     game = {
       ...game,
       gameState: gameStates.PLAYING,
-      activePlayer: game.players[0],
       items: [...tokens, ...cards],
-      activeCard: cards.filter((card) => card.playerId === null).at(-1)!,
     };
 
     rooms[roomId] = game;
@@ -102,13 +109,17 @@ export default function useSocketHandler(
 
     rooms[roomId] = game;
     io.to(roomId).emit(socketEvents.UPDATE_GAME_STATE, game);
+    logItems(game.items);
   }
 
   function nextTurn(this: Socket, game: GameInterface) {
     const socket = this;
     const roomId = socket.data.roomId;
 
-    game = useGameRules(game).nextTurn();
+    if (!roomId || !rooms[roomId]) return;
+
+    const { nextTurn } = useGameRules(game);
+    game = nextTurn();
 
     rooms[roomId] = game;
     io.to(roomId).emit(socketEvents.UPDATE_GAME_STATE, game);
@@ -124,19 +135,18 @@ export default function useSocketHandler(
     const game = rooms[roomId];
 
     if (game.gameState === gameStates.PLAYING) {
-      if (game.activePlayer.socketId === socket.id) {
+      if (socket.id === getActivePlayerId(game.players)) {
         const activePlayerIndex = game.players.findIndex(
           (player) => player.socketId === socket.id
         );
-        game.activePlayer =
-          game.players[(activePlayerIndex + 1) % game.players.length];
+        game.players[(activePlayerIndex + 1) % game.players.length].active = true;
       }
 
       game.items = game.items.filter((item) => item.playerId !== socket.id);
 
-      game.activeCard = game.items.findLast(
+      game.items.findLast(
         (item): item is CardInterface => isCard(item) && item.playerId === null
-      )!;
+      )!.active = true;
     }
 
     game.players = game.players.filter(
@@ -145,6 +155,17 @@ export default function useSocketHandler(
 
     rooms[roomId] = game;
     io.to(roomId).emit(socketEvents.UPDATE_GAME_STATE, game);
+  }
+
+  function logItems(items: (CardInterface | TokenInterface)[]) {
+    items.forEach((item) => {
+      if (isToken(item)) {
+        console.log(`Token ${item.id} - Player ${item.playerId} - Active: ${item.active} - ActivePlayerId: ${item.activePlayerId}`);
+      } else {
+        console.log(`Card ${item.id} - Player ${item.playerId}`);
+      }
+    });
+    console.log("")
   }
 
   return {

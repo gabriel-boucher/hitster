@@ -19,5 +19,4 @@ export const initialGameState = {
   players: [],
   activePlayer: {} as PlayerInterface,
   items: [],
-  activeCard: {} as CardInterface,
 };

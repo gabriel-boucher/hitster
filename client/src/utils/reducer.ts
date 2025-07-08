@@ -37,22 +37,10 @@ export const reducer = (state: State, action: Action) => {
         players: action.players,
       };
     }
-    case reducerCases.SET_ACTIVE_PLAYER: {
-      return {
-        ...state,
-        activePlayer: action.activePlayer,
-      };
-    }
     case reducerCases.SET_ITEMS: {
       return {
         ...state,
         items: action.items,
-      };
-    }
-    case reducerCases.SET_ACTIVE_CARD: {
-      return {
-        ...state,
-        activeCard: action.activeCard,
       };
     }
     case reducerCases.SET_IS_DRAGGING: {

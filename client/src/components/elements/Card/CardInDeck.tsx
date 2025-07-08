@@ -8,11 +8,11 @@ interface CardProps {
 }
 
 export default function CardInDeck({ card, isClickedPlayer }: CardProps) {
-  const [{ activeCard, isDragging }] = useStateProvider();
+  const [{ isDragging }] = useStateProvider();
 
   const cardStyle = {
     backgroundImage:
-          card.id === activeCard.id
+          card.active
               ? `url("src/assets/hitster_logo_square.webp")`
               : `url(${card.albumCover})`
   };
@@ -20,7 +20,7 @@ export default function CardInDeck({ card, isClickedPlayer }: CardProps) {
   return (
     <Container $isDragging={isDragging}>
       <Card style={{...cardStyle}}>
-        {card.id !== activeCard.id && (
+        {!card.active && (
           <Details $isClickedPlayer={isClickedPlayer}>
             <div className="date">{card.date}</div>
             <div className="song">{card.song}</div>

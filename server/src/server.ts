@@ -35,3 +35,8 @@ io.on("connection", (socket) => {
   socket.on(socketEvents.NEXT_TURN, nextTurn);
   socket.on("disconnect", disconnect);
 });
+
+/* Items
+Start: items = [tokens, stackCards, playerCards]
+       activeCard = stackCards.at(-1)
+ */

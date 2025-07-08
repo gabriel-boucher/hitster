@@ -1,16 +1,16 @@
 import { v4 as uuidv4 } from "uuid";
 import { CardInterface, GameInterface, TokenInterface } from "../../shared/Interfaces";
-import { isCard, isToken } from "../../shared/utils";
+import { getActiveCard, getActivePlayerId, isCard, isToken } from "../../shared/utils";
+import { Console } from "console";
+import { get } from "http";
 
 export default function useGameRules({
   gameState,
   players,
-  activePlayer,
   items,
-  activeCard,
 }: GameInterface) {
   function nextTurn() {
-    if (activeCard.playerId !== null) {
+    if (getActiveCard(items).playerId !== null) {
       const validTokens = getValidTokens();
 
       if (isCardRightAnswer()) {
@@ -23,22 +23,22 @@ export default function useGameRules({
         items = refillCards();
       }
 
-      activeCard = getNextActiveCard();
-      activePlayer = getNextActivePlayer();
+      setNextActiveCard();
+      setNextActivePlayer();
     }
-    return { gameState, players, activePlayer, items, activeCard };
+    return { gameState, players, items };
   }
 
   function isCardRightAnswer() {
     const playerCards = items.filter(
       (item): item is CardInterface =>
-        isCard(item) && item.playerId === activePlayer.socketId
+        isCard(item) && item.playerId === getActivePlayerId(players)
     );
     const activeCardindex = playerCards.findIndex(
-      (card) => card.id === activeCard.id
+      (card) => card.active
     );
 
-    const activeDate = parseInt(activeCard.date);
+    const activeDate = parseInt(getActiveCard(items).date);
     const beforeDate =
       activeCardindex > 0
         ? parseInt(playerCards[activeCardindex - 1].date)
@@ -76,15 +76,16 @@ export default function useGameRules({
     );
     const newPlayerCards = items.filter(
       (item): item is CardInterface =>
-        isCard(item) && item.playerId !== null && item.id !== activeCard.id
+        isCard(item) && item.playerId !== null && !item.active
     );
 
     // Duplicate the active card for each player
     validTokens.forEach((token) => {
       newPlayerCards.push({
-        ...activeCard,
+        ...getActiveCard(items),
         id: uuidv4(),
         playerId: token.playerId,
+        active: false,
       });
     });
 
@@ -104,8 +105,8 @@ export default function useGameRules({
   function getValidTokens() {
     const activeItems = items.filter((item) =>
       isCard(item)
-        ? item.playerId === activePlayer.socketId
-        : item.activePlayerId === activePlayer.socketId
+        ? item.playerId === getActivePlayerId(players)
+        : item.activePlayerId === getActivePlayerId(players)
     );
     const validTokens: TokenInterface[] = [];
 
@@ -116,6 +117,7 @@ export default function useGameRules({
 
       const prevCard = i > 0 ? activeItems[i - 1] : null;
       const nextCard = i < activeItems.length - 1 ? activeItems[i + 1] : null;
+      const activeCard = getActiveCard(items);
 
       const isValidPosition =
         // Case 1: First item, only check next card
@@ -160,20 +162,22 @@ export default function useGameRules({
     return [...items, ...spareCards];
   }
 
-  function getNextActiveCard() {
-    const newActiveCard = items.findLast(
+  function setNextActiveCard() {
+    items.forEach(
+      (item) => isCard(item) && (item.active = false)
+    );
+    items.findLast(
       (item): item is CardInterface => isCard(item) && item.playerId === null
-    )!;
-
-    return newActiveCard;
+    )!.active = true;
   }
 
-  function getNextActivePlayer() {
+  function setNextActivePlayer() {
     const activePlayerIndex = players.findIndex(
-      (player) => player.socketId === activePlayer.socketId
+      (player) => player.active
     );
 
-    return players[(activePlayerIndex + 1) % players.length];
+    players[activePlayerIndex].active = false;
+    players[(activePlayerIndex + 1) % players.length].active = true;
   }
 
   return { nextTurn };

@@ -3,6 +3,7 @@ import { gameStates } from "./Constants";
 export interface PlayerInterface {
   socketId: string;
   name: string;
+  active: boolean;
 }
 
 export interface CardInterface {
@@ -11,6 +12,7 @@ export interface CardInterface {
   artist: string;
   date: string;
   albumCover: string;
+  active: boolean;
   playerId: string | null;
 }
 
@@ -24,7 +26,5 @@ export interface TokenInterface {
 export interface GameInterface {
   gameState: gameStates;
   players: PlayerInterface[];
-  activePlayer: PlayerInterface;
   items: (CardInterface | TokenInterface)[];
-  activeCard: CardInterface;
 }

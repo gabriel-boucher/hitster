@@ -27,7 +27,7 @@ export default function ActiveCard({
   handleMouseOver,
   handleMouseDown,
 }: CardProps) {
-  const [{ activeCard, isDragging }] = useStateProvider();
+  const [{ isDragging }] = useStateProvider();
   const cardRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -52,10 +52,10 @@ export default function ActiveCard({
     backgroundImage: `url(${card.albumCover})`,
     border: "none",
   };
-  if (isDragging && card.id === activeCard.id) {
+  if (isDragging && card.active) {
     style.backgroundImage = "none";
     style.border = "2px solid white";
-  } else if (card.id === activeCard.id) {
+  } else if (card.active) {
     style.backgroundImage = `url("src/assets/hitster_logo_square.webp")`;
     style.border = "none";
   }

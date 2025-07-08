@@ -15,11 +15,10 @@ export function getActiveItems(
 }
 
 export function moveActiveCardToBoard(
-  items: (CardInterface | TokenInterface)[],
-  activeCard: CardInterface
+  items: (CardInterface | TokenInterface)[]
 ) {
   const newItems = items.map((item) =>
-    isCard(item) && item.id === activeCard.id
+    isCard(item) && item.active
       ? { ...item, playerId: "board" }
       : item
   );
@@ -28,11 +27,10 @@ export function moveActiveCardToBoard(
 }
 
 export function moveActiveCardToStack(
-  items: (CardInterface | TokenInterface)[],
-  activeCard: CardInterface
+  items: (CardInterface | TokenInterface)[]
 ) {
   const newItems = items.map((item) =>
-    isCard(item) && item.id === activeCard.id
+    isCard(item) && item.active
       ? { ...item, playerId: null }
       : item
   );

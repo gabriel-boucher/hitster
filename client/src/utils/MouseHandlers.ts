@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import { useStateProvider } from "./StateProvider";
 import { CardInterface, TokenInterface } from "@shared/Interfaces";
 import { socketEvents } from "@shared/Constants";
@@ -12,15 +12,17 @@ import {
   moveTokenToPlayer,
   moveTokensWithWrongPositionToPlayers,
 } from "./ItemsManipulation";
-import { isToken } from "@shared/utils";
+import { getActiveCard, getActivePlayerId, isCard, isToken } from "@shared/utils";
 import { reducerCases } from "./Constants";
 
 export default function useMouseHandlers(
   setDragPosition: (position: { x: number; y: number }) => void,
 ) {
   const [
-    { socket, gameState, players, activePlayer, items, activeCard, isDragging }, dispatch
+    { socket, gameState, players, items, isDragging }, dispatch
   ] = useStateProvider();
+
+  const lastEmitTime = useRef(0);
 
   const {
     isActiveCardInBoard,
@@ -31,7 +33,7 @@ export default function useMouseHandlers(
 
   const handleTokenLogic = useCallback(
     (newItems: (CardInterface | TokenInterface)[]) => {
-      const activeItems = getActiveItems(newItems, activePlayer.socketId);
+      const activeItems = getActiveItems(newItems, getActivePlayerId(players));
 
       for (let i = 0; i < activeItems.length - 1; i++) {
         const current = activeItems[i];
@@ -42,8 +44,8 @@ export default function useMouseHandlers(
         if (isToken(current) && isToken(next)) {
           active = current.active ? next : current;
         } else if (
-          (isToken(current) && activeCard.id === next.id) ||
-          (isToken(next) && activeCard.id === current.id)
+          (isToken(current) && isCard(next) && next.active) ||
+          (isToken(next) && isCard(current) && current.active)
         ) {
           active = isToken(current) ? current : next;
         }
@@ -53,28 +55,28 @@ export default function useMouseHandlers(
         }
       }
     },
-    [activePlayer, activeCard]
+    [players]
   );
 
   const handleMouseClick = useCallback(
     (clickToken: TokenInterface) => {
+      if (socket.id === getActivePlayerId(players)) return;
+
       const newItems = setActiveToken([...items], clickToken);
       socket.emit(socketEvents.UPDATE_GAME_STATE, {
         gameState,
         players,
-        activePlayer,
         items: newItems,
-        activeCard,
       });
     },
-    [socket, gameState, players, activePlayer, items, activeCard]
+    [socket, gameState, players, items]
   );
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent<HTMLDivElement>, downCard: CardInterface) => {
       if (
-        socket.id === activePlayer.socketId &&
-        downCard.id === activeCard.id
+        socket.id === getActivePlayerId(players) &&
+        downCard.active
       ) {
         dispatch({ type: reducerCases.SET_IS_DRAGGING, isDragging: true });
         setDragPosition({
@@ -82,13 +84,11 @@ export default function useMouseHandlers(
           y: e.clientY,
         });
         if (isActiveCardInStack()) {
-          const newItems = moveActiveCardToBoard([...items], activeCard);
+          const newItems = moveActiveCardToBoard([...items]);
           socket.emit(socketEvents.UPDATE_GAME_STATE, {
             gameState,
             players,
-            activePlayer,
             items: newItems,
-            activeCard,
           });
         }
       }
@@ -97,9 +97,7 @@ export default function useMouseHandlers(
       socket,
       gameState,
       players,
-      activePlayer,
       items,
-      activeCard,
       dispatch,
       setDragPosition,
       isActiveCardInStack,
@@ -125,13 +123,11 @@ export default function useMouseHandlers(
       dispatch({ type: reducerCases.SET_IS_DRAGGING, isDragging: false });
       setDragPosition({ x: 0, y: 0 });
       if (isActiveCardInBoard()) {
-        const newItems = moveActiveCardToStack([...items], activeCard);
+        const newItems = moveActiveCardToStack([...items]);
         socket.emit(socketEvents.UPDATE_GAME_STATE, {
           gameState,
           players,
-          activePlayer,
           items: newItems,
-          activeCard,
         });
       }
     }
@@ -140,9 +136,7 @@ export default function useMouseHandlers(
     socket,
     gameState,
     players,
-    activePlayer,
     items,
-    activeCard,
     dispatch,
     setDragPosition,
     isActiveCardInBoard,
@@ -152,7 +146,7 @@ export default function useMouseHandlers(
     if (!socket.id) return;
     let newItems;
     if (isDragging) {
-      newItems = moveActiveCardToBoard([...items], activeCard);
+      newItems = moveActiveCardToBoard([...items]);
     } else {
       newItems = moveTokenToPlayer([...items], socket.id);
     }
@@ -160,18 +154,14 @@ export default function useMouseHandlers(
     socket.emit(socketEvents.UPDATE_GAME_STATE, {
       gameState,
       players,
-      activePlayer,
       items: newItems,
-      activeCard,
     });
   }, [
     isDragging,
     socket,
     gameState,
     players,
-    activePlayer,
     items,
-    activeCard,
   ]);
 
   const handleMouseDraggingOver = useCallback(
@@ -180,32 +170,33 @@ export default function useMouseHandlers(
       over: CardInterface | TokenInterface
     ) => {
       if (!isOverActiveCard(over)) {
-        const newItems = items.filter((item) => item.id !== activeCard.id);
-        const newIndex = getNewIndex(e, newItems, over);
+        const now = Date.now();
+        if (now - lastEmitTime.current > 50) {
+          lastEmitTime.current = now;
 
-        newItems.splice(newIndex, 0, {
-          ...activeCard,
-          playerId: activePlayer.socketId,
-        });
-
-        handleTokenLogic(newItems);
-
-        socket.emit(socketEvents.UPDATE_GAME_STATE, {
-          gameState,
-          players,
-          activePlayer,
-          items: newItems,
-          activeCard,
-        });
+          const newItems = items.filter((item) => isToken(item) || (isCard(item) && !item.active));
+          const newIndex = getNewIndex(e, newItems, over);
+  
+          newItems.splice(newIndex, 0, {
+            ...getActiveCard(items),
+            playerId: getActivePlayerId(players),
+          });
+  
+          handleTokenLogic(newItems);
+  
+          socket.emit(socketEvents.UPDATE_GAME_STATE, {
+            gameState,
+            players,
+            items: newItems,
+          });
+        }
       }
     },
     [
       socket,
       gameState,
       players,
-      activePlayer,
       items,
-      activeCard,
       isOverActiveCard,
       getNewIndex,
       handleTokenLogic,
@@ -218,7 +209,7 @@ export default function useMouseHandlers(
       over: CardInterface | TokenInterface
     ) => {
       if (!socket.id) return;
-      if (activePlayer.socketId !== socket.id) {
+      if (socket.id !== getActivePlayerId(players)) {
         const result = getPlayerToken([...items], socket.id);
         if (!result) return;
         const [newItems, activeToken] = result;
@@ -226,7 +217,7 @@ export default function useMouseHandlers(
 
         newItems.splice(newIndex, 0, {
           ...activeToken,
-          activePlayerId: activePlayer.socketId,
+          activePlayerId: getActivePlayerId(players),
         });
 
         handleTokenLogic(newItems);
@@ -234,9 +225,7 @@ export default function useMouseHandlers(
         socket.emit(socketEvents.UPDATE_GAME_STATE, {
           gameState,
           players,
-          activePlayer,
           items: newItems,
-          activeCard,
         });
       }
     },
@@ -244,9 +233,7 @@ export default function useMouseHandlers(
       socket,
       gameState,
       players,
-      activePlayer,
       items,
-      activeCard,
       getNewIndex,
       handleTokenLogic,
     ]

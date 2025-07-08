@@ -9,17 +9,17 @@ interface PlayerProps {
 } 
 
 export default function PlayerBar({ setHoveredPlayerId, setIsClickedPlayer }: PlayerProps) {
-  const [{ players, activePlayer }] = useStateProvider();
+  const [{ players }] = useStateProvider();
 
   return useMemo(
     () => (
       <Container>
         {Object.values(players).map((player) => (
-          <PlayerInGame key={player.socketId} player={player} isActivePlayer={activePlayer.socketId === player.socketId} setHoveredPlayerId={setHoveredPlayerId} setIsClickedPlayer={setIsClickedPlayer}/>
+          <PlayerInGame key={player.socketId} player={player} isActivePlayer={player.active} setHoveredPlayerId={setHoveredPlayerId} setIsClickedPlayer={setIsClickedPlayer}/>
         ))}
       </Container>
     ),
-    [players, activePlayer, setHoveredPlayerId, setIsClickedPlayer]
+    [players, setHoveredPlayerId, setIsClickedPlayer]
   );
 }
 

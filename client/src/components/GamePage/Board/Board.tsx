@@ -6,6 +6,7 @@ import Button from "src/components/elements/Button";
 import Next from "src/components/icons/Next";
 import { socketEvents } from "@shared/Constants";
 import { JSX } from "react";
+import { getActivePlayerId } from "@shared/utils";
 
 interface Props {
     handleMouseDown: (e: React.MouseEvent<HTMLDivElement>, card: CardInterface) => void;
@@ -14,21 +15,19 @@ interface Props {
 }
 
 export default function Board({ handleMouseDown, handleMouseLeave, activePlayerItemsComponent }: Props) {
-    const [{ socket, gameState, players, activePlayer, items, activeCard, }] = useStateProvider();
+    const [{ socket, gameState, players, items }] = useStateProvider();
 
     function handleNextTurn() {
         socket.emit(socketEvents.NEXT_TURN, {
           gameState,
           players,
-          activePlayer,
           items,
-          activeCard,
         });
       }
 
   return (
       <Container>
-        {socket.id === activePlayer.socketId ? (
+        {socket.id === getActivePlayerId(players) ? (
             <>
               <StackCards handleMouseDown={handleMouseDown} handleMouseLeave={handleMouseLeave}/>
               <NextButton>

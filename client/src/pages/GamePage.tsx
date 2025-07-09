@@ -26,7 +26,7 @@ export default function GamePage() {
     handleMouseLeave,
     handleMouseDraggingOver,
     handleMouseOver,
-  } = useMouseHandlers(setDragPosition);
+  } = useMouseHandlers(activeCardWidth, setDragPosition);
 
   const activePlayerItemsComponent = ActivePlayerItems({
     setActiveCardWidth,

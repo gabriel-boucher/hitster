@@ -13,40 +13,33 @@ export default function DraggableCard({
   const [{ isDragging }] = useStateProvider();
   return (
     <>
-    {isDragging && (
-      <Card
-        style={{
-          left: dragPosition.x - (0.8 * activeCardWidth) / 2,
-          top: dragPosition.y - (0.8 * activeCardWidth) / 2,
-          width: activeCardWidth,
-          position: "absolute",
-          zIndex: "1000",
-          pointerEvents: "none",
-          willChange: "transform",
-        }}
-      >
-        <div className="card-container"></div>
-      </Card>
-    )}
+      {isDragging && (
+        <Card
+          style={{
+            left: dragPosition.x - activeCardWidth / 2,
+            top: dragPosition.y - activeCardWidth / 2,
+            width: activeCardWidth,
+          }}
+        ></Card>
+      )}
     </>
   );
 }
 
 const Card = styled.div`
   aspect-ratio: 1/1;
+  position: absolute;
+
+  border: 1px solid white;
+  border-radius: 5%;
+
+  background-image: url("src/assets/hitster_logo_square.webp");
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  cursor: grabbing;
   user-select: none;
-
-  .card-container {
-    aspect-ratio: 1/1;
-    width: 80%;
-
-    border: 1px solid white;
-    border-radius: 5%;
-
-    background-image: url("src/assets/hitster_logo_square.webp");
-    background-repeat: no-repeat;
-    background-size: cover;
-
-    cursor: grabbing;
-  }
+  pointer-events: none;
+  z-index: 1000;
+  will-change: transform;
 `;

@@ -32,7 +32,7 @@ export default function ActiveCard({
 
   useEffect(() => {
     if (cardRef.current) {
-      setActiveCardWidth(cardRef.current.offsetWidth);
+      setActiveCardWidth(cardRef.current.offsetWidth * 0.8);
     }
   });
 

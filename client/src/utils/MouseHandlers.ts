@@ -16,6 +16,7 @@ import { getActiveCard, getActivePlayerId, isCard, isToken } from "@shared/utils
 import { reducerCases } from "./Constants";
 
 export default function useMouseHandlers(
+  activeCardWidth: number,
   setDragPosition: (position: { x: number; y: number }) => void,
 ) {
   const [
@@ -108,15 +109,24 @@ export default function useMouseHandlers(
     (e: MouseEvent) => {
       if (isDragging) {
         requestAnimationFrame(() => {
+          const halfWidth = activeCardWidth / 2;
+          const halfHeight = activeCardWidth / 2;
+
+          console.log(activeCardWidth);
+  
+          const clampedX = Math.max(halfWidth, Math.min(e.clientX, window.innerWidth - halfWidth - 3));
+          const clampedY = Math.max(halfHeight, Math.min(e.clientY, window.innerHeight - halfHeight  - 3));
+  
           setDragPosition({
-            x: e.clientX,
-            y: e.clientY,
+            x: clampedX,
+            y: clampedY,
           });
         });
       }
     },
-    [isDragging, setDragPosition]
+    [activeCardWidth,isDragging, setDragPosition]
   );
+  
 
   const handleMouseUp = useCallback(() => {
     if (isDragging) {

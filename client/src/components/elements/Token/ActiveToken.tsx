@@ -54,7 +54,7 @@ export default function ActiveToken({
 }
 
 const Token = styled.div`
-  aspect-ratio: 0.7;
+  aspect-ratio: 1; // gotta keep the size to prevent flickering
   height: 100%;
   width: auto;
 
@@ -88,7 +88,7 @@ const Token = styled.div`
 
   .token-container {
     aspect-ratio: 1/1;
-    width: 80%;
+    width: 60%;
 
     display: flex;
     justify-content: center;

@@ -127,9 +127,10 @@ export default function useSocketHandler(
 
   function disconnect(this: Socket) {
     const socket = this;
-    console.log(`User Disconnected: ${socket.id}`);
     const roomId = socket.data.roomId;
-
+    
+    console.log(`User Disconnected: ${socket.id}`);
+    
     if (!roomId || !rooms[roomId]) return;
 
     const game = rooms[roomId];

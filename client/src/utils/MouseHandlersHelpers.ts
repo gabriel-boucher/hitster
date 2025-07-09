@@ -23,7 +23,7 @@ export function useMouseHandlersHelpers() {
         isToken(item) &&
         item.playerId === socket.id &&
         item.activePlayerId === getActivePlayerId(players) &&
-        item.active === false
+        !item.active
     );
   }
 
@@ -35,7 +35,7 @@ export function useMouseHandlersHelpers() {
     const rect = e.currentTarget.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
 
-    if (
+    if ( // if mouse entering the deck
       (isDragging && isActiveCardInBoard()) ||
       (!isDragging && isActiveTokenEntering())
     ) {
@@ -43,8 +43,10 @@ export function useMouseHandlersHelpers() {
         (item) => item.id === over.id
       );
       return mouseX < rect.width / 2 ? overIndex : overIndex + 1;
-    } else {
-      const overIndex = items.findIndex((item) => item.id === over.id);
+    } else { // if mouse already in deck
+      const overIndex = items.findIndex(
+        (item) => item.id === over.id
+      );
       return overIndex;
     }
   }

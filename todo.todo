@@ -36,7 +36,7 @@ Server Logic:
 Card and token UI:
     ✔ Token in deck size overflowing (move tokens horizontally) @started(25-06-27 19:07) @done(25-06-27 19:52) @lasted(45m11s)
     ☐ Make PlayerCards and ActivePlayerItems the same thing
-    ☐ Flickering bug when trying to place a token
+    ✔ Flickering bug when trying to place a token @done(25-07-08 23:29)
     ✔ Drag slows down after dragging a card over the deck for too long @done(25-07-07 21:48)
     ☐ Cards drag and drop limited by window size
 

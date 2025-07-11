@@ -51,8 +51,8 @@ export default function GamePage() {
   return (
     <Container>
       <DisableHoverContainer className={isDragging ? "disable-hover" : ""}>
-        <Header setHoveredPlayerId={setHoveredPlayerId} setIsClickedPlayer={setIsClickedPlayer} />
-        <Board handleMouseDown={handleMouseDown} handleMouseLeave={handleMouseLeave} activePlayerItemsComponent={activePlayerItemsComponent} />
+        <Header />
+        <Board setHoveredPlayerId={setHoveredPlayerId} setIsClickedPlayer={setIsClickedPlayer} handleMouseDown={handleMouseDown} handleMouseLeave={handleMouseLeave} activePlayerItemsComponent={activePlayerItemsComponent} />
         <SpotifyPlayer />
       </DisableHoverContainer>
       <Deck hoveredPlayerId={hoveredPlayerId} isClickedPlayer={isClickedPlayer} activePlayerItemsComponent={activePlayerItemsComponent} />

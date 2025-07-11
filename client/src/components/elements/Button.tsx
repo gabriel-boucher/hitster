@@ -54,4 +54,5 @@ const ButtonWrapper = styled.div`
   justify-content: center;
   align-items: center;
   height: 10.2vh;
+  aspect-ratio: 1/1;
 `;

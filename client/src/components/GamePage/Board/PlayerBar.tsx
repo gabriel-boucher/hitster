@@ -24,8 +24,9 @@ export default function PlayerBar({ setHoveredPlayerId, setIsClickedPlayer }: Pl
 }
 
 const Container = styled.div`
-  height: 11vh;
+  height: 100%;
   display: flex;
-  justify-content: left;
-  align-items: center;
+  flex-direction: column;
+  gap: 1vh;
+  width: 22vh;
 `;

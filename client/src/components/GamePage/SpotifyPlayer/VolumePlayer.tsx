@@ -56,6 +56,7 @@ const VolumeSlider = styled(Slider)`
 
 const Volume = styled.div`
   display: flex;
+  margin-bottom: -2px;
 `
 
 const Player = styled.div<{ $sliderProgress: number }>`

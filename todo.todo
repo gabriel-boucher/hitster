@@ -12,10 +12,12 @@ GamePage UI:
     ✔ Prevent hover animations on components when dragging card @started(25-06-21 18:06) @done(25-06-25 20:48) @lasted(4d2h42m30s)
     ✔ Use SVG for icons @started(25-06-25 23:35) @done(25-06-26 00:32) @lasted(57m42s)
     ☐ Add a winning modal
+    ☐ Add touch events
 
 HomePage/LobbyPage UI:
+    ✔ Better UI (AI background image) @done(25-07-17 20:51)
+    ✔ Chose name from LobbyPage @started(25-07-15 21:06) @done(25-07-17 20:51) @lasted(1d23h45m17s)
     ☐ Select player picture
-    ☐ Better UI (AI background image)
 
 Player UI:
     ✔ Hovering on a player shows his cards with dates, and clicking on a player shows his cards with song/artist (resets when stop hovering) @started(25-06-25 22:01) @done(25-06-25 23:23) @lasted(1h22m12s)
@@ -47,6 +49,7 @@ Clean Code:
     ☐ CSS is all over the place
 
 Spotify API:
+    ✔ Authorization @started(25-07-15 21:06) @done(25-07-16 00:52) @lasted(3h46m52s)
 
 Settings:
     ☐ Theme (ThemeProvider for colors)

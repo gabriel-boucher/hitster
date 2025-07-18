@@ -1,28 +1,60 @@
 import styled from "styled-components";
 import { useStateProvider } from "../utils/StateProvider";
 import { socketEvents } from "@shared/Constants";
+import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { PINK_COLOR__HEX } from "src/utils/Constants";
 
 export default function LobbyPage() {
   const [{ socket, players }] = useStateProvider();
+  const [userName, setUserName] = useState("");
+  const { search } = useLocation();
+  const params = new URLSearchParams(search);
+  const roomId = params.get("code");
+
+  useEffect(() => {
+    if (roomId) {
+      socket.emit(socketEvents.JOIN_ROOM, roomId);
+    }
+  }, [roomId, socket]);
+
+  function changeName() {
+    socket.emit(socketEvents.CHANGE_NAME, userName);
+  }
 
   function startGame() {
+    if (players.some((player) => !player.name)) return;
     socket.emit(socketEvents.START_GAME);
   }
 
   return (
     <Container>
-      <img src="src/assets/hitster_title_logo.png" alt="Hitster Title Logo" />
-      {players[0].socketId === socket.id && (
-        <button onClick={startGame}>Start Game</button>
-      )}
-      <div className="player-list">
+      <Logo>HITSTER</Logo>
+      <Entries>
+        <input
+          className="username"
+          type="text"
+          value={userName}
+          onChange={(e) => setUserName(e.target.value)}
+          placeholder="Enter your name..."
+        />
+        <button className="chose-name-button" onClick={changeName}>
+          Chose Name
+        </button>
+      </Entries>
+
+      <PlayerList>
         <h2>Connected Players</h2>
         <ul>
-          {players.map((player) => (
+          {players.filter((player) => player.name).map((player) => (
             <li key={player.socketId}>{player.name}</li>
           ))}
         </ul>
-      </div>
+      </PlayerList>
+
+      {players.length > 0 && players[0].socketId === socket.id && (
+        <StartButton onClick={startGame}>Start Game</StartButton>
+      )}
     </Container>
   );
 }
@@ -32,56 +64,120 @@ const Container = styled.div`
   width: 100vw;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  gap: 3%;
-  background-color: #0a1d36;
+  justify-content: center;
   color: white;
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  
-  img {
-    height: 20%;
-    aspect-ratio: 401/112;
-    margin-bottom: 50px;
+  font-family: 'Poppins', sans-serif;
+`;
+
+const Logo = styled.h1`
+  font-size: 8rem;
+  margin-bottom: 2rem;
+  color: ${PINK_COLOR__HEX};
+  text-shadow: 0 0 10px ${PINK_COLOR__HEX}, 0 0 20px ${PINK_COLOR__HEX};
+  animation: pulse 2s infinite;
+
+  @keyframes pulse {
+    0% { text-shadow: 0 0 10px ${PINK_COLOR__HEX}; }
+    50% { text-shadow: 0 0 30px ${PINK_COLOR__HEX}; }
+    100% { text-shadow: 0 0 10px ${PINK_COLOR__HEX}; }
+  }
+`;
+
+const Entries = styled.div`
+  display: flex;
+  width: 60%;
+  max-width: 500px;
+  margin-bottom: 2rem;
+
+  .username {
+    flex: 1;
+    padding: 1rem;
+    font-size: 1.2rem;
+    border-radius: 12px 0 0 12px;
+    border: 2px solid #00f2ff;
+    background-color: #101c3b;
+    color: white;
+    outline: none;
+
+    &::placeholder {
+      color: #cccccc;
+    }
+
+    &:focus {
+      box-shadow: 0 0 10px #00f2ff;
+    }
   }
 
-  button {
-    background-color: rgb(255, 0, 98);
-    border-radius: 5px;
-    border: none;
+  .chose-name-button {
+    /* background: linear-gradient(to right, #00f2ff, ${PINK_COLOR__HEX}); */
+    background-color: #00f2ff;
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: bold;
     color: white;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
+    border: 2px solid #00f2ff;
+    border-left: none;
+    border-radius: 0 12px 12px 0;
     cursor: pointer;
+    /* transition: 0.3s;
 
     &:hover {
-      background-color: rgb(255, 0, 98, 0.8);
-    }
+      transform: scale(1.05);
+      box-shadow: 0 0 10px ${PINK_COLOR__HEX};
+    } */
+  }
+`;
+
+const PlayerList = styled.div`
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid #00f2ff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  width: 60%;
+  max-width: 500px;
+  margin-bottom: 2rem;
+
+  h2 {
+    font-size: 1.3rem;
+    margin-top: 0rem;
   }
 
-  .player-list {
-    margin-top: 20px;
-    padding: 20px;
-    border: 2px solid rgb(255, 0, 98);
-    border-radius: 10px;
-    width: 50%;
+  ul {
+    list-style: none;
+    padding: 0;
 
-    h2 {
-      margin-top: 0;
-      margin-bottom: 10px;
-    }
+    li {
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.07);
+      margin: 0.3rem 0;
+      border-left: 4px solid #00f2ff;
+      border-radius: 4px;
+      transition: all 0.2s;
 
-    ul {
-      list-style-type: none;
-      padding: 0;
-
-      li {
-        padding: 5px 0;
+      &:hover {
+        background: #101c3b;
+        transform: translateX(5px);
       }
     }
+  }
+`;
+
+const StartButton = styled.button`
+  /* background: linear-gradient(to right, ${PINK_COLOR__HEX}, #00f2ff); */
+  background-color: ${PINK_COLOR__HEX};
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-bottom: 5rem;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 12px ${PINK_COLOR__HEX};
   }
 `;

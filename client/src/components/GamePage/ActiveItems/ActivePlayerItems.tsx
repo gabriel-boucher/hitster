@@ -40,7 +40,7 @@ export default function ActivePlayerItems({
     <ActivePlayerItemsContainer
       onMouseLeave={handleMouseLeave}
       style={{
-        backgroundColor: isInDeck ? 'transparent' : '#07245a',
+        backgroundColor: isInDeck ? 'transparent' : 'hsla(0, 0%, 100%, 5%)',
         maxWidth: isInDeck ? '95%' : 'none',
         width: isInDeck ? '95%' : '80vw',
       }}
@@ -77,15 +77,6 @@ export default function ActivePlayerItems({
 }
 
 const ActivePlayerItemsContainer = styled.div`
-  /* height: 20vh;
-  width: 80vw;
-  background-color: #07245a;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  padding-left: 1%;
-  padding-right: 1%; */
   height: 20vh;
   display: flex;
   justify-content: center;

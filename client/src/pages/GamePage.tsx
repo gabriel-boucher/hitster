@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import useMouseHandlers from "../utils/MouseHandlers";
-import SpotifyPlayer from "src/components/GamePage/SpotifyPlayer/SpotifyPlayer";
 import { useStateProvider } from "../utils/StateProvider";
 import Header from "src/components/GamePage/Header/Header";
 import Deck from "src/components/GamePage/Deck/Deck";
@@ -53,7 +52,6 @@ export default function GamePage() {
       <DisableHoverContainer className={isDragging ? "disable-hover" : ""}>
         <Header />
         <Board setHoveredPlayerId={setHoveredPlayerId} setIsClickedPlayer={setIsClickedPlayer} handleMouseDown={handleMouseDown} handleMouseLeave={handleMouseLeave} activePlayerItemsComponent={activePlayerItemsComponent} />
-        <SpotifyPlayer />
       </DisableHoverContainer>
       <Deck hoveredPlayerId={hoveredPlayerId} isClickedPlayer={isClickedPlayer} activePlayerItemsComponent={activePlayerItemsComponent} />
       <DraggingOverlay dragPosition={dragPosition} activeCardWidth={activeCardWidth} />
@@ -74,7 +72,7 @@ const DisableHoverContainer = styled.div`
 
 const Container = styled.div`
   height: 100vh;
-  background-color: #0a1d36;
+  /* background-color: #0a1d36; */
 
   /* &::before {
     content: "";

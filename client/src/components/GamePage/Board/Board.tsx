@@ -8,6 +8,7 @@ import { socketEvents } from "@shared/Constants";
 import { JSX } from "react";
 import { getActivePlayerId } from "@shared/utils";
 import PlayerBar from "./PlayerBar";
+import SpotifyPlayer from "../SpotifyPlayer/SpotifyPlayer";
 
 interface Props {
   setHoveredPlayerId: (playerId: string) => void;
@@ -37,6 +38,31 @@ export default function Board({
     });
   }
 
+  // return (
+  //   <Container>
+  //     <PlayerBar
+  //       setHoveredPlayerId={setHoveredPlayerId}
+  //       setIsClickedPlayer={setIsClickedPlayer}
+  //     />
+  //     {socket.id === getActivePlayerId(players) ? (
+  //       <>
+  //         <StackCards
+  //           handleMouseDown={handleMouseDown}
+  //           handleMouseLeave={handleMouseLeave}
+  //         />
+  //         <NextButton>
+  //           <Button iconComponent={Next()} handleClick={handleNextTurn} />
+  //         </NextButton>
+  //       </>
+  //     ) : (
+  //       <>
+  //         {activePlayerItemsComponent}
+  //         <Filler />
+  //       </>
+  //     )}
+  //   </Container>
+  // );
+
   return (
     <Container>
       <PlayerBar
@@ -45,10 +71,13 @@ export default function Board({
       />
       {socket.id === getActivePlayerId(players) ? (
         <>
-          <StackCards
-            handleMouseDown={handleMouseDown}
-            handleMouseLeave={handleMouseLeave}
-          />
+          <Center>
+            <StackCards
+              handleMouseDown={handleMouseDown}
+              handleMouseLeave={handleMouseLeave}
+            />
+            <SpotifyPlayer />
+          </Center>
           <NextButton>
             <Button iconComponent={Next()} handleClick={handleNextTurn} />
           </NextButton>
@@ -71,8 +100,18 @@ const NextButton = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  padding-bottom: 1vh;
+  margin-bottom: 7vh;
   width: 22vh;
+`;
+
+const Center = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12vh;
+  height: 100%;
+  margin-top: 2vh;
 `;
 
 const Container = styled.div`

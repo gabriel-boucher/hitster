@@ -1,13 +1,12 @@
 import { Action, State } from "./Interfaces";
 import { initialGameState } from "../../../shared/Constants";
-import { reducerCases } from "./Constants";
+import { getBaseUrl, reducerCases } from "./Constants";
 import { Dispatch } from "react";
 import { io } from "socket.io-client";
 
-const HOST = import.meta.env.VITE_SERVER_HOST || 'localhost';
-const PORT = parseInt(import.meta.env.VITE_SERVER_PORT || "3000");
+const isServer = true;
 
-const socket = io(`http://${HOST}:${PORT}`);
+const socket = io(getBaseUrl(isServer));
 
 export const initialState = {
   ...initialGameState,

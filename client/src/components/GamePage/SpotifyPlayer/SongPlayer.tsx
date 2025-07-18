@@ -45,6 +45,7 @@ const Playback = styled.div`
   align-items: center;
   gap: 1rem;
   color: ${WHITE_COLOR__HEX};
+  margin-bottom: 4px;
 
   .time {
     width: 2.5rem;

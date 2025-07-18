@@ -10,57 +10,61 @@ export default function useSocketHandler(
   io: Server,
   rooms: Record<string, GameInterface>
 ) {
-  function createRoom(callback: (roomId: string) => void) {
-    const roomId = uuidv4();
-    rooms[roomId] = structuredClone(initialGameState);
-    callback(roomId);
+  function changeName(this: Socket, name: string) {
+    const socket = this;
+    const roomId = socket.data.roomId;
+
+    if (!roomId || !rooms[roomId]) return;
+
+    const game = rooms[roomId];
+    game.players.find((player) => player.socketId === socket.id)!.name = name;
+
+    rooms[roomId] = game;
+    io.to(roomId).emit(socketEvents.UPDATE_GAME_STATE, game);
   }
 
   function joinRoom(
     this: Socket,
     roomId: string,
-    playerName: string,
-    callback: (error: string) => void
   ) {
     const socket = this;
+    
+    if(!rooms[roomId]) {
+      rooms[roomId] = structuredClone(initialGameState);
+    }
 
     const game = rooms[roomId];
-    if (!game) {
-      callback(errorMessages.ROOM_NOT_FOUND);
+    if (game.players.find((player) => player.socketId === socket.id)) {
       return;
-    } else if (game.players.some((player) => player.name === playerName)) {
-      callback(errorMessages.NAME_ALREADY_TAKEN);
-      return;
-    } else {
-      socket.join(roomId);
-      socket.data.roomId = roomId;
-
-      if (game.players.length === 0) {
-        game.players.push({ socketId: socket.id, name: playerName, active: true });
-      } else {
-        game.players.push({ socketId: socket.id, name: playerName, active: false });
-      }
-
-      if (game.gameState === gameStates.PLAYING) {
-        // Assign a starting card to the new player
-        game.items.findLast(
-          (item) => isCard(item) && !item.playerId && !item.active
-        )!.playerId = socket.id;
-
-        // Assigns two tokens to the new player
-        Array.from({ length: 2 }).forEach(() => {
-          game.items.unshift({
-            id: uuidv4(),
-            active: false,
-            activePlayerId: null,
-            playerId: socket.id,
-          });
-        });
-      }
-
-      io.to(roomId).emit(socketEvents.UPDATE_GAME_STATE, game);
-      callback("");
     }
+    
+    socket.join(roomId);
+    socket.data.roomId = roomId;
+
+    if (game.players.length === 0) {
+      game.players.push({ socketId: socket.id, name: "", active: true });
+    } else {
+      game.players.push({ socketId: socket.id, name: "", active: false });
+    }
+
+    // if (game.gameState === gameStates.PLAYING) {
+    //   // Assign a starting card to the new player
+    //   game.items.findLast(
+    //     (item) => isCard(item) && !item.playerId && !item.active
+    //   )!.playerId = socket.id;
+
+    //   // Assigns two tokens to the new player
+    //   Array.from({ length: 2 }).forEach(() => {
+    //     game.items.unshift({
+    //       id: uuidv4(),
+    //       active: false,
+    //       activePlayerId: null,
+    //       playerId: socket.id,
+    //     });
+    //   });
+    // }
+
+    io.to(roomId).emit(socketEvents.UPDATE_GAME_STATE, game);
   }
 
   function startGame(this: Socket) {
@@ -170,7 +174,7 @@ export default function useSocketHandler(
   }
 
   return {
-    createRoom,
+    changeName,
     joinRoom,
     startGame,
     updateGameState,

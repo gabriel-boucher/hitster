@@ -43,7 +43,7 @@ const DeckGeneric = styled.div`
   display: flex;
   justify-content: center;
   box-shadow: 0 4px 30px hsla(0, 0%, 0%, 10%);
-  background: hsla(0, 0%, 100%, 20%);
+  background: hsla(0, 0%, 100%, 5%);
   user-select: none;
   position: relative;
   margin: 0vw 1vw 0 1vw;

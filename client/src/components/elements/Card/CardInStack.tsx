@@ -6,7 +6,7 @@ interface CardProps {
   index: number;
   card: CardInterface;
   handleMouseDown: (
-    e: React.MouseEvent<HTMLDivElement>,
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
     card: CardInterface
   ) => void;
 }
@@ -19,6 +19,7 @@ export default function CardInStack({
 
   const handleMouseEvents = useMemo(() => ({
     onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => handleMouseDown(e, card),
+    onTouchStart: (e: React.TouchEvent<HTMLDivElement>) => handleMouseDown(e, card),
   }), [card, handleMouseDown]);
 
   return (

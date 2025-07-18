@@ -28,12 +28,21 @@ export function useMouseHandlersHelpers() {
   }
 
   function getNewIndex(
-    e: React.MouseEvent<HTMLDivElement>,
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
     newItems: (CardInterface | TokenInterface)[],
     over: CardInterface | TokenInterface
   ) {
     const rect = e.currentTarget.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
+
+    let clientX: number;
+
+    if ("touches" in e) {
+      clientX = e.touches[0].clientX;
+    } else {
+      clientX = e.clientX;
+    }
+
+    const mouseX = clientX - rect.left;
 
     if ( // if mouse entering the deck
       (isDragging && isActiveCardInBoard()) ||

@@ -3,10 +3,11 @@ import { useStateProvider } from "../../../utils/StateProvider";
 import CardInStack from "../../elements/Card/CardInStack";
 import { CardInterface } from "@shared/Interfaces";
 import { isCard } from "@shared/utils";
+import { useMemo } from "react";
 
 interface CardProps {
   handleMouseDown: (
-    e: React.MouseEvent<HTMLDivElement>,
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
     card: CardInterface
   ) => void;
   handleMouseLeave: () => void;
@@ -17,9 +18,15 @@ export default function StackCards({
   handleMouseLeave,
 }: CardProps) {
   const [{ items }] = useStateProvider();
+
+  const handleMouseEvents = useMemo(() => ({
+    onMouseLeave: handleMouseLeave,
+    onTouchEnd: handleMouseLeave,
+  }), [handleMouseLeave]);
+
   return (
     <Container>
-      <Stack onMouseLeave={handleMouseLeave}>
+      <Stack {...handleMouseEvents}>
         {items
           .filter((item): item is CardInterface => isCard(item) && item.playerId === null)
           .map((card, index) => (

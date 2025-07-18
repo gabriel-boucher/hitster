@@ -10,16 +10,16 @@ interface CardProps {
   setActiveCardWidth: (width: number) => void;
   handleMouseClick: (token: TokenInterface) => void;
   handleMouseDown: (
-    e: React.MouseEvent<HTMLDivElement>,
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
     card: CardInterface
   ) => void;
   handleMouseLeave: () => void;
   handleMouseDraggingOver: (
-    e: React.MouseEvent<HTMLDivElement>,
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
     item: CardInterface | TokenInterface
   ) => void;
   handleMouseOver: (
-    e: React.MouseEvent<HTMLDivElement>,
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
     item: CardInterface | TokenInterface
   ) => void;
 }
@@ -39,6 +39,7 @@ export default function ActivePlayerItems({
   return (
     <ActivePlayerItemsContainer
       onMouseLeave={handleMouseLeave}
+      onTouchEnd={handleMouseLeave}
       style={{
         backgroundColor: isInDeck ? 'transparent' : 'hsla(0, 0%, 100%, 5%)',
         maxWidth: isInDeck ? '95%' : 'none',

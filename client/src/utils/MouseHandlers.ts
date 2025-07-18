@@ -74,15 +74,27 @@ export default function useMouseHandlers(
   );
 
   const handleMouseDown = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>, downCard: CardInterface) => {
+    (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>, downCard: CardInterface) => {
       if (
         socket.id === getActivePlayerId(players) &&
         downCard.active
       ) {
         dispatch({ type: reducerCases.SET_IS_DRAGGING, isDragging: true });
+
+        let clientX: number;
+        let clientY: number;
+
+        if ("touches" in e) {
+          clientX = e.touches[0].clientX;
+          clientY = e.touches[0].clientY;
+        } else {
+          clientX = e.clientX;
+          clientY = e.clientY;
+        }
+
         setDragPosition({
-          x: e.clientX,
-          y: e.clientY,
+          x: clientX,
+          y: clientY,
         });
         if (isActiveCardInStack()) {
           const newItems = moveActiveCardToBoard([...items]);
@@ -106,16 +118,17 @@ export default function useMouseHandlers(
   );
 
   const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
+    (e: MouseEvent | TouchEvent) => {
       if (isDragging) {
         requestAnimationFrame(() => {
           const halfWidth = activeCardWidth / 2;
           const halfHeight = activeCardWidth / 2;
 
-          console.log(activeCardWidth);
-  
-          const clampedX = Math.max(halfWidth, Math.min(e.clientX, window.innerWidth - halfWidth - 3));
-          const clampedY = Math.max(halfHeight, Math.min(e.clientY, window.innerHeight - halfHeight  - 3));
+          const clientX = e instanceof MouseEvent ? e.clientX : e.touches[0].clientX;
+          const clientY = e instanceof MouseEvent ? e.clientY : e.touches[0].clientY;
+
+          const clampedX = Math.max(halfWidth, Math.min(clientX, window.innerWidth - halfWidth - 3));
+          const clampedY = Math.max(halfHeight, Math.min(clientY, window.innerHeight - halfHeight  - 3));
   
           setDragPosition({
             x: clampedX,
@@ -176,7 +189,7 @@ export default function useMouseHandlers(
 
   const handleMouseDraggingOver = useCallback(
     (
-      e: React.MouseEvent<HTMLDivElement>,
+      e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
       over: CardInterface | TokenInterface
     ) => {
       if (!isOverActiveCard(over)) {
@@ -215,7 +228,7 @@ export default function useMouseHandlers(
 
   const handleMouseOver = useCallback(
     (
-      e: React.MouseEvent<HTMLDivElement>,
+      e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
       over: CardInterface | TokenInterface
     ) => {
       if (!socket.id) return;

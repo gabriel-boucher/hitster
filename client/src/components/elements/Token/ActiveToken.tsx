@@ -7,11 +7,11 @@ interface TokenProps {
   token: TokenInterface;
   handleMouseClick: (token: TokenInterface) => void;
   handleMouseDraggingOver: (
-    e: React.MouseEvent<HTMLDivElement>,
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
     token: TokenInterface
   ) => void;
   handleMouseOver: (
-    e: React.MouseEvent<HTMLDivElement>,
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
     token: TokenInterface
   ) => void;
 }
@@ -28,6 +28,14 @@ export default function ActiveToken({
     () => ({
       onClick: () => handleMouseClick(token),
       onMouseOver: (e: React.MouseEvent<HTMLDivElement>) =>
+        isDragging
+          ? handleMouseDraggingOver(e, token)
+          : handleMouseOver(e, token),
+      onTouchStart : (e: React.TouchEvent<HTMLDivElement>) =>
+        isDragging
+          ? handleMouseDraggingOver(e, token)
+          : handleMouseOver(e, token),
+      onTouchMove : (e: React.TouchEvent<HTMLDivElement>) =>
         isDragging
           ? handleMouseDraggingOver(e, token)
           : handleMouseOver(e, token),

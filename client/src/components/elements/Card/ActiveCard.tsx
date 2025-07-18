@@ -7,15 +7,15 @@ interface CardProps {
   card: CardInterface;
   setActiveCardWidth: (width: number) => void;
   handleMouseDown: (
-    e: React.MouseEvent<HTMLDivElement>,
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
     card: CardInterface
   ) => void;
   handleMouseDraggingOver: (
-    e: React.MouseEvent<HTMLDivElement>,
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
     card: CardInterface
   ) => void;
   handleMouseOver: (
-    e: React.MouseEvent<HTMLDivElement>,
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
     card: CardInterface
   ) => void;
 }
@@ -43,6 +43,12 @@ export default function ActiveCard({
           ? handleMouseDraggingOver(e, card)
           : handleMouseOver(e, card),
       onMouseDown: (e: React.MouseEvent<HTMLDivElement>) =>
+        handleMouseDown(e, card),
+      onTouchMove: (e: React.TouchEvent<HTMLDivElement>) =>
+        isDragging
+          ? handleMouseDraggingOver(e, card)
+          : handleMouseOver(e, card),
+      onTouchStart: (e: React.TouchEvent<HTMLDivElement>) =>
         handleMouseDown(e, card),
     }),
     [card, isDragging, handleMouseOver, handleMouseDraggingOver, handleMouseDown]

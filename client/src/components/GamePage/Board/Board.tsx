@@ -14,7 +14,7 @@ interface Props {
   setHoveredPlayerId: (playerId: string) => void;
   setIsClickedPlayer: (isClicked: boolean) => void;
   handleMouseDown: (
-    e: React.MouseEvent<HTMLDivElement>,
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
     card: CardInterface
   ) => void;
   handleMouseLeave: () => void;
@@ -37,31 +37,6 @@ export default function Board({
       items,
     });
   }
-
-  // return (
-  //   <Container>
-  //     <PlayerBar
-  //       setHoveredPlayerId={setHoveredPlayerId}
-  //       setIsClickedPlayer={setIsClickedPlayer}
-  //     />
-  //     {socket.id === getActivePlayerId(players) ? (
-  //       <>
-  //         <StackCards
-  //           handleMouseDown={handleMouseDown}
-  //           handleMouseLeave={handleMouseLeave}
-  //         />
-  //         <NextButton>
-  //           <Button iconComponent={Next()} handleClick={handleNextTurn} />
-  //         </NextButton>
-  //       </>
-  //     ) : (
-  //       <>
-  //         {activePlayerItemsComponent}
-  //         <Filler />
-  //       </>
-  //     )}
-  //   </Container>
-  // );
 
   return (
     <Container>

@@ -20,10 +20,11 @@ export default function LobbyPage() {
 
   function changeName() {
     socket.emit(socketEvents.CHANGE_NAME, userName);
+    console.log("start game");
   }
 
   function startGame() {
-    if (players.some((player) => !player.name)) return;
+    // if (players.some((player) => !player.name)) return;
     socket.emit(socketEvents.START_GAME);
   }
 

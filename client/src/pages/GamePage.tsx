@@ -38,14 +38,26 @@ export default function GamePage() {
 
   useEffect(() => {
     if (isDragging) {
+      // Mouse events
       window.addEventListener("mousemove", handleMouseMove);
       window.addEventListener("mouseup", handleMouseUp);
+  
+      // Touch events
+      window.addEventListener("touchmove", handleMouseMove);
+      window.addEventListener("touchend", handleMouseUp);
+  
       return () => {
+        // Mouse events
         window.removeEventListener("mousemove", handleMouseMove);
         window.removeEventListener("mouseup", handleMouseUp);
+  
+        // Touch events
+        window.removeEventListener("touchmove", handleMouseMove);
+        window.removeEventListener("touchend", handleMouseUp);
       };
     }
   }, [isDragging, handleMouseMove, handleMouseUp]);
+  
 
   return (
     <Container>

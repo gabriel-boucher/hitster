@@ -17,7 +17,8 @@ GamePage UI:
 HomePage/LobbyPage UI:
     ✔ Better UI (AI background image) @done(25-07-17 20:51)
     ✔ Chose name from LobbyPage @started(25-07-15 21:06) @done(25-07-17 20:51) @lasted(1d23h45m17s)
-    ☐ Select player picture
+    ✔ Select player picture @done(25-07-20 22:33)
+    ☐ Find a list of user pcitures
 
 Player UI:
     ✔ Hovering on a player shows his cards with dates, and clicking on a player shows his cards with song/artist (resets when stop hovering) @started(25-06-25 22:01) @done(25-06-25 23:23) @lasted(1h22m12s)
@@ -35,6 +36,7 @@ Server Logic:
     ☐ Prevent player from closing/reloading page
     ☐ Connection logic when everybody leaves
     ☐ Reconnect player after leaving (cache with player id)
+    ☐ Prevent players from having the same name and the same profile picture
 
 Card and token UI:
     ✔ Token in deck size overflowing (move tokens horizontally) @started(25-06-27 19:07) @done(25-06-27 19:52) @lasted(45m11s)

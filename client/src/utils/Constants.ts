@@ -41,3 +41,26 @@ export function getAuthUrl() {
     return `${AUTH_BASE_URL}?client_id=${CLIENT_ID}&response_type=${RESPONSE_TYPE}&redirect_uri=${REDIRECT_URI_DEV}&scope=${SCOPE}&show_dialog=true`;
   }
 }
+
+export const PLAYERS_IMG = [
+  "red",
+  "blue",
+  "green",
+  "yellow",
+  "orange",
+  "purple",
+  "pink",
+  "brown",
+  "black",
+  "white",
+  "gray",
+  "cyan",
+  "magenta",
+  "lime",
+  "teal",
+  "navy",
+  "maroon",
+  "olive",
+  "gold",
+  "silver"
+];

@@ -15,7 +15,7 @@ export default function PlayerBar({ setHoveredPlayerId, setIsClickedPlayer }: Pl
     () => (
       <Container>
         {Object.values(players).map((player) => (
-          <PlayerInGame key={player.socketId} player={player} isActivePlayer={player.active} setHoveredPlayerId={setHoveredPlayerId} setIsClickedPlayer={setIsClickedPlayer}/>
+          <PlayerInGame key={player.socketId} player={player} setHoveredPlayerId={setHoveredPlayerId} setIsClickedPlayer={setIsClickedPlayer}/>
         ))}
       </Container>
     ),

@@ -4,6 +4,7 @@ export interface PlayerInterface {
   socketId: string;
   name: string;
   active: boolean;
+  image: string;
 }
 
 export interface CardInterface {

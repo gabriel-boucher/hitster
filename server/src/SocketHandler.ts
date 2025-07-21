@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io";
 import { v4 as uuidv4 } from "uuid";
-import {GameInterface, CardInterface, TokenInterface} from "../../shared/Interfaces";
+import {GameInterface, CardInterface, TokenInterface, PlayerInterface} from "../../shared/Interfaces";
 import { gameStates, socketEvents, initialGameState } from "../../shared/Constants";
 import { getActivePlayerId, isCard, isToken } from "../../shared/utils";
 import { cardsFetched, errorMessages } from "./Constants";
@@ -10,19 +10,6 @@ export default function useSocketHandler(
   io: Server,
   rooms: Record<string, GameInterface>
 ) {
-  function changeName(this: Socket, name: string) {
-    const socket = this;
-    const roomId = socket.data.roomId;
-
-    if (!roomId || !rooms[roomId]) return;
-
-    const game = rooms[roomId];
-    game.players.find((player) => player.socketId === socket.id)!.name = name;
-
-    rooms[roomId] = game;
-    io.to(roomId).emit(socketEvents.UPDATE_GAME_STATE, game);
-  }
-
   function joinRoom(
     this: Socket,
     roomId: string,
@@ -42,9 +29,9 @@ export default function useSocketHandler(
     socket.data.roomId = roomId;
 
     if (game.players.length === 0) {
-      game.players.push({ socketId: socket.id, name: "", active: true });
+      game.players.push({ socketId: socket.id, name: "", active: true, image: "red" });
     } else {
-      game.players.push({ socketId: socket.id, name: "", active: false });
+      game.players.push({ socketId: socket.id, name: "", active: false, image: "red" });
     }
 
     // if (game.gameState === gameStates.PLAYING) {
@@ -174,7 +161,6 @@ export default function useSocketHandler(
   }
 
   return {
-    changeName,
     joinRoom,
     startGame,
     updateGameState,

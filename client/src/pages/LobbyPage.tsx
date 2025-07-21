@@ -4,9 +4,10 @@ import { socketEvents } from "@shared/Constants";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { PINK_COLOR__HEX } from "src/utils/Constants";
+import PlayerInLobby from "src/components/elements/Player/PlayerInLobby";
 
 export default function LobbyPage() {
-  const [{ socket, players }] = useStateProvider();
+  const [{ socket, gameState, items, players }] = useStateProvider();
   const [userName, setUserName] = useState("");
   const { search } = useLocation();
   const params = new URLSearchParams(search);
@@ -18,13 +19,17 @@ export default function LobbyPage() {
     }
   }, [roomId, socket]);
 
-  function changeName() {
-    socket.emit(socketEvents.CHANGE_NAME, userName);
-    console.log("start game");
+  function changePlayerName() {
+    const newPlayers = players.map((player) => player.socketId === socket.id ? { ...player, name: userName } : player);
+    socket.emit(socketEvents.UPDATE_GAME_STATE, {
+      gameState,
+      players: newPlayers,
+      items,
+    });
   }
 
   function startGame() {
-    // if (players.some((player) => !player.name)) return;
+    if (players.some((player) => !player.name)) return;
     socket.emit(socketEvents.START_GAME);
   }
 
@@ -32,23 +37,28 @@ export default function LobbyPage() {
     <Container>
       <Logo>HITSTER</Logo>
       <Entries>
-        <input
-          className="username"
-          type="text"
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
-          placeholder="Enter your name..."
-        />
-        <button className="chose-name-button" onClick={changeName}>
-          Chose Name
-        </button>
+        <PlayerInLobby/>
+        <NameContainer>
+          <NameInput
+            className="username"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+            placeholder="Enter your name..."
+          />
+          <NameButton onClick={changePlayerName}>
+            +
+          </NameButton>
+        </NameContainer>
       </Entries>
 
       <PlayerList>
         <h2>Connected Players</h2>
         <ul>
           {players.filter((player) => player.name).map((player) => (
-            <li key={player.socketId}>{player.name}</li>
+            <li key={player.socketId}>
+              <PlayerImg $playerImage={player.image} />
+              {player.name}
+            </li>
           ))}
         </ul>
       </PlayerList>
@@ -87,47 +97,67 @@ const Logo = styled.h1`
 
 const Entries = styled.div`
   display: flex;
+  justify-content: center;
+  align-items: center;
   width: 60%;
-  max-width: 500px;
+  max-width: 550px;
   margin-bottom: 2rem;
+  gap: 2vh;
+`;
 
-  .username {
-    flex: 1;
-    padding: 1rem;
-    font-size: 1.2rem;
-    border-radius: 12px 0 0 12px;
-    border: 2px solid #00f2ff;
-    background-color: #101c3b;
-    color: white;
-    outline: none;
+const NameContainer = styled.div`
+  display: flex;
+  width: 100%;
+`
 
-    &::placeholder {
-      color: #cccccc;
-    }
+const NameInput = styled.input`
+  flex: 1;
+  padding: 1rem;
+  font-size: 1.2rem;
+  border-radius: 12px 0 0 12px;
+  border: 2px solid #00f2ff;
+  background-color: #101c3b;
+  color: white;
+  outline: none;
 
-    &:focus {
-      box-shadow: 0 0 10px #00f2ff;
-    }
+  &::placeholder {
+    color: #cccccc;
   }
 
-  .chose-name-button {
-    /* background: linear-gradient(to right, #00f2ff, ${PINK_COLOR__HEX}); */
-    background-color: #00f2ff;
-    padding: 1rem 1.5rem;
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: white;
-    border: 2px solid #00f2ff;
-    border-left: none;
-    border-radius: 0 12px 12px 0;
-    cursor: pointer;
-    /* transition: 0.3s;
-
-    &:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 10px ${PINK_COLOR__HEX};
-    } */
+  &:focus {
+    box-shadow: 0 0 10px #00f2ff;
   }
+`
+
+const NameButton = styled.button`
+  /* background: linear-gradient(to right, #00f2ff, ${PINK_COLOR__HEX}); */
+  background-color: #00f2ff;
+  padding: 1rem 1.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  border: 2px solid #00f2ff;
+  border-left: none;
+  border-radius: 0 12px 12px 0;
+  cursor: pointer;
+  /* transition: 0.3s;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px ${PINK_COLOR__HEX};
+  } */
+`
+
+const PlayerImg = styled.div<{ $playerImage: string }>`
+  aspect-ratio: 1/1;
+  width: 2vh;
+  border-radius: 50%;
+  /* background-image: url(${({ $playerImage }) => $playerImage}); */
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+  background-color: ${({ $playerImage }) => $playerImage};
 `;
 
 const PlayerList = styled.div`
@@ -149,6 +179,10 @@ const PlayerList = styled.div`
     padding: 0;
 
     li {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      line-height: 0.1rem;
       padding: 0.5rem 1rem;
       background: rgba(255, 255, 255, 0.07);
       margin: 0.3rem 0;

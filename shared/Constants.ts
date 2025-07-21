@@ -1,7 +1,6 @@
 import { CardInterface, PlayerInterface } from "./Interfaces";
 
 export enum socketEvents {
-  CHANGE_NAME = "change-name",
   JOIN_ROOM = "join-room",
   START_GAME = "start-game",
   NEXT_TURN = "next-turn",

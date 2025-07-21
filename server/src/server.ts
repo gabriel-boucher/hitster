@@ -22,12 +22,11 @@ const io = new Server(server, {
 });
 
 const rooms: Record<string, GameInterface> = {};
-const { changeName, joinRoom, startGame, updateGameState, nextTurn, disconnect } = useSocketHandler(io, rooms);
+const { joinRoom, startGame, updateGameState, nextTurn, disconnect } = useSocketHandler(io, rooms);
 
 io.on("connection", (socket) => {
   console.log(`User Connected: ${socket.id}`);
 
-  socket.on(socketEvents.CHANGE_NAME, changeName);
   socket.on(socketEvents.JOIN_ROOM, joinRoom);
   socket.on(socketEvents.START_GAME, startGame);
   socket.on(socketEvents.UPDATE_GAME_STATE, updateGameState);

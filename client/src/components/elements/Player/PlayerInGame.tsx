@@ -1,4 +1,3 @@
-
 import { PlayerInterface } from "@shared/Interfaces";
 import { isCard, isToken } from "@shared/utils";
 import { PINK_COLOR__HEX, WHITE_COLOR__HEX } from "src/utils/Constants";
@@ -7,53 +6,62 @@ import styled from "styled-components";
 
 interface PlayerProps {
   player: PlayerInterface;
-  isActivePlayer: boolean;
-  setHoveredPlayerId: (playerId: string) => void
-  setIsClickedPlayer: (isClicked: boolean) => void
+  setHoveredPlayerId: (playerId: string) => void;
+  setIsClickedPlayer: (isClicked: boolean) => void;
 }
 
-export default function PlayerInGame({ player, isActivePlayer, setHoveredPlayerId, setIsClickedPlayer }: PlayerProps) {
+export default function PlayerInGame({
+  player,
+  setHoveredPlayerId,
+  setIsClickedPlayer,
+}: PlayerProps) {
   const [{ socket, items }] = useStateProvider();
-
-  const playerImage = "src/assets/avatar.webp";
 
   const handleMouseClick = () => {
     setIsClickedPlayer(true);
-  }
+  };
 
   const handleMouseOver = () => {
     setHoveredPlayerId(player.socketId);
-  }
+  };
 
   const handleMouseLeave = () => {
     setHoveredPlayerId(socket.id!);
     setIsClickedPlayer(false);
-  }
+  };
 
   return (
     <Container>
       <PlayerIcon
-        $isActivePlayer={isActivePlayer}
-        $playerImage={playerImage}
+        $isActivePlayer={player.active}
+        $playerImage={player.image}
         onClick={handleMouseClick}
         onMouseOver={handleMouseOver}
         onMouseLeave={handleMouseLeave}
       />
       <PlayerInfo>
-        <PlayerName>
-          {player.name}
-        </PlayerName>
+        <PlayerName>{player.name}</PlayerName>
         <PlayerScoresContainer>
           <PlayerScores>
-            <CardIcon/>
-            {items.filter((item) => isCard(item) && item.playerId === player.socketId && !item.active).length}
+            <CardIcon />
+            {
+              items.filter(
+                (item) =>
+                  isCard(item) &&
+                  item.playerId === player.socketId &&
+                  !item.active
+              ).length
+            }
           </PlayerScores>
           <PlayerScores>
-            <TokenIcon/>
-            {items.filter((item) => isToken(item) && item.playerId === player.socketId).length}
+            <TokenIcon />
+            {
+              items.filter(
+                (item) => isToken(item) && item.playerId === player.socketId
+              ).length
+            }
           </PlayerScores>
         </PlayerScoresContainer>
-        
       </PlayerInfo>
     </Container>
   );
@@ -64,14 +72,14 @@ const CardIcon = styled.div`
   width: 0.75rem;
   border: 1px solid ${WHITE_COLOR__HEX};
   border-radius: 20%;
-`
+`;
 
 const TokenIcon = styled.div`
   aspect-ratio: 1/1;
   width: 0.75rem;
   border: 1px solid ${WHITE_COLOR__HEX};
   border-radius: 50%;
-`
+`;
 
 const PlayerScores = styled.div`
   display: flex;
@@ -80,19 +88,19 @@ const PlayerScores = styled.div`
   font-size: 0.75rem;
   font-weight: normal;
   width: 4vh;
-`
+`;
 
 const PlayerScoresContainer = styled.div`
   display: flex;
   gap: 1vh;
-`
+`;
 
 const PlayerName = styled.div`
   font-weight: bold;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-`
+`;
 
 const PlayerInfo = styled.div`
   display: flex;
@@ -101,25 +109,41 @@ const PlayerInfo = styled.div`
   color: ${WHITE_COLOR__HEX};
   width: 15vh;
   line-height: 1.5rem;
-`
+`;
 
-const PlayerIcon = styled.div<{ $isActivePlayer: boolean, $playerImage: string }>`
+const PlayerIcon = styled.div<{
+  $isActivePlayer: boolean;
+  $playerImage: string;
+}>`
   aspect-ratio: 1/1;
   width: 6vh;
   flex-shrink: 0;
 
   border-radius: 50%;
-  border: 0.4vh solid ${({ $isActivePlayer }) =>
-    $isActivePlayer ? WHITE_COLOR__HEX : "transparent"};
-  box-shadow: 
-    0 0 0.2rem ${({ $isActivePlayer }) => $isActivePlayer ? PINK_COLOR__HEX : "transparent"},
-    0 0 0.5rem ${({ $isActivePlayer }) => $isActivePlayer ? PINK_COLOR__HEX : "transparent"},
-    0 0 1rem ${({ $isActivePlayer }) => $isActivePlayer ? PINK_COLOR__HEX : "transparent"},
-    inset 0 0 0.2rem ${({ $isActivePlayer }) => $isActivePlayer ? PINK_COLOR__HEX : "transparent"},
-    inset 0 0 0.5rem ${({ $isActivePlayer }) => $isActivePlayer ? PINK_COLOR__HEX : "transparent"},
-    inset 0 0 1rem ${({ $isActivePlayer }) => $isActivePlayer ? PINK_COLOR__HEX : "transparent"};
+  border: 0.4vh solid
+    ${({ $isActivePlayer }) =>
+      $isActivePlayer ? WHITE_COLOR__HEX : "transparent"};
+  box-shadow: 0 0 0.2rem
+      ${({ $isActivePlayer }) =>
+        $isActivePlayer ? PINK_COLOR__HEX : "transparent"},
+    0 0 0.5rem
+      ${({ $isActivePlayer }) =>
+        $isActivePlayer ? PINK_COLOR__HEX : "transparent"},
+    0 0 1rem
+      ${({ $isActivePlayer }) =>
+        $isActivePlayer ? PINK_COLOR__HEX : "transparent"},
+    inset 0 0 0.2rem
+      ${({ $isActivePlayer }) =>
+        $isActivePlayer ? PINK_COLOR__HEX : "transparent"},
+    inset 0 0 0.5rem
+      ${({ $isActivePlayer }) =>
+        $isActivePlayer ? PINK_COLOR__HEX : "transparent"},
+    inset 0 0 1rem
+      ${({ $isActivePlayer }) =>
+        $isActivePlayer ? PINK_COLOR__HEX : "transparent"};
 
-  background-image: url(${({$playerImage}) => $playerImage});
+  /* background-image: url(${({ $playerImage }) => $playerImage}); */
+  background-color: ${({ $playerImage }) => $playerImage};
   background-repeat: no-repeat;
   background-size: cover;
 
@@ -128,9 +152,9 @@ const PlayerIcon = styled.div<{ $isActivePlayer: boolean, $playerImage: string }
   cursor: pointer;
 
   &:hover {
-    border: 3px solid white;
+    border: 0.4vh solid white;
   }
-`
+`;
 
 const Container = styled.div`
   display: flex;

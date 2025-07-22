@@ -1,33 +1,23 @@
-import { socketEvents } from "@shared/Constants";
+import { PLAYERS_IMG } from "@shared/Constants";
 import { PlayerInterface } from "@shared/Interfaces";
 import { useEffect, useRef, useState } from "react";
 import Plus from "src/components/icons/Plus";
+import XMark from "src/components/icons/XMark";
 import {
   PINK_COLOR__HEX,
-  PLAYERS_IMG,
   WHITE_COLOR__HEX,
 } from "src/utils/Constants";
 import { useStateProvider } from "src/utils/StateProvider";
 import styled from "styled-components";
 
-export default function PlayerInLobby() {
-  const [{ socket, gameState, items, players }] = useStateProvider();
+interface Props {
+  changePlayerImage: (image: string) => void;
+}
+
+export default function PlayerInLobby({ changePlayerImage }: Props) {
+  const [{ socket, players }] = useStateProvider();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-
-  const changePlayerImage = (image: string) => {
-    const newPlayers = players.map((player: PlayerInterface) =>
-      player.socketId === socket.id ? { ...player, image } : player
-    );
-    players.find(
-      (player: PlayerInterface) => player.socketId === socket.id
-    )!.image = image;
-    socket.emit(socketEvents.UPDATE_GAME_STATE, {
-      gameState,
-      players: newPlayers,
-      items,
-    });
-  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -53,26 +43,43 @@ export default function PlayerInLobby() {
         $playerImage={
           players.find(
             (player: PlayerInterface) => player.socketId === socket.id
-          )?.image || "red"
+          )?.image || ""
         }
         onClick={() => setIsMenuOpen((prev) => !prev)}
       >
-        <PlusIcon>{Plus()}</PlusIcon>
+        <PlusIcon><Plus /></PlusIcon>
       </PlayerImgSelected>
 
       {isMenuOpen && (
         <PlayerImgMenu>
-          {PLAYERS_IMG.map((image: string, index: number) => (
-            <PlayerImgInMenu
-              key={index}
-              $playerImage={image}
-              onClick={() => {
-                changePlayerImage(image)
-                setIsMenuOpen(false);
-              }}
-            />
-          ))}
-        </PlayerImgMenu>
+        {PLAYERS_IMG.map((image: string, index: number) => {
+          const isTaken = players.some((player: PlayerInterface) => player.image === image);
+          
+          if (isTaken) {
+            return (
+              <PlayerImgInMenuTaken
+                key={index}
+                $playerImage={image}
+              >
+                <XMarkContainer>
+                  <XMark/>
+                </XMarkContainer>
+              </PlayerImgInMenuTaken>
+            );
+          } else {
+            return (
+              <PlayerImgInMenu
+                key={index}
+                $playerImage={image}
+                onClick={() => {
+                  changePlayerImage(image);
+                  setIsMenuOpen(false);
+                }}
+              />
+            );
+          }
+        })}
+      </PlayerImgMenu>      
       )}
     </Container>
   );
@@ -107,6 +114,8 @@ const PlayerImg = styled.div<{ $playerImage: string }>`
 
 const PlayerImgSelected = styled(PlayerImg)`
   width: 7vh;
+  border: 2px solid black;
+  box-shadow: 0 0 0 2px ${PINK_COLOR__HEX};
 
   &:hover ${PlusIcon} {
     display: flex;
@@ -115,6 +124,7 @@ const PlayerImgSelected = styled(PlayerImg)`
 
 const PlayerImgInMenu = styled(PlayerImg)`
   width: 5vh;
+  border: 1px solid black;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
@@ -122,6 +132,19 @@ const PlayerImgInMenu = styled(PlayerImg)`
     box-shadow: 0 0 0 2px ${PINK_COLOR__HEX};
   }
 `;
+
+const PlayerImgInMenuTaken = styled(PlayerImg)`
+  width: 5vh;
+  border: 1px solid black;
+  pointer-events: none;
+`;
+
+const XMarkContainer = styled.div`
+  height: 5vh;
+  width: 5vh;
+  border-radius: 50%;
+  background: hsla(0, 0%, 0%, 60%);
+`
 
 const PlayerImgMenu = styled.div`
   position: absolute;

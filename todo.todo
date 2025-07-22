@@ -32,11 +32,12 @@ Architecture:
     ✔ Better organize GamePage and components file @started(25-06-27 15:00) @done(25-06-27 16:01) @lasted(1h1m44s)
 
 Server Logic:
+    ✔ Prevent players from having the same name and the same profile picture @started(25-07-21 19:05) @done(25-07-21 22:41) @lasted(3h36m21s)
     ☐ Player wins logic
     ☐ Prevent player from closing/reloading page
     ☐ Connection logic when everybody leaves
     ☐ Reconnect player after leaving (cache with player id)
-    ☐ Prevent players from having the same name and the same profile picture
+    ☐ Limit players (error for colors or number of cards)
 
 Card and token UI:
     ✔ Token in deck size overflowing (move tokens horizontally) @started(25-06-27 19:07) @done(25-06-27 19:52) @lasted(45m11s)
@@ -49,11 +50,13 @@ Clean Code:
     ☐ Remove logic from HTML (use function)
     ☐ Constants (colors, url)
     ☐ CSS is all over the place
+    ☐ Have primary and secondary colors
 
 Spotify API:
     ✔ Authorization @started(25-07-15 21:06) @done(25-07-16 00:52) @lasted(3h46m52s)
 
 Settings:
+    ☐ Add a setting modal
     ☐ Theme (ThemeProvider for colors)
     ☐ Game rules
 

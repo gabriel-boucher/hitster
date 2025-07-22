@@ -1,7 +1,7 @@
 import { Server, Socket } from "socket.io";
 import { v4 as uuidv4 } from "uuid";
 import {GameInterface, CardInterface, TokenInterface, PlayerInterface} from "../../shared/Interfaces";
-import { gameStates, socketEvents, initialGameState } from "../../shared/Constants";
+import { gameStates, socketEvents, initialGameState, PLAYERS_IMG } from "../../shared/Constants";
 import { getActivePlayerId, isCard, isToken } from "../../shared/utils";
 import { cardsFetched, errorMessages } from "./Constants";
 import useGameRules from "./GameRules";
@@ -29,9 +29,9 @@ export default function useSocketHandler(
     socket.data.roomId = roomId;
 
     if (game.players.length === 0) {
-      game.players.push({ socketId: socket.id, name: "", active: true, image: "red" });
+      game.players.push({ socketId: socket.id, name: "", active: true, image: PLAYERS_IMG.filter((image: string) => !game.players.some((player: PlayerInterface) => player.image === image))[0] });
     } else {
-      game.players.push({ socketId: socket.id, name: "", active: false, image: "red" });
+      game.players.push({ socketId: socket.id, name: "", active: false, image: PLAYERS_IMG.filter((image: string) => !game.players.some((player: PlayerInterface) => player.image === image))[0] });
     }
 
     // if (game.gameState === gameStates.PLAYING) {

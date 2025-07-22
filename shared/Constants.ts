@@ -19,3 +19,26 @@ export const initialGameState = {
   activePlayer: {} as PlayerInterface,
   items: [],
 };
+
+export const PLAYERS_IMG = [
+  "red",
+  "blue",
+  "green",
+  "yellow",
+  "orange",
+  "purple",
+  "pink",
+  "brown",
+  "black",
+  "white",
+  "gray",
+  "cyan",
+  "magenta",
+  "lime",
+  "teal",
+  "navy",
+  "maroon",
+  "olive",
+  "gold",
+  "silver"
+];

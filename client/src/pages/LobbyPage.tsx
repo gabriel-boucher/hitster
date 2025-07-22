@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { PINK_COLOR__HEX } from "src/utils/Constants";
 import PlayerInLobby from "src/components/elements/Player/PlayerInLobby";
+import { PlayerInterface } from "@shared/Interfaces";
 
 export default function LobbyPage() {
   const [{ socket, gameState, items, players }] = useStateProvider();
@@ -19,8 +20,25 @@ export default function LobbyPage() {
     }
   }, [roomId, socket]);
 
+  const changePlayerImage = (image: string) => {
+    if (!image || players.some((player: PlayerInterface) => player.image === image)) return;
+
+    const newPlayers = players.map((player: PlayerInterface) =>
+      player.socketId === socket.id ? { ...player, image } : player
+    );
+    socket.emit(socketEvents.UPDATE_GAME_STATE, {
+      gameState,
+      players: newPlayers,
+      items,
+    });
+  };
+
   function changePlayerName() {
-    const newPlayers = players.map((player) => player.socketId === socket.id ? { ...player, name: userName } : player);
+    if (!userName || players.some((player) => player.name === userName)) return;
+
+    const newPlayers = players.map((player) =>
+      player.socketId === socket.id ? { ...player, name: userName } : player
+    );
     socket.emit(socketEvents.UPDATE_GAME_STATE, {
       gameState,
       players: newPlayers,
@@ -37,7 +55,7 @@ export default function LobbyPage() {
     <Container>
       <Logo>HITSTER</Logo>
       <Entries>
-        <PlayerInLobby/>
+        <PlayerInLobby changePlayerImage={changePlayerImage} />
         <NameContainer>
           <NameInput
             className="username"
@@ -45,21 +63,21 @@ export default function LobbyPage() {
             onChange={(e) => setUserName(e.target.value)}
             placeholder="Enter your name..."
           />
-          <NameButton onClick={changePlayerName}>
-            +
-          </NameButton>
+          <JoinButton onClick={changePlayerName}>Join</JoinButton>
         </NameContainer>
       </Entries>
 
       <PlayerList>
         <h2>Connected Players</h2>
         <ul>
-          {players.filter((player) => player.name).map((player) => (
-            <li key={player.socketId}>
-              <PlayerImg $playerImage={player.image} />
-              {player.name}
-            </li>
-          ))}
+          {players
+            .filter((player) => player.name)
+            .map((player) => (
+              <li key={player.socketId}>
+                <PlayerImg $playerImage={player.image} />
+                {player.name}
+              </li>
+            ))}
         </ul>
       </PlayerList>
 
@@ -78,7 +96,7 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   color: white;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 `;
 
 const Logo = styled.h1`
@@ -89,9 +107,15 @@ const Logo = styled.h1`
   animation: pulse 2s infinite;
 
   @keyframes pulse {
-    0% { text-shadow: 0 0 10px ${PINK_COLOR__HEX}; }
-    50% { text-shadow: 0 0 30px ${PINK_COLOR__HEX}; }
-    100% { text-shadow: 0 0 10px ${PINK_COLOR__HEX}; }
+    0% {
+      text-shadow: 0 0 10px ${PINK_COLOR__HEX};
+    }
+    50% {
+      text-shadow: 0 0 30px ${PINK_COLOR__HEX};
+    }
+    100% {
+      text-shadow: 0 0 10px ${PINK_COLOR__HEX};
+    }
   }
 `;
 
@@ -108,7 +132,7 @@ const Entries = styled.div`
 const NameContainer = styled.div`
   display: flex;
   width: 100%;
-`
+`;
 
 const NameInput = styled.input`
   flex: 1;
@@ -127,10 +151,9 @@ const NameInput = styled.input`
   &:focus {
     box-shadow: 0 0 10px #00f2ff;
   }
-`
+`;
 
-const NameButton = styled.button`
-  /* background: linear-gradient(to right, #00f2ff, ${PINK_COLOR__HEX}); */
+const JoinButton = styled.button`
   background-color: #00f2ff;
   padding: 1rem 1.5rem;
   font-size: 1.5rem;
@@ -140,13 +163,7 @@ const NameButton = styled.button`
   border-left: none;
   border-radius: 0 12px 12px 0;
   cursor: pointer;
-  /* transition: 0.3s;
-
-  &:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 10px ${PINK_COLOR__HEX};
-  } */
-`
+`;
 
 const PlayerImg = styled.div<{ $playerImage: string }>`
   aspect-ratio: 1/1;
@@ -199,7 +216,6 @@ const PlayerList = styled.div`
 `;
 
 const StartButton = styled.button`
-  /* background: linear-gradient(to right, ${PINK_COLOR__HEX}, #00f2ff); */
   background-color: ${PINK_COLOR__HEX};
   padding: 1rem 2rem;
   border: none;

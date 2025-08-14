@@ -6,8 +6,12 @@ import http from "http";
 import { Server } from "socket.io";
 import { GameInterface } from "../../shared/Interfaces";
 import { socketEvents } from "../../shared/Constants";
-import useSocketHandler from "./SocketHandler";
+import useUpdateGameState from "./sockets/UpdateGameState";
 import { HOST, SERVER_PORT } from "./Constants";
+import useJoinRoom from './sockets/JoinRoom';
+import useStartGame from './sockets/StartGame';
+import useNextTurn from './sockets/NextTurn';
+import useDisconnect from './sockets/Disconnect';
 
 const server = http.createServer();
 
@@ -21,8 +25,13 @@ const io = new Server(server, {
   },
 });
 
+const codeToToken: Record<string, string> = {};
 const rooms: Record<string, GameInterface> = {};
-const { joinRoom, startGame, updateGameState, nextTurn, disconnect } = useSocketHandler(io, rooms);
+const joinRoom = useJoinRoom(io, rooms, codeToToken);
+const startGame = useStartGame(io, rooms);
+const updateGameState = useUpdateGameState(io, rooms);
+const nextTurn = useNextTurn(io, rooms);
+const disconnect = useDisconnect(io, rooms);
 
 io.on("connection", (socket) => {
   console.log(`User Connected: ${socket.id}`);

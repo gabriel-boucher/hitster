@@ -1,10 +1,11 @@
-import { CardInterface, PlayerInterface } from "./Interfaces";
+import { GameInterface } from "./Interfaces";
 
 export enum socketEvents {
   JOIN_ROOM = "join-room",
   START_GAME = "start-game",
   NEXT_TURN = "next-turn",
   UPDATE_GAME_STATE = "update-game-state",
+  ERROR = "error",
 }
 
 export enum gameStates {
@@ -13,10 +14,9 @@ export enum gameStates {
   OVER = "OVER",
 }
 
-export const initialGameState = {
+export const initialGameState : GameInterface = {
   gameState: gameStates.LOBBY,
   players: [],
-  activePlayer: {} as PlayerInterface,
   items: [],
 };
 

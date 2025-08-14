@@ -6,6 +6,8 @@ export enum errorMessages {
 export const HOST = process.env.HOST || 'localhost';
 export const CLIENT_PORT = parseInt(process.env.SERVER_PORT || "8000");
 export const SERVER_PORT = parseInt(process.env.SERVER_PORT || "3000");
+export const CLIENT_ID = process.env.CLIENT_ID || "";
+export const CLIENT_SECRET = process.env.CLIENT_SECRET || "";
 
 export const cardsFetched = [
   {

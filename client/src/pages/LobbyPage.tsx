@@ -13,7 +13,7 @@ export default function LobbyPage() {
   const { search } = useLocation();
   const params = new URLSearchParams(search);
   const roomId = params.get("code");
-
+  
   useEffect(() => {
     if (roomId) {
       socket.emit(socketEvents.JOIN_ROOM, roomId);

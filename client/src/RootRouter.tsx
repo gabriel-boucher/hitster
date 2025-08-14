@@ -9,12 +9,12 @@ export default function RootRouter() {
   const [{ gameState }] = useStateProvider();
   const { search } = useLocation();
   const params = new URLSearchParams(search);
-  const code = params.get("code");
+  const accessToken = params.get("code");
 
   if (gameState === gameStates.PLAYING) {
     return <GamePage />;
   }
-  else if (code) {
+  else if (accessToken) {
     return <LobbyPage />;
   }
   return <HomePage />;

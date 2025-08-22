@@ -1,4 +1,4 @@
-import { CLIENT_ID, CLIENT_SECRET } from "../Constants";
+import { CLIENT_ID, CLIENT_SECRET } from "../constants";
 
 interface TokenResponse {
     access_token: string;

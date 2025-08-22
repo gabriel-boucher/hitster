@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { CardInterface } from "@shared/Interfaces";
+import { CardInterface } from "@shared/interfaces";
 import { useMemo } from "react";
 
 interface CardProps {

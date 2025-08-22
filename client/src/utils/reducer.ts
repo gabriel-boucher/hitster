@@ -1,17 +1,16 @@
-import { Action, State } from "./Interfaces";
-import { initialGameState } from "../../../shared/Constants";
-import { getBaseUrl, reducerCases } from "./Constants";
+import { Action, State } from "./interfaces";
+import { initialGameState } from "../../../shared/constants";
+import { ConnectionType, getBaseUrl, reducerCases } from "./constants";
 import { Dispatch } from "react";
 import { io } from "socket.io-client";
 
-const isServer = true;
-
-const socket = io(getBaseUrl(isServer));
+const socket = io(getBaseUrl(ConnectionType.SERVER));
 
 export const initialState = {
   ...initialGameState,
-  isDragging: false,
   socket,
+  roomId: "",
+  isDragging: false,
 };
 
 export const defaultDispatch: Dispatch<Action> = () => {};
@@ -22,6 +21,12 @@ export const reducer = (state: State, action: Action) => {
       return {
         ...state,
         socket: action.socket,
+      };
+    }
+    case reducerCases.SET_ROOM_ID: {
+      return {
+        ...state,
+        roomId: action.roomId,
       };
     }
     case reducerCases.SET_GAME_STATE: {

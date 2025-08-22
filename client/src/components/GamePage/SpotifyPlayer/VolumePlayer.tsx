@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from "react";
 import styled from "styled-components";
 import Slider from "src/components/elements/Slider";
-import { PINK_COLOR__HEX } from "src/utils/Constants";
+import { PINK_COLOR__HEX } from "src/utils/constants";
 import Volume0 from "src/components/icons/Volume0";
 import Volume3 from "src/components/icons/Volume3";
 import Volume2 from "src/components/icons/Volume2";

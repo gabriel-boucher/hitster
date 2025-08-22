@@ -5,7 +5,7 @@ import {
   useContext,
   useReducer,
 } from "react";
-import { Action, State } from "./Interfaces";
+import { Action, State } from "./interfaces";
 import { defaultDispatch, initialState } from "./reducer";
 
 const StateContext = createContext<[State, Dispatch<Action>]>([

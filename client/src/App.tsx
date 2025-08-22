@@ -1,8 +1,8 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useStateProvider } from "./utils/StateProvider";
-import { reducerCases } from "./utils/Constants";
-import { socketEvents } from "@shared/Constants";
+import { reducerCases } from "./utils/constants";
+import { socketEvents } from "@shared/constants";
 import RootRouter from "./RootRouter";
 
 export default function App() {

@@ -3,7 +3,7 @@ import Button from "src/components/elements/Button";
 import Slider from "src/components/elements/Slider";
 import Pause from "src/components/icons/Pause";
 import Play from "src/components/icons/Play";
-import { WHITE_COLOR__HEX } from "src/utils/Constants";
+import { WHITE_COLOR__HEX } from "src/utils/constants";
 import styled from "styled-components";
 
 export default function SongPlayer() {

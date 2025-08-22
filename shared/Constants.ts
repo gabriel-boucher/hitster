@@ -1,10 +1,11 @@
-import { GameInterface } from "./Interfaces";
+import { GameInterface } from "./interfaces";
 
 export enum socketEvents {
   JOIN_ROOM = "join-room",
   START_GAME = "start-game",
   NEXT_TURN = "next-turn",
   UPDATE_GAME_STATE = "update-game-state",
+  DISCONNECT = "disconnect",
   ERROR = "error",
 }
 

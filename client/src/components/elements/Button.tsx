@@ -1,5 +1,5 @@
 import { JSX } from "react";
-import { PINK_COLOR__HEX, WHITE_COLOR__HEX } from "src/utils/Constants";
+import { PINK_COLOR__HEX, WHITE_COLOR__HEX } from "src/utils/constants";
 import styled from "styled-components";
 
 interface ButtonProps {

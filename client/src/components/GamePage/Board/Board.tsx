@@ -1,10 +1,10 @@
-import { CardInterface } from "@shared/Interfaces";
+import { CardInterface } from "@shared/interfaces";
 import { useStateProvider } from "src/utils/StateProvider";
 import styled from "styled-components";
 import StackCards from "./StackCards";
 import Button from "src/components/elements/Button";
 import Next from "src/components/icons/Next";
-import { socketEvents } from "@shared/Constants";
+import { socketEvents } from "@shared/constants";
 import { JSX } from "react";
 import { getActivePlayerId } from "@shared/utils";
 import PlayerBar from "./PlayerBar";

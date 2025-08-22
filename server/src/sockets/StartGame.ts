@@ -1,56 +1,51 @@
-import { Server, Socket } from "socket.io";
+import { Socket } from "socket.io";
 import {
   CardInterface,
-  GameInterface,
   TokenInterface,
-} from "../../../shared/Interfaces";
+} from "../../../shared/interfaces";
 import {
   gameStates,
   socketEvents,
-} from "../../../shared/Constants";
+} from "../../../shared/constants";
 import { v4 as uuidv4 } from "uuid";
 import { isCard } from "../../../shared/utils";
-import { cardsFetched } from "../Constants";
+import { cardsFetched } from "../constants";
+import { io, rooms } from "../server";
 
-export default function useStartGame(
-  io: Server,
-  rooms: Record<string, GameInterface>
-) {
-  return function startGame(this: Socket) {
-    const socket = this;
-    const roomId = socket.data.roomId;
+export default function startGame(this: Socket) {
+  const socket = this;
+  const roomId = socket.data.roomId;
 
-    let game = rooms[roomId];
-    const cards: CardInterface[] = cardsFetched.map((card, index, arr) => ({
-      ...card,
+  let game = rooms[roomId];
+  const cards: CardInterface[] = cardsFetched.map((card, index, arr) => ({
+    ...card,
+    id: uuidv4(),
+    active: false,
+    playerId:
+      index >= arr.length - game.players.length
+        ? game.players[arr.length - 1 - index].socketId
+        : null,
+  }));
+
+  cards.findLast(
+    (item): item is CardInterface => isCard(item) && item.playerId === null
+  )!.active = true;
+
+  const tokens: TokenInterface[] = game.players.flatMap((player) =>
+    Array.from({ length: 2 }, () => ({
       id: uuidv4(),
       active: false,
-      playerId:
-        index >= arr.length - game.players.length
-          ? game.players[arr.length - 1 - index].socketId
-          : null,
-    }));
+      activePlayerId: null,
+      playerId: player.socketId,
+    }))
+  );
 
-    cards.findLast(
-      (item): item is CardInterface => isCard(item) && item.playerId === null
-    )!.active = true;
-
-    const tokens: TokenInterface[] = game.players.flatMap((player) =>
-      Array.from({ length: 2 }, () => ({
-        id: uuidv4(),
-        active: false,
-        activePlayerId: null,
-        playerId: player.socketId,
-      }))
-    );
-
-    game = {
-      ...game,
-      gameState: gameStates.PLAYING,
-      items: [...tokens, ...cards],
-    };
-
-    rooms[roomId] = game;
-    io.to(roomId).emit(socketEvents.UPDATE_GAME_STATE, game);
+  game = {
+    ...game,
+    gameState: gameStates.PLAYING,
+    items: [...tokens, ...cards],
   };
-}
+
+  rooms[roomId] = game;
+  io.to(roomId).emit(socketEvents.UPDATE_GAME_STATE, game);
+};

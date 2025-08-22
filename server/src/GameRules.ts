@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { CardInterface, GameInterface, TokenInterface } from "../../shared/Interfaces";
+import { CardInterface, GameInterface, TokenInterface } from "../../shared/interfaces";
 import { getActiveCard, getActivePlayerId, isCard, isToken } from "../../shared/utils";
 import { Console } from "console";
 import { get } from "http";

@@ -1,4 +1,4 @@
-import { CardInterface, TokenInterface } from "@shared/Interfaces";
+import { CardInterface, TokenInterface } from "@shared/interfaces";
 import { useStateProvider } from "./StateProvider";
 import { getActiveCard, getActivePlayerId, isCard, isToken } from "@shared/utils";
 

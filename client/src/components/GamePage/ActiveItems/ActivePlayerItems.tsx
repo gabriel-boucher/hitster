@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { CardInterface, TokenInterface } from "@shared/Interfaces";
+import { CardInterface, TokenInterface } from "@shared/interfaces";
 import { getActivePlayerId, isCard } from "@shared/utils";
 import { useStateProvider } from "src/utils/StateProvider";
 import ActiveCard from "src/components/elements/Card/ActiveCard";

@@ -1,6 +1,6 @@
-import { PlayerInterface } from "@shared/Interfaces";
+import { PlayerInterface } from "@shared/interfaces";
 import { isCard, isToken } from "@shared/utils";
-import { PINK_COLOR__HEX, WHITE_COLOR__HEX } from "src/utils/Constants";
+import { PINK_COLOR__HEX, WHITE_COLOR__HEX } from "src/utils/constants";
 import { useStateProvider } from "src/utils/StateProvider";
 import styled from "styled-components";
 

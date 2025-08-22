@@ -1,4 +1,4 @@
-import { CardInterface, PlayerInterface, TokenInterface } from "./Interfaces";
+import { CardInterface, PlayerInterface, TokenInterface } from "./interfaces";
 
 export function isCard(item: CardInterface | TokenInterface) {
   return "song" in item;

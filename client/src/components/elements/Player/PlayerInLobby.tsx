@@ -1,12 +1,12 @@
-import { PLAYERS_IMG } from "@shared/Constants";
-import { PlayerInterface } from "@shared/Interfaces";
+import { PLAYERS_IMG } from "@shared/constants";
+import { PlayerInterface } from "@shared/interfaces";
 import { useEffect, useRef, useState } from "react";
 import Plus from "src/components/icons/Plus";
 import XMark from "src/components/icons/XMark";
 import {
   PINK_COLOR__HEX,
   WHITE_COLOR__HEX,
-} from "src/utils/Constants";
+} from "src/utils/constants";
 import { useStateProvider } from "src/utils/StateProvider";
 import styled from "styled-components";
 

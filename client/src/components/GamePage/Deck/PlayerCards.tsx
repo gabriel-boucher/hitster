@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useStateProvider } from "../../../utils/StateProvider";
 import CardInDeck from "../../elements/Card/CardInDeck";
 import { isCard } from "@shared/utils";
-import { CardInterface } from "@shared/Interfaces";
+import { CardInterface } from "@shared/interfaces";
 
 interface CardProps {
   hoveredPlayerId: string;

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useStateProvider } from "../../../utils/StateProvider";
 import { isToken } from "@shared/utils";
 import TokenInDeck from "../../elements/Token/TokenInDeck";
-import { TokenInterface } from "@shared/Interfaces";
+import { TokenInterface } from "@shared/interfaces";
 
 interface TokenProps {
   hoveredPlayerId: string;

@@ -1,16 +1,22 @@
 import { Socket } from "socket.io-client";
-import { reducerCases } from "./Constants";
-import { GameInterface, CardInterface, PlayerInterface, TokenInterface } from "@shared/Interfaces";
-import { gameStates } from "@shared/Constants";
+import { reducerCases } from "./constants";
+import { GameInterface, CardInterface, PlayerInterface, TokenInterface } from "@shared/interfaces";
+import { gameStates } from "@shared/constants";
 
 export interface State extends GameInterface {
   socket: Socket;
+  roomId: string;
   isDragging: boolean;
 }
 
 export interface SetSocketAction {
   type: reducerCases.SET_SOCKET;
   socket: Socket;
+}
+
+export interface SetRoomIdAction {
+  type: reducerCases.SET_ROOM_ID;
+  roomId: string;
 }
 
 export interface SetGameStateAction {
@@ -35,6 +41,7 @@ export interface SetIsDragging {
 
 export type Action =
   | SetSocketAction
+  | SetRoomIdAction
   | SetGameStateAction
   | SetPlayersAction
   | SetItemsAction

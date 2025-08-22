@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { getAuthUrl, PINK_COLOR__HEX } from "src/utils/Constants";
+import { getAuthUrl, PINK_COLOR__HEX } from "src/utils/constants";
 
 export default function HomePage() {
   function authorization() {

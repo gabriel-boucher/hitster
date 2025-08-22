@@ -1,4 +1,4 @@
-import { gameStates } from "./Constants";
+import { gameStates } from "./constants";
 
 export interface PlayerInterface {
   socketId: string;
@@ -28,4 +28,10 @@ export interface GameInterface {
   gameState: gameStates;
   players: PlayerInterface[];
   items: (CardInterface | TokenInterface)[];
+}
+
+export interface PlaylistInterface {
+  id: string;
+  name: string;
+  images: Array<{ url: string }>;
 }

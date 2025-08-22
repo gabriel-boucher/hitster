@@ -1,13 +1,13 @@
+import { PlaylistInterface } from "../../../shared/interfaces";
+
 interface PlaylistsResponse {
-    playlists: {
-        items: Array<{
-            name: string;
-        }>;
-    };
+  playlists: {
+    items: PlaylistInterface[];
+  };
 }
 
-export const searchPlaylists = async (accessToken: string): Promise<Array<string>> => {
-    const response = await fetch("https://api.spotify.com/v1/search?q=avicii&type=playlist", {
+export const searchPlaylists = async (accessToken: string, searchQuery: string): Promise<PlaylistInterface[]> => {
+    const response = await fetch(`https://api.spotify.com/v1/search?q=${searchQuery}&type=playlist`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -17,7 +17,15 @@ export const searchPlaylists = async (accessToken: string): Promise<Array<string
       throw new Error(`Failed to search playlists: ${response.status}`);
     }
 
-    const data = await response.json() as PlaylistsResponse;
+    const data = await response.json() as {
+      playlists: {
+        items: Array<{
+          id: string;
+          name: string;
+          images: Array<{ url: string }>;
+        }>;
+      };
+    };
 
-    return data.playlists.items.map((item) => item?.name);
+    return data.playlists.items.filter((playlist) => playlist);
   };

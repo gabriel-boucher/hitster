@@ -1,5 +1,6 @@
 export enum reducerCases {
   SET_SOCKET = "SET_SOCKET",
+  SET_ROOM_ID = "SET_ROOM_ID",
   SET_GAME_STATE = "SET_GAME_STATE",
   SET_PLAYERS = "SET_PLAYERS",
   SET_ITEMS = "SET_ITEMS",
@@ -17,7 +18,13 @@ const HOST_DEV = import.meta.env.VITE_HOST_DEV || 'localhost';
 const HOST_PROD = import.meta.env.VITE_HOST_PROD || 'localhost';
 const HOST_PROD_TUNNEl = "use.devtunnels.ms"
 
-export function getBaseUrl(isServer: boolean) {
+export enum ConnectionType {
+  SERVER = "SERVER",
+  CLIENT = "CLIENT",
+}
+
+export function getBaseUrl(connectionType: ConnectionType) {
+  const isServer = connectionType === ConnectionType.SERVER;
   if (import.meta.env.VITE_IS_PROD === "true") {
     return `https://${HOST_PROD}-${isServer ? SERVER_PORT : CLIENT_PORT}.${HOST_PROD_TUNNEl}`
   } else {

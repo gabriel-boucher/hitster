@@ -1,24 +1,27 @@
 import styled from "styled-components";
 import { useStateProvider } from "../utils/StateProvider";
-import { socketEvents } from "@shared/Constants";
+import { socketEvents } from "@shared/constants";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { PINK_COLOR__HEX } from "src/utils/Constants";
+import { PINK_COLOR__HEX, reducerCases } from "src/utils/constants";
 import PlayerInLobby from "src/components/elements/Player/PlayerInLobby";
-import { PlayerInterface } from "@shared/Interfaces";
+import { PlayerInterface } from "@shared/interfaces";
+import { SearchPlaylistModal } from "src/components/GamePage/Spotify/SearchPlaylistModal";
 
 export default function LobbyPage() {
-  const [{ socket, gameState, items, players }] = useStateProvider();
+  const [{ socket, gameState, items, players }, dispatch] = useStateProvider();
   const [userName, setUserName] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { search } = useLocation();
   const params = new URLSearchParams(search);
   const roomId = params.get("code");
-  
+
   useEffect(() => {
     if (roomId) {
+      dispatch({ type: reducerCases.SET_ROOM_ID, roomId: roomId || "" });
       socket.emit(socketEvents.JOIN_ROOM, roomId);
     }
-  }, [roomId, socket]);
+  }, [roomId, socket, dispatch]);
 
   const changePlayerImage = (image: string) => {
     if (!image || players.some((player: PlayerInterface) => player.image === image)) return;
@@ -81,9 +84,13 @@ export default function LobbyPage() {
         </ul>
       </PlayerList>
 
-      {players.length > 0 && players[0].socketId === socket.id && (
-        <StartButton onClick={startGame}>Start Game</StartButton>
-      )}
+      <ButtonsContainer>
+        {players.length > 0 && players[0].socketId === socket.id && (
+          <StartButton onClick={startGame}>Start Game</StartButton>
+        )}
+        <PlaylistButton onClick={() => setIsModalOpen(true)}>Choose playlist</PlaylistButton>
+        <SearchPlaylistModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      </ButtonsContainer>
     </Container>
   );
 }
@@ -231,4 +238,29 @@ const StartButton = styled.button`
     transform: scale(1.05);
     box-shadow: 0 0 12px ${PINK_COLOR__HEX};
   }
+`;
+
+const PlaylistButton = styled.button`
+  background-color: ${PINK_COLOR__HEX};
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-bottom: 5rem;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 12px ${PINK_COLOR__HEX};
+  }
+`;
+
+const ButtonsContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
 `;

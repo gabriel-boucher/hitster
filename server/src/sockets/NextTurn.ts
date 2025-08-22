@@ -1,26 +1,22 @@
-import { Server, Socket } from "socket.io";
+import { Socket } from "socket.io";
 import {
   GameInterface,
-} from "../../../shared/Interfaces";
+} from "../../../shared/interfaces";
 import {
   socketEvents,
-} from "../../../shared/Constants";
-import useGameRules from "../GameRules";
+} from "../../../shared/constants";
+import useGameRules from "../gameRules";
+import { io, rooms } from "../server";
 
-export default function useNextTurn(
-  io: Server,
-  rooms: Record<string, GameInterface>
-) {
-  return function nextTurn(this: Socket, game: GameInterface) {
-    const socket = this;
-    const roomId = socket.data.roomId;
+export default function nextTurn(this: Socket, game: GameInterface) {
+  const socket = this;
+  const roomId = socket.data.roomId;
 
-    if (!roomId || !rooms[roomId]) return;
+  if (!roomId || !rooms[roomId]) return;
 
-    const { nextTurn } = useGameRules(game);
-    game = nextTurn();
+  const { nextTurn } = useGameRules(game);
+  game = nextTurn();
 
-    rooms[roomId] = game;
-    io.to(roomId).emit(socketEvents.UPDATE_GAME_STATE, game);
-  }
+  rooms[roomId] = game;
+  io.to(roomId).emit(socketEvents.UPDATE_GAME_STATE, game);
 }

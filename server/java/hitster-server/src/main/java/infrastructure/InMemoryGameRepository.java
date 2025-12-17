@@ -3,7 +3,6 @@ package infrastructure;
 import domain.game.Game;
 import domain.game.GameId;
 import domain.game.GameRepository;
-import domain.game.GameState;
 
 import java.util.HashMap;
 
@@ -15,7 +14,7 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
     @Override
-    public Game getGameById(GameId gameId) {
+    public Game getGameId(GameId gameId) {
         return gameStates.get(gameId);
     }
 

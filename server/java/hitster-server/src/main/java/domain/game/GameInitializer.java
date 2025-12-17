@@ -10,7 +10,7 @@ import domain.game.player.Players;
 
 import java.util.List;
 
-public class GameStateInitializer {
+public class GameInitializer {
     public void initialize(Players players, Pile pile, CurrentDeck currentDeck) {
         initializePlayers(players, pile);
         initializeCurrentPlayer(players);

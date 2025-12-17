@@ -25,7 +25,6 @@ public class RoomRessource {
     private final AddPlaylistMapper addPlaylistMapper;
     private final RemovePlaylistMapper removePlaylistMapper;
     private final RoomStateMapper roomStateMapper;
-    private SocketIOServer socketIOServer;
 
     public RoomRessource(
             RoomAppService roomAppService,
@@ -42,122 +41,44 @@ public class RoomRessource {
         this.roomStateMapper = roomStateMapper;
     }
 
-    public void initialize(SocketIOServer server) {
-        this.socketIOServer = server;
-        setupEventListeners();
+    public void setupEventListeners(SocketIOServer socketIOServer) {
+        socketIOServer.addConnectListener(client -> System.out.println("Socket.IO client connected: " + client.getSessionId()));
+
+        socketIOServer.addDisconnectListener(client -> System.out.println("Socket.IO client disconnected: " + client.getSessionId()));
+
+        socketIOServer.addEventListener("create-room", CreateRoomRequest.class, (client, request, ackSender) -> {
+            CreateRoomData data = createRoomMapper.toDomain(request);
+            Room room = roomAppService.createRoom(data.playerId());
+            client.joinRoom(room.getId().toString());
+
+            broadcastRoomState(room, socketIOServer);
+        });
+
+        socketIOServer.addEventListener("join-room", JoinRoomRequest.class, (client, request, ackSender) -> {
+            JoinRoomData data = joinRoomMapper.toDomain(request);
+            Room room = roomAppService.joinRoom(data.roomId(), data.playerId());
+            client.joinRoom(request.roomId());
+
+            broadcastRoomState(room, socketIOServer);
+        });
+
+        socketIOServer.addEventListener("add-playlist", AddPlaylistRequest.class, (client, request, ackSender) -> {
+            AddPlaylistData data = addPlaylistMapper.toDomain(request);
+            Room room = roomAppService.addPlaylist(data.roomId(), data.playerId(), data.playlist());
+
+            broadcastRoomState(room, socketIOServer);
+        });
+
+        socketIOServer.addEventListener("remove-playlist", RemovePlaylistRequest.class, (client, request, ackSender) -> {
+            RemovePlaylistData data = removePlaylistMapper.toDomain(request);
+            Room room = roomAppService.removePlaylist(data.roomId(), data.playerId(), data.playlistId());
+
+            broadcastRoomState(room, socketIOServer);
+        });
     }
 
-    private void setupEventListeners() {
-        // Connection event
-        socketIOServer.addConnectListener(client -> {
-            System.out.println("Socket.IO client connected: " + client.getSessionId());
-        });
-
-        // Disconnection event
-        socketIOServer.addDisconnectListener(client -> {
-            System.out.println("Socket.IO client disconnected: " + client.getSessionId());
-        });
-
-        // Create room event
-        socketIOServer.addEventListener("create-room", CreateRoomRequest.class, (client, request, ackSender) -> {
-            try {
-                System.out.println("Creating room with roomId: " + request.roomId() + " by playerId: " + request.playerId());
-
-                CreateRoomData data = createRoomMapper.toDomain(request);
-                Room room = roomAppService.createRoom(data.roomId(), data.playerId());
-                RoomStateResponse response = roomStateMapper.toDto(room);
-
-                client.sendEvent("room-state", response);
-                if (ackSender.isAckRequested()) {
-                    ackSender.sendAckData(response);
-                }
-            } catch (Exception e) {
-                System.err.println("Error creating room: " + e.getMessage());
-                e.printStackTrace();
-                client.sendEvent("error", "{\"message\": \"" + e.getMessage() + "\"}");
-                if (ackSender.isAckRequested()) {
-                    ackSender.sendAckData("{\"error\": \"" + e.getMessage() + "\"}");
-                }
-            }
-        });
-
-        // Join room event
-        socketIOServer.addEventListener("join-room", JoinRoomRequest.class, (client, request, ackSender) -> {
-            try {
-                System.out.println("Joining room: " + request.roomId() + " by playerId: " + request.playerId());
-
-                JoinRoomData data = joinRoomMapper.toDomain(request);
-                Room room = roomAppService.joinRoom(data.roomId(), data.playerId());
-                RoomStateResponse response = roomStateMapper.toDto(room);
-
-                // Join the Socket.IO room
-                client.joinRoom(request.roomId());
-                
-                client.sendEvent("room-state", response);
-                // Broadcast to all clients in the room
-                socketIOServer.getRoomOperations(request.roomId()).sendEvent("room-state", response);
-                
-                if (ackSender.isAckRequested()) {
-                    ackSender.sendAckData(response);
-                }
-            } catch (Exception e) {
-                System.err.println("Error joining room: " + e.getMessage());
-                e.printStackTrace();
-                client.sendEvent("error", "{\"message\": \"" + e.getMessage() + "\"}");
-                if (ackSender.isAckRequested()) {
-                    ackSender.sendAckData("{\"error\": \"" + e.getMessage() + "\"}");
-                }
-            }
-        });
-
-        // Add playlist event
-        socketIOServer.addEventListener("add-playlist", AddPlaylistRequest.class, (client, request, ackSender) -> {
-            try {
-                System.out.println("Adding playlist: " + request.playlist() + " for roomId: " + request.roomId());
-
-                AddPlaylistData data = addPlaylistMapper.toDomain(request);
-                Room room = roomAppService.addPlaylist(data.roomId(), data.playerId(), data.playlist());
-                RoomStateResponse response = roomStateMapper.toDto(room);
-
-                // Broadcast to all clients in the room
-                socketIOServer.getRoomOperations(request.roomId()).sendEvent("room-state", response);
-                
-                if (ackSender.isAckRequested()) {
-                    ackSender.sendAckData(response);
-                }
-            } catch (Exception e) {
-                System.err.println("Error adding playlist: " + e.getMessage());
-                e.printStackTrace();
-                client.sendEvent("error", "{\"message\": \"" + e.getMessage() + "\"}");
-                if (ackSender.isAckRequested()) {
-                    ackSender.sendAckData("{\"error\": \"" + e.getMessage() + "\"}");
-                }
-            }
-        });
-
-        // Remove playlist event
-        socketIOServer.addEventListener("remove-playlist", RemovePlaylistRequest.class, (client, request, ackSender) -> {
-            try {
-                System.out.println("Removing playlist: " + request.playlistId() + " for roomId: " + request.roomId());
-
-                RemovePlaylistData data = removePlaylistMapper.toDomain(request);
-                Room room = roomAppService.removePlaylist(data.roomId(), data.playerId(), data.playlistId());
-                RoomStateResponse response = roomStateMapper.toDto(room);
-
-                // Broadcast to all clients in the room
-                socketIOServer.getRoomOperations(request.roomId()).sendEvent("room-state", response);
-                
-                if (ackSender.isAckRequested()) {
-                    ackSender.sendAckData(response);
-                }
-            } catch (Exception e) {
-                System.err.println("Error removing playlist: " + e.getMessage());
-                e.printStackTrace();
-                client.sendEvent("error", "{\"message\": \"" + e.getMessage() + "\"}");
-                if (ackSender.isAckRequested()) {
-                    ackSender.sendAckData("{\"error\": \"" + e.getMessage() + "\"}");
-                }
-            }
-        });
+    private void broadcastRoomState(Room room, SocketIOServer socketIOServer) {
+        RoomStateResponse response = roomStateMapper.toDto(room);
+        socketIOServer.getRoomOperations(room.getId().toString()).sendEvent("room-state", response);
     }
 }

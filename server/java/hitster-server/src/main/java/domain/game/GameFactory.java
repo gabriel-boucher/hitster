@@ -11,12 +11,12 @@ import java.util.List;
 public class GameFactory {
     public Game createGame(Room room, List<Card> pile) {
         return new Game(
-                GameId.create(),
-                GameStatus.LOBBY,
+                GameId.fromString(room.getId().toString()),
+                GameStatus.PLAYING,
                 new Players(room.getPlayers(), 0),
                 new Pile(pile),
                 new CurrentDeck(new ArrayList<>()),
-                new GameStateInitializer()
+                new GameInitializer()
         );
     }
 }

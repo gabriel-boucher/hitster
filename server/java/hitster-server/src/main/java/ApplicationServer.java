@@ -17,13 +17,9 @@ public class ApplicationServer {
     
     private static HttpServer httpServer;
     private static SocketIOServer socketIOServer;
-    private static ApplicationContext applicationContext;
+    private final static ApplicationContext applicationContext = new ApplicationContext();
 
     public static void startHttpServer() {
-        if (applicationContext == null) {
-            applicationContext = new ApplicationContext();
-        }
-        
         SpotifyResource spotifyResource = applicationContext.getSpotifyResource();
 
         final ResourceConfig rc = new ResourceConfig()
@@ -34,47 +30,30 @@ public class ApplicationServer {
     }
     
     public static void startWebSocketServer() {
-        if (applicationContext == null) {
-            applicationContext = new ApplicationContext();
-        }
-        
         GameRessource gameRessource = applicationContext.getGameRessource();
         RoomRessource roomRessource = applicationContext.getRoomRessource();
 
-        try {
-            Configuration config = new Configuration();
-            config.setHostname(SOCKET_IO_HOST);
-            config.setPort(SOCKET_IO_PORT);
-            
-            socketIOServer = new SocketIOServer(config);
-            
-            // Initialize room and game resources with Socket.IO server
-            roomRessource.initialize(socketIOServer);
-            gameRessource.initialize(socketIOServer);
-            
-            socketIOServer.start();
-            System.out.println("Socket.IO server started at " + SOCKET_IO_HOST + ":" + SOCKET_IO_PORT);
-        } catch (Exception e) {
-            System.err.println("Error starting Socket.IO server: " + e.getMessage());
-            e.printStackTrace();
-            throw new RuntimeException("Failed to start Socket.IO server", e);
-        }
+        Configuration config = new Configuration();
+        config.setHostname(SOCKET_IO_HOST);
+        config.setPort(SOCKET_IO_PORT);
+
+        socketIOServer = new SocketIOServer(config);
+
+        roomRessource.setupEventListeners(socketIOServer);
+        gameRessource.setupEventListeners(socketIOServer);
+
+        socketIOServer.start();
+        System.out.println("Socket.IO server started at " + SOCKET_IO_HOST + ":" + SOCKET_IO_PORT);
     }
     
     public static void stopHttpServer() {
-        if (httpServer != null) {
-            httpServer.shutdownNow();
-            httpServer = null;
-            System.out.println("HTTP server stopped");
-        }
+        httpServer.shutdownNow();
+        System.out.println("HTTP server stopped");
     }
     
     public static void stopWebSocketServer() {
-        if (socketIOServer != null) {
-            socketIOServer.stop();
-            socketIOServer = null;
-            System.out.println("Socket.IO server stopped");
-        }
+        socketIOServer.stop();
+        System.out.println("Socket.IO server stopped");
     }
     
     public static void startAllServers() {
@@ -95,7 +74,6 @@ public class ApplicationServer {
             stopAllServers();
         }));
         
-        // Keep the main thread alive
         try {
             Thread.currentThread().join();
         } catch (InterruptedException e) {

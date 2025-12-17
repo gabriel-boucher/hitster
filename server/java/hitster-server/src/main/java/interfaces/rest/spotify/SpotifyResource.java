@@ -2,6 +2,7 @@ package interfaces.rest.spotify;
 
 import application.SpotifyAppService;
 import domain.spotify.Playlist;
+import interfaces.rest.spotify.dto.SearchPlaylistData;
 import interfaces.rest.spotify.dto.SearchPlaylistResponse;
 import interfaces.rest.spotify.mapper.SearchPlaylistMapper;
 import jakarta.ws.rs.*;
@@ -20,12 +21,13 @@ public class SpotifyResource {
     }
 
     @GET
-    @Path("search-playlists")
+    @Path("search-playlists/{roomId}/{playerId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public SearchPlaylistResponse searchPlaylists(@QueryParam("query") String query) {
+    public SearchPlaylistResponse searchPlaylists(@PathParam("roomId") String roomId, @PathParam("playerId") String playerId, @QueryParam("query") String query) {
         System.out.println("Searching playlists with query: " + query);
 
-        List<Playlist> playlists = spotifyAppService.searchPlaylists(query);
+        SearchPlaylistData data = searchPlaylistMapper.toDomain(roomId, playerId);
+        List<Playlist> playlists = spotifyAppService.searchPlaylists(data.roomId(), data.playerId(), query);
 
         return searchPlaylistMapper.toDto(playlists);
     }

@@ -54,7 +54,7 @@ public class ApplicationContext {
 
         GameStateMapper gameStateMapper = new GameStateMapper(playerMapper, currentDeckMapper, cardMapper);
         RoomStateMapper roomStateMapper = new RoomStateMapper(playerMapper, playlistMapper);
-        
+
         GameRepository gameRepository = new InMemoryGameRepository();
         RoomRepository roomRepository = new InMemoryRoomRepository();
         CardRepository cardRepository = new InMemoryCardRepository();
@@ -64,9 +64,9 @@ public class ApplicationContext {
         RoomFactory roomFactory = new RoomFactory();
         PlayerFactory playerFactory = new PlayerFactory();
 
-        RoomAppService roomAppService = new RoomAppService(roomRepository, roomFactory, playerFactory);
+        RoomAppService roomAppService = new RoomAppService(roomRepository, gameRepository, cardRepository, roomFactory, playerFactory);
         GameAppService gameAppService = new GameAppService(gameRepository, roomRepository, cardRepository, gameFactory);
-        SpotifyAppService spotifyAppService = new SpotifyAppService(playlistRepository);
+        SpotifyAppService spotifyAppService = new SpotifyAppService(roomRepository, playlistRepository);
 
         // Create Socket.IO room resource
         roomRessource = new RoomRessource(roomAppService, createRoomMapper, joinRoomMapper, addPlaylistMapper, removePlaylistMapper, roomStateMapper);

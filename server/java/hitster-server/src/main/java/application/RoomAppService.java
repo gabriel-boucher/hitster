@@ -1,6 +1,8 @@
 package application;
 
 import domain.exception.RoomNotFoundException;
+import domain.game.CardRepository;
+import domain.game.GameRepository;
 import domain.game.player.PlayerFactory;
 import domain.game.player.PlayerId;
 import domain.room.Room;
@@ -12,21 +14,21 @@ import domain.spotify.PlaylistId;
 
 public class RoomAppService {
     private final RoomRepository roomRepository;
+    private final GameRepository gameRepository;
+    private final CardRepository cardRepository;
     private final RoomFactory roomFactory;
     private final PlayerFactory playerFactory;
 
-    public RoomAppService(RoomRepository roomRepository, RoomFactory roomFactory, PlayerFactory playerFactory) {
+    public RoomAppService(RoomRepository roomRepository, GameRepository gameRepository, CardRepository cardRepository, RoomFactory roomFactory, PlayerFactory playerFactory) {
         this.roomRepository = roomRepository;
+        this.gameRepository = gameRepository;
+        this.cardRepository = cardRepository;
         this.roomFactory = roomFactory;
         this.playerFactory = playerFactory;
     }
 
-    public Room createRoom(RoomId roomId, PlayerId playerId) {
-        Room room = roomRepository.getRoomById(roomId);
-        if (room != null) {
-            throw new IllegalArgumentException("Room with ID " + roomId + " already exists.");
-        }
-        room = roomFactory.create(roomId, playerId, playerFactory);
+    public Room createRoom(PlayerId playerId) {
+        Room room = roomFactory.create(playerId, playerFactory);
         roomRepository.saveRoom(room);
         return room;
     }

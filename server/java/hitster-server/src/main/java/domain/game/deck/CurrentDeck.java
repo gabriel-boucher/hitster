@@ -1,6 +1,10 @@
 package domain.game.deck;
 
 import domain.game.deck.card.Card;
+import domain.game.deck.exception.CardActiveException;
+import domain.game.deck.exception.CardInactiveException;
+import domain.game.deck.exception.TokenActiveException;
+import domain.game.deck.exception.TokenInactiveException;
 import domain.game.player.PlayerId;
 import domain.game.deck.token.Token;
 
@@ -24,7 +28,7 @@ public class CurrentDeck {
 
     public void addCardAndSetActive(Card card, int position) {
         if (card.getStatus() == ItemStatus.ACTIVE) {
-            throw new IllegalArgumentException("Card is already in the current deck.");
+            throw new CardActiveException();
         }
 
         position = Math.clamp(position, 0, currentItems.size());
@@ -44,7 +48,7 @@ public class CurrentDeck {
 
     public void removeCardAndSetInactive(Card card) {
         if (card.getStatus() == ItemStatus.INACTIVE) {
-            throw new IllegalArgumentException("Card is not in the current deck.");
+            throw new CardInactiveException();
         }
         currentItems.remove(card);
         card.setStatus(ItemStatus.INACTIVE);
@@ -52,7 +56,7 @@ public class CurrentDeck {
 
     public void reorderCard(Card card, int newPosition) {
         if (card.getStatus() == ItemStatus.INACTIVE) {
-            throw new IllegalArgumentException("Card is not in the current deck.");
+            throw new CardInactiveException();
         }
         removeCardAndSetInactive(card);
         addCardAndSetActive(card, newPosition);
@@ -60,7 +64,7 @@ public class CurrentDeck {
 
     public void addTokenAndSetActive(Token token, int position) {
         if (token.getStatus() == ItemStatus.ACTIVE) {
-            throw new IllegalArgumentException("Token is already in the current deck.");
+            throw new TokenActiveException(token.getId());
         }
         position = Math.clamp(position, 0, currentItems.size());
         int prevPosition = position - 1;
@@ -73,7 +77,7 @@ public class CurrentDeck {
 
     public void removeTokenAndSetInactive(Token token) {
         if (token.getStatus() == ItemStatus.INACTIVE) {
-            throw new IllegalArgumentException("Token is not in the current deck.");
+            throw new TokenInactiveException(token.getId());
         }
         currentItems.remove(token);
         token.setStatus(ItemStatus.INACTIVE);
@@ -89,7 +93,7 @@ public class CurrentDeck {
 
     public PlayerId getCurrentCardWinner(Card currentCard, PlayerId currentPlayerId) {
         if (currentCard.getStatus() == ItemStatus.INACTIVE) {
-            throw new IllegalArgumentException("Current card is not in the current deck.");
+            throw new CardInactiveException();
         }
         int currentIndex = currentItems.indexOf(currentCard);
 

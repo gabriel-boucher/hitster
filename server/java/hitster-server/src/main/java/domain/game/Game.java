@@ -4,6 +4,8 @@ import domain.game.deck.CurrentDeck;
 import domain.game.deck.card.Card;
 import domain.game.deck.token.Token;
 import domain.game.deck.token.TokenId;
+import domain.exception.InvalidGameStatusException;
+import domain.game.exception.InvalidPlayerTurnException;
 import domain.game.player.Player;
 import domain.game.player.PlayerId;
 import domain.game.player.Players;
@@ -16,9 +18,9 @@ public class Game {
     private final Players players;
     private final Pile pile;
     private final CurrentDeck currentDeck;
-    private final GameStateInitializer gameInitializer;
+    private final GameInitializer gameInitializer;
 
-    public Game(GameId gameId, GameStatus gameStatus, Players players, Pile pile, CurrentDeck currentDeck, GameStateInitializer gameInitializer) {
+    public Game(GameId gameId, GameStatus gameStatus, Players players, Pile pile, CurrentDeck currentDeck, GameInitializer gameInitializer) {
         this.gameId = gameId;
         this.gameStatus = gameStatus;
         this.players = players;
@@ -122,22 +124,21 @@ public class Game {
         currentDeck.removeTokenAndSetInactive(token);
     }
 
-
     private void validateGameStatus(GameStatus gameStatus) {
         if (this.gameStatus != gameStatus) {
-            throw new IllegalStateException("Invalid game status for this action.");
+            throw new InvalidGameStatusException(gameStatus);
         }
     }
 
     private void validatePlayerTurn(Player player) {
         if (!players.getCurrentPlayer().equals(player)) {
-            throw new IllegalStateException("It's not the player's turn.");
+            throw new InvalidPlayerTurnException(player.getId());
         }
     }
 
     private void validateNotPlayerTurn(Player player) {
         if (players.getCurrentPlayer().equals(player)) {
-            throw new IllegalStateException("It's the player's turn.");
+            throw new InvalidPlayerTurnException(player.getId());
         }
     }
 }

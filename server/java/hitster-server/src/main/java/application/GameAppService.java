@@ -1,5 +1,6 @@
 package application;
 
+import application.exception.NoPlaylistSelectedException;
 import domain.exception.RoomNotFoundException;
 import domain.game.*;
 import domain.game.deck.card.Card;
@@ -27,16 +28,6 @@ public class GameAppService {
         this.gameFactory = gameFactory;
     }
 
-    private Game execute(GameId gameId, Consumer<Game> action) {
-        Game game = gameRepository.getGameById(gameId);
-        if (game == null) {
-            throw new GameNotFoundException(gameId);
-        }
-        action.accept(game);
-        gameRepository.saveGame(game);
-        return game;
-    }
-
     public Game startGame(RoomId roomId, PlayerId playerId) {
         Room room = roomRepository.getRoomById(roomId);
         if (room == null) {
@@ -44,7 +35,7 @@ public class GameAppService {
         }
         List<Card> pile = cardRepository.getCardsByPlaylistIds(room.getPlaylists().stream().map(Playlist::id).toList());
         if (pile.isEmpty()) {
-            throw new IllegalStateException("Cannot start game: No cards available from the room's playlists.");
+            throw new NoPlaylistSelectedException();
         }
 
         Game game = gameFactory.createGame(room, pile);
@@ -75,5 +66,15 @@ public class GameAppService {
 
     public Game removeToken(GameId gameId, PlayerId playerId, TokenId tokenId) {
         return execute(gameId, game -> game.removeTokenFromCurrentDeck(playerId, tokenId));
+    }
+
+    private Game execute(GameId gameId, Consumer<Game> action) {
+        Game game = gameRepository.getGameId(gameId);
+        if (game == null) {
+            throw new GameNotFoundException(gameId);
+        }
+        action.accept(game);
+        gameRepository.saveGame(game);
+        return game;
     }
 }

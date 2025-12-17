@@ -1,6 +1,7 @@
 package domain.game;
 
 import domain.game.deck.card.Card;
+import domain.game.exception.InvalidPileException;
 
 import java.util.List;
 
@@ -13,14 +14,14 @@ public class Pile {
 
     public Card getCurrentCard() {
         if (pile.isEmpty()) {
-            throw new IllegalArgumentException("Pile is empty, no current card available.");
+            throw new InvalidPileException();
         }
         return pile.getLast();
     }
 
     public Card removeCurrentCard() {
         if (pile.isEmpty()) {
-            throw new IllegalArgumentException("Pile is empty, no card to remove.");
+            throw new InvalidPileException();
         }
         return pile.removeLast();
     }

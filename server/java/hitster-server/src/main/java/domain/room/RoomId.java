@@ -1,8 +1,14 @@
 package domain.room;
 
-public record RoomId(String id) {
+import java.util.UUID;
+
+public record RoomId(UUID id) {
+    public static RoomId create() {
+        return new RoomId(UUID.randomUUID());
+    }
+
     public static RoomId fromString(String id) {
-        return new RoomId(id);
+        return new RoomId(UUID.fromString(id));
     }
 
     @Override

@@ -1,6 +1,6 @@
 package domain.game;
 
 public interface GameRepository {
-    Game getGameById(GameId gameId);
+    Game getGameId(GameId gameId);
     void saveGame(Game game);
 }

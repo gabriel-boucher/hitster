@@ -1,10 +1,14 @@
 package domain.room;
 
+import domain.exception.InvalidGameStatusException;
 import domain.exception.PlayerNotFoundException;
 import domain.exception.PlaylistNotFoundException;
+import domain.game.GameStatus;
 import domain.game.player.Player;
 import domain.game.player.PlayerFactory;
 import domain.game.player.PlayerId;
+import domain.room.exception.PlayerInRoomException;
+import domain.room.exception.PlaylistInRoomException;
 import domain.spotify.Playlist;
 import domain.spotify.PlaylistId;
 
@@ -12,12 +16,14 @@ import java.util.List;
 
 public class Room {
     private final RoomId id;
+    private final GameStatus gameStatus;
     private final List<Player> players;
     private final List<Playlist> playlists;
     private final PlayerFactory playerFactory;
 
-    public Room(RoomId id, List<Player> players, List<Playlist> playlists, PlayerFactory playerFactory) {
+    public Room(RoomId id, GameStatus gameStatus, List<Player> players, List<Playlist> playlists, PlayerFactory playerFactory) {
         this.id = id;
+        this.gameStatus = gameStatus;
         this.players = players;
         this.playlists = playlists;
         this.playerFactory = playerFactory;
@@ -37,6 +43,7 @@ public class Room {
 
     public void joinRoom(PlayerId playerId) {
         validatePlayerNotExist(playerId);
+        validateGameNotStarted();
 
         Player player = playerFactory.create(playerId);
         players.add(player);
@@ -56,7 +63,7 @@ public class Room {
         playlists.removeIf(playlist -> playlist.id().equals(playlistId));
     }
 
-    private void validatePlayerExist(PlayerId playerId) {
+    public void validatePlayerExist(PlayerId playerId) {
         boolean playerExists = players.stream()
                 .anyMatch(player -> player.getId().equals(playerId));
         if (!playerExists) {
@@ -68,7 +75,7 @@ public class Room {
         boolean playerExists = players.stream()
                 .anyMatch(player -> player.getId().equals(playerId));
         if (playerExists) {
-            throw new IllegalArgumentException("Player with ID " + playerId + " already joined the room.");
+            throw new PlayerInRoomException(playerId);
         }
     }
 
@@ -84,7 +91,13 @@ public class Room {
         boolean playlistExists = playlists.stream()
                 .anyMatch(playlist -> playlist.id().equals(playlistId));
         if (playlistExists) {
-            throw new IllegalArgumentException("Playlist with ID " + playlistId + " already added to the room.");
+            throw new PlaylistInRoomException(playlistId);
+        }
+    }
+
+    private void validateGameNotStarted() {
+        if (gameStatus != GameStatus.LOBBY) {
+            throw new InvalidGameStatusException(gameStatus);
         }
     }
 }

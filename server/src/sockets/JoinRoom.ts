@@ -8,7 +8,7 @@ import {
 } from "../../../shared/constants";
 import { v4 as uuidv4 } from "uuid";
 import { isCard } from "../../../shared/utils";
-import { getAccessToken } from "../api/getAccessToken";
+import { getAccessToken } from "../spotify-api/getAccessToken";
 import { codeToToken, io, rooms } from "../server";
 
 

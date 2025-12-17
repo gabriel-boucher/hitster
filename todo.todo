@@ -60,10 +60,10 @@ Spotify API:
     ✔ Access Token @done(25-08-13 21:52)
     Playlist:
         ✔ Search playlists api @done(25-08-21 21:42)
-        ☐ Close modal by clicking outside
-        ☐ See playlist details in modal (name, song, etc)
-        ☐ Recent searches when nothing is searched
         ☐ Selected playlists box
+        ☐ See playlist details in modal (name, song, etc)
+        ☐ Close modal by clicking outside
+        ☐ Recent searches when nothing is searched
         ☐ ?Lots of songs with the same date
 
 

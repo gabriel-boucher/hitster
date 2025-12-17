@@ -7,8 +7,8 @@ import express from "express";
 import cors from "cors";
 import { Server, Socket } from "socket.io";
 import { GameInterface } from "../../shared/interfaces";
-import { HOST, SERVER_PORT } from "./constants";
-import { registerRoutes } from "./routes/routes";
+import { HOST, SERVER_PORT } from "./utils/constants";
+import { registerRoutes } from "./api/routes";
 import { registerSockets } from "./sockets/sockets";
 
 export const codeToToken: Record<string, string> = {};
@@ -21,7 +21,7 @@ app.use(
   cors({
     origin: "http://127.0.0.1:8000",
     methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-room-id"],
   }),
   express.json(),
 );

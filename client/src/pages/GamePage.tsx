@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import useMouseHandlers from "../utils/mouseHandlers";
+import useMouseHandlers from "../hooks/useMouseHandlers";
 import { useStateProvider } from "../utils/StateProvider";
 import Header from "src/components/GamePage/Header/Header";
 import Deck from "src/components/GamePage/Deck/Deck";

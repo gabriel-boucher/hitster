@@ -2,19 +2,18 @@ import axios from "axios";
 import { ConnectionType, getBaseUrl } from "src/utils/constants";
 import { errorHandler } from "./errorHandler";
 
-export default async function searchPlaylists(roomId: string, query: string) {
+export default async function getPlaylist(roomId: string, playlistId: string) {
   try {
     const response = await axios.get(
-      `${getBaseUrl(ConnectionType.SERVER)}/api/searchPlaylists`,
+      `${getBaseUrl(ConnectionType.SERVER)}/api/getPlaylist/${playlistId}`,
       {
-        params: { query },
         headers: {
           "x-room-id": roomId,
         },
       }
     );
 
-    return response.data.playlists;
+    return response.data;
   } catch (error) {
     return errorHandler(error);
   }

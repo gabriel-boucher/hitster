@@ -1,31 +1,27 @@
+import { Router, Request, Response } from "express";
+import spotify from "../spotify-api/spotify";
+import { withRoom } from "./middlewares";
+import { RoomRequest } from "../utils/interface";
 import { PlaylistInterface } from "../../../shared/interfaces";
+import { errorHandler } from "./errorHandler";
 
-interface PlaylistsResponse {
-  playlists: {
-    items: PlaylistInterface[];
-  };
-}
+const router = Router();
 
-export const searchPlaylists = async (accessToken: string, searchQuery: string): Promise<PlaylistInterface[]> => {
-    const response = await fetch(`https://api.spotify.com/v1/search?q=${searchQuery}&type=playlist`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+router.get("/searchPlaylists", withRoom, async (req: Request, res: Response) => {
+  try {
+    const { query } = req.query;
+    const accessToken = (req as RoomRequest).accessToken;
 
-    if (!response.ok) {
-      throw new Error(`Failed to search playlists: ${response.status}`);
+    if (!query) {
+      return res.status(400).json({ error: "Missing query" });
     }
 
-    const data = await response.json() as {
-      playlists: {
-        items: Array<{
-          id: string;
-          name: string;
-          images: Array<{ url: string }>;
-        }>;
-      };
-    };
+    const search = await spotify.searchPlaylists(accessToken, query as string);
+    const playlists = search.playlists.items.filter((playlist: PlaylistInterface) => playlist);
+    res.json({ playlists });
+  } catch (err: any) {
+    errorHandler(req, res, err);
+  }
+});
 
-    return data.playlists.items.filter((playlist) => playlist);
-  };
+export default router;

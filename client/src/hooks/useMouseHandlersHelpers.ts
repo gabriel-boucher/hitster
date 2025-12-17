@@ -1,5 +1,5 @@
 import { CardInterface, TokenInterface } from "@shared/interfaces";
-import { useStateProvider } from "./StateProvider";
+import { useStateProvider } from "../utils/StateProvider";
 import { getActiveCard, getActivePlayerId, isCard, isToken } from "@shared/utils";
 
 export function useMouseHandlersHelpers() {

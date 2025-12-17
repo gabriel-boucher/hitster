@@ -1,8 +1,8 @@
 import { useCallback, useRef } from "react";
-import { useStateProvider } from "./StateProvider";
+import { useStateProvider } from "../utils/StateProvider";
 import { CardInterface, TokenInterface } from "@shared/interfaces";
 import { socketEvents } from "@shared/constants";
-import { useMouseHandlersHelpers } from "./mouseHandlersHelpers";
+import { useMouseHandlersHelpers } from "./useMouseHandlersHelpers";
 import {
   getActiveItems,
   moveActiveCardToBoard,
@@ -11,9 +11,9 @@ import {
   getPlayerToken,
   moveTokenToPlayer,
   moveTokensWithWrongPositionToPlayers,
-} from "./itemsManipulation";
+} from "../utils/itemsManipulation";
 import { getActiveCard, getActivePlayerId, isCard, isToken } from "@shared/utils";
-import { reducerCases } from "./constants";
+import { reducerCases } from "../utils/constants";
 
 export default function useMouseHandlers(
   activeCardWidth: number,

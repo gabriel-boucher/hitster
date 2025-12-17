@@ -5,7 +5,7 @@ import {
 import {
   socketEvents,
 } from "../../../shared/constants";
-import useGameRules from "../gameRules";
+import useGameRules from "../utils/gameRules";
 import { io, rooms } from "../server";
 
 export default function nextTurn(this: Socket, game: GameInterface) {

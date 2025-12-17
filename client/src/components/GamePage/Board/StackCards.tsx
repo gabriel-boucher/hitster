@@ -32,11 +32,11 @@ export default function StackCards({
           .map((card, index) => (
             <CardInStack
               key={card.id}
-              index={index}
+              index={index - items.length + 20}
               card={card}
               handleMouseDown={handleMouseDown}
             />
-          ))}
+          )).slice(-20)}
       </Stack>
     </Container>
   );

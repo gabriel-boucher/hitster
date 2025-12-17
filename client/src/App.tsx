@@ -8,6 +8,12 @@ import RootRouter from "./RootRouter";
 export default function App() {
   const [{ socket }, dispatch] = useStateProvider();
 
+  socket.on("room-state", ({ roomId, players, playlists }) => {
+    console.log(roomId)
+    console.log(players)
+    console.log(playlists)
+  })
+
   socket.on(socketEvents.UPDATE_GAME_STATE, ({ gameState, players, items }) => {
     dispatch({ type: reducerCases.SET_GAME_STATE, gameState });
     dispatch({ type: reducerCases.SET_PLAYERS, players });

@@ -34,4 +34,12 @@ export interface PlaylistInterface {
   id: string;
   name: string;
   images: Array<{ url: string }>;
+  tracks: { items: Array<{ track: TrackInterface }>, total: number };
+}
+
+export interface TrackInterface {
+  id: string;
+  name: string;
+  album: { images: Array<{ url: string }>, release_date: string };
+  artists: Array<{ name: string }>;
 }

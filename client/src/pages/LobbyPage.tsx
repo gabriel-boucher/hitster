@@ -5,13 +5,17 @@ import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { PINK_COLOR__HEX, reducerCases } from "src/utils/constants";
 import PlayerInLobby from "src/components/elements/Player/PlayerInLobby";
-import { PlayerInterface } from "@shared/interfaces";
-import { SearchPlaylistModal } from "src/components/GamePage/Spotify/SearchPlaylistModal";
+import { PlayerInterface, PlaylistInterface } from "@shared/interfaces";
+import { SpotifyModal } from "src/components/GamePage/SpotifyModal/SpotifyModal";
 
 export default function LobbyPage() {
   const [{ socket, gameState, items, players }, dispatch] = useStateProvider();
   const [userName, setUserName] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPlaylists, setSelectedPlaylists] = useState<
+    PlaylistInterface[]
+  >([]);
+
   const { search } = useLocation();
   const params = new URLSearchParams(search);
   const roomId = params.get("code");
@@ -24,7 +28,11 @@ export default function LobbyPage() {
   }, [roomId, socket, dispatch]);
 
   const changePlayerImage = (image: string) => {
-    if (!image || players.some((player: PlayerInterface) => player.image === image)) return;
+    if (
+      !image ||
+      players.some((player: PlayerInterface) => player.image === image)
+    )
+      return;
 
     const newPlayers = players.map((player: PlayerInterface) =>
       player.socketId === socket.id ? { ...player, image } : player
@@ -49,9 +57,34 @@ export default function LobbyPage() {
     });
   }
 
+  function removePlayer(socketId: string) {
+    const newPlayers = players.map((player) =>
+      player.socketId === socketId ? { ...player, name: "" } : player
+    );
+    socket.emit(socketEvents.UPDATE_GAME_STATE, {
+      gameState,
+      players: newPlayers,
+      items,
+    });
+  }
+
   function startGame() {
-    if (players.some((player) => !player.name)) return;
-    socket.emit(socketEvents.START_GAME);
+    if (
+      players.some((player) => !player.name) ||
+      selectedPlaylists.length === 0
+    )
+      return;
+    socket.emit(socketEvents.START_GAME, selectedPlaylists );
+  }
+
+  function addSelectedPlaylist(playlist: PlaylistInterface) {
+    setSelectedPlaylists([...selectedPlaylists, playlist]);
+  }
+
+  function removeSelectedPlaylist(playlistId: string) {
+    setSelectedPlaylists(
+      selectedPlaylists.filter((playlist) => playlist.id !== playlistId)
+    );
   }
 
   return (
@@ -78,18 +111,50 @@ export default function LobbyPage() {
             .map((player) => (
               <li key={player.socketId}>
                 <PlayerImg $playerImage={player.image} />
-                {player.name}
+                <NameBase>{player.name}</NameBase>
+                {socket.id === players[0].socketId && (
+                  <RemoveButton onClick={() => removePlayer(player.socketId)}>
+                    -
+                  </RemoveButton>
+                )}
               </li>
             ))}
         </ul>
       </PlayerList>
 
+      <PlaylistList>
+        <h2>Selected Playlists</h2>
+        <ul>
+          {selectedPlaylists?.map((playlist) => (
+            <li key={playlist.id}>
+              <PlaylistImg $playlistImage={playlist.images[0].url} />
+              <NameBase>{playlist.name}</NameBase>
+              {socket.id === players[0].socketId && (
+                <RemoveButton
+                  onClick={() => removeSelectedPlaylist(playlist.id)}
+                >
+                  -
+                </RemoveButton>
+              )}
+            </li>
+          ))}
+        </ul>
+      </PlaylistList>
+
       <ButtonsContainer>
         {players.length > 0 && players[0].socketId === socket.id && (
           <StartButton onClick={startGame}>Start Game</StartButton>
         )}
-        <PlaylistButton onClick={() => setIsModalOpen(true)}>Choose playlist</PlaylistButton>
-        <SearchPlaylistModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+        <PlaylistButton onClick={() => setIsModalOpen(true)}>
+          Choose playlist
+        </PlaylistButton>
+        <SpotifyModal
+          selectedPlaylists={selectedPlaylists}
+          isModalOpen={isModalOpen}
+          closeModal={() => setIsModalOpen(false)}
+          addSelectedPlaylist={addSelectedPlaylist}
+          removeSelectedPlaylist={removeSelectedPlaylist}
+        />
       </ButtonsContainer>
     </Container>
   );
@@ -172,19 +237,45 @@ const JoinButton = styled.button`
   cursor: pointer;
 `;
 
-const PlayerImg = styled.div<{ $playerImage: string }>`
+const ImgBase = styled.div`
   aspect-ratio: 1/1;
   width: 2vh;
-  border-radius: 50%;
-  /* background-image: url(${({ $playerImage }) => $playerImage}); */
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  cursor: pointer;
+`;
+
+const NameBase = styled.span`
+  flex: 1;
+`;
+
+const PlayerImg = styled(ImgBase)<{ $playerImage: string }>`
+  border-radius: 50%;
   background-color: ${({ $playerImage }) => $playerImage};
 `;
 
-const PlayerList = styled.div`
+const PlaylistImg = styled(ImgBase)<{ $playlistImage: string }>`
+  border-radius: 10%;
+  background-image: url(${({ $playlistImage }) => $playlistImage});
+`;
+
+const RemoveButton = styled.span`
+  cursor: pointer;
+  font-size: 1.5rem;
+  border-radius: 50%;
+  background-color: red;
+  width: 2vh;
+  height: 2vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: darkred;
+  }
+`;
+
+const List = styled.div`
   background: rgba(255, 255, 255, 0.05);
   border: 2px solid #00f2ff;
   border-radius: 12px;
@@ -204,6 +295,7 @@ const PlayerList = styled.div`
 
     li {
       display: flex;
+      justify-content: space-between;
       align-items: center;
       gap: 0.5rem;
       line-height: 0.1rem;
@@ -215,12 +307,16 @@ const PlayerList = styled.div`
       transition: all 0.2s;
 
       &:hover {
-        background: #101c3b;
-        transform: translateX(5px);
+        /* background: #101c3b; */
+        /* transform: translateX(5px); */
       }
     }
   }
 `;
+
+const PlayerList = styled(List)``;
+
+const PlaylistList = styled(List)``;
 
 const StartButton = styled.button`
   background-color: ${PINK_COLOR__HEX};

@@ -1,7 +1,7 @@
 package interfaces.socket.game.mapper;
 
 import domain.game.GameId;
-import domain.game.player.PlayerId;
+import domain.player.PlayerId;
 import interfaces.socket.game.dto.reorderCurrentCard.ReorderCurrentCardData;
 import interfaces.socket.game.dto.reorderCurrentCard.ReorderCurrentCardRequest;
 

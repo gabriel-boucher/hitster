@@ -1,4 +1,4 @@
-package domain.game.player;
+package domain.player;
 
 import domain.game.deck.card.Card;
 import domain.exception.PlayerNotFoundException;

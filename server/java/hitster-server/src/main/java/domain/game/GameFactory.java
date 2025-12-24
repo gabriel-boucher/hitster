@@ -2,7 +2,7 @@ package domain.game;
 
 import domain.game.deck.CurrentDeck;
 import domain.game.deck.card.Card;
-import domain.game.player.Players;
+import domain.player.Players;
 import domain.room.Room;
 
 import java.util.ArrayList;

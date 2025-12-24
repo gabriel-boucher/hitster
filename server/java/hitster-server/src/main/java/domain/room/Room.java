@@ -4,9 +4,9 @@ import domain.exception.InvalidGameStatusException;
 import domain.exception.PlayerNotFoundException;
 import domain.exception.PlaylistNotFoundException;
 import domain.game.GameStatus;
-import domain.game.player.Player;
-import domain.game.player.PlayerFactory;
-import domain.game.player.PlayerId;
+import domain.player.Player;
+import domain.player.PlayerFactory;
+import domain.player.PlayerId;
 import domain.room.exception.PlayerInRoomException;
 import domain.room.exception.PlaylistInRoomException;
 import domain.spotify.Playlist;
@@ -52,6 +52,7 @@ public class Room {
     public void addPlaylist(PlayerId playerId, Playlist playlist) {
         validatePlayerExist(playerId);
         validatePlaylistNotExist(playlist.id());
+        validateGameNotStarted();
 
         playlists.add(playlist);
     }
@@ -59,6 +60,7 @@ public class Room {
     public void removePlaylist(PlayerId playerId, PlaylistId playlistId) {
         validatePlayerExist(playerId);
         validatePlaylistExist(playlistId);
+        validateGameNotStarted();
 
         playlists.removeIf(playlist -> playlist.id().equals(playlistId));
     }

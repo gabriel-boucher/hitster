@@ -1,6 +1,6 @@
 package interfaces.socket.room.mapper;
 
-import domain.game.player.PlayerId;
+import domain.player.PlayerId;
 import interfaces.socket.room.dto.createRoom.CreateRoomData;
 import interfaces.socket.room.dto.createRoom.CreateRoomRequest;
 

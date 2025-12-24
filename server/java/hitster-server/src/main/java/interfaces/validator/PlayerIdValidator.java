@@ -1,6 +1,6 @@
 package interfaces.validator;
 
-import domain.game.player.PlayerId;
+import domain.player.PlayerId;
 
 import java.util.Objects;
 

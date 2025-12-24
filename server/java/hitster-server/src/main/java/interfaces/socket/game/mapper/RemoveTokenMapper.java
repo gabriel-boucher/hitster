@@ -2,7 +2,7 @@ package interfaces.socket.game.mapper;
 
 import domain.game.GameId;
 import domain.game.deck.token.TokenId;
-import domain.game.player.PlayerId;
+import domain.player.PlayerId;
 import interfaces.socket.game.dto.removeToken.RemoveTokenData;
 import interfaces.socket.game.dto.removeToken.RemoveTokenRequest;
 

@@ -1,6 +1,6 @@
 package interfaces.socket.room.dto.joinRoom;
 
-import domain.game.player.PlayerId;
+import domain.player.PlayerId;
 import domain.room.RoomId;
 
 public record JoinRoomData(

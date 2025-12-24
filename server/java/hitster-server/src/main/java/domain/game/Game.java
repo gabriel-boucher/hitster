@@ -6,9 +6,9 @@ import domain.game.deck.token.Token;
 import domain.game.deck.token.TokenId;
 import domain.exception.InvalidGameStatusException;
 import domain.game.exception.InvalidPlayerTurnException;
-import domain.game.player.Player;
-import domain.game.player.PlayerId;
-import domain.game.player.Players;
+import domain.player.Player;
+import domain.player.PlayerId;
+import domain.player.Players;
 
 import java.util.List;
 

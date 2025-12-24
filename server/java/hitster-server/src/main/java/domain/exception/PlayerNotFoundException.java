@@ -1,6 +1,6 @@
 package domain.exception;
 
-import domain.game.player.PlayerId;
+import domain.player.PlayerId;
 import interfaces.exception.NotFoundException;
 
 public class PlayerNotFoundException extends NotFoundException {

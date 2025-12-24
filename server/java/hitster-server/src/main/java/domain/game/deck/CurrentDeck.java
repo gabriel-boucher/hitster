@@ -5,7 +5,7 @@ import domain.game.deck.exception.CardActiveException;
 import domain.game.deck.exception.CardInactiveException;
 import domain.game.deck.exception.TokenActiveException;
 import domain.game.deck.exception.TokenInactiveException;
-import domain.game.player.PlayerId;
+import domain.player.PlayerId;
 import domain.game.deck.token.Token;
 
 import java.util.List;

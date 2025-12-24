@@ -1,8 +1,8 @@
 package domain.room;
 
-import domain.game.player.Player;
-import domain.game.player.PlayerFactory;
-import domain.game.player.PlayerId;
+import domain.player.Player;
+import domain.player.PlayerFactory;
+import domain.player.PlayerId;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,7 @@
 package application;
 
 import domain.exception.RoomNotFoundException;
-import domain.game.player.PlayerId;
+import domain.player.PlayerId;
 import domain.room.Room;
 import domain.room.RoomId;
 import domain.room.RoomRepository;

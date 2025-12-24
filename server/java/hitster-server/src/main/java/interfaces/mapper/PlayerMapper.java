@@ -1,6 +1,6 @@
 package interfaces.mapper;
 
-import domain.game.player.Player;
+import domain.player.Player;
 import interfaces.dto.PlayerDto;
 
 public class PlayerMapper {

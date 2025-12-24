@@ -2,7 +2,7 @@ package domain.game.deck.token;
 
 import domain.game.deck.Moveable;
 import domain.game.deck.ItemStatus;
-import domain.game.player.PlayerId;
+import domain.player.PlayerId;
 
 public class Token implements Moveable {
     private final TokenId id;

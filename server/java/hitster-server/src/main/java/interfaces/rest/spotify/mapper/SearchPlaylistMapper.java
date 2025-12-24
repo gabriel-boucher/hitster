@@ -1,6 +1,6 @@
 package interfaces.rest.spotify.mapper;
 
-import domain.game.player.PlayerId;
+import domain.player.PlayerId;
 import domain.room.RoomId;
 import domain.spotify.Playlist;
 import interfaces.mapper.PlaylistMapper;

@@ -1,4 +1,4 @@
-package domain.game.player;
+package domain.player;
 
 public record PlayerId(String id) {
     public static PlayerId fromString(String id) {

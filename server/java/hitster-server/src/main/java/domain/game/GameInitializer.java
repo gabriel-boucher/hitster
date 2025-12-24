@@ -5,8 +5,8 @@ import domain.game.deck.ItemStatus;
 import domain.game.deck.card.Card;
 import domain.game.deck.token.Token;
 import domain.game.deck.token.TokenId;
-import domain.game.player.Player;
-import domain.game.player.Players;
+import domain.player.Player;
+import domain.player.Players;
 
 import java.util.List;
 

@@ -6,7 +6,7 @@ import application.SpotifyAppService;
 import domain.game.CardRepository;
 import domain.game.GameFactory;
 import domain.game.GameRepository;
-import domain.game.player.PlayerFactory;
+import domain.player.PlayerFactory;
 import domain.room.RoomFactory;
 import domain.room.RoomRepository;
 import domain.spotify.PlaylistRepository;

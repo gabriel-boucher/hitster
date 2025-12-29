@@ -1,7 +1,7 @@
 package domain.game;
 
-import domain.game.deck.CurrentDeck;
-import domain.game.deck.card.Card;
+import domain.game.currentDeck.CurrentDeck;
+import domain.game.item.card.Card;
 import domain.player.Players;
 import domain.room.Room;
 

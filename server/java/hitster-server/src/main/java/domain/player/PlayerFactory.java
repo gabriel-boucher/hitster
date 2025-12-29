@@ -1,7 +1,5 @@
 package domain.player;
 
-import domain.game.deck.PlayerDeck;
-
 import java.util.ArrayList;
 
 public class PlayerFactory {

@@ -1,7 +1,7 @@
 package interfaces.socket.game.mapper;
 
 import domain.game.GameId;
-import domain.game.deck.token.TokenId;
+import domain.game.item.token.TokenId;
 import domain.player.PlayerId;
 import interfaces.socket.game.dto.addToken.AddTokenData;
 import interfaces.socket.game.dto.addToken.AddTokenRequest;

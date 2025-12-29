@@ -1,4 +1,4 @@
-package domain.game.deck.token;
+package domain.game.item.token;
 
 import java.util.UUID;
 

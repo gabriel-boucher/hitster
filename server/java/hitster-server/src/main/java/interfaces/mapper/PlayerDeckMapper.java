@@ -1,6 +1,6 @@
 package interfaces.mapper;
 
-import domain.game.deck.PlayerDeck;
+import domain.player.PlayerDeck;
 import interfaces.dto.PlayerDeckDto;
 
 public class PlayerDeckMapper {

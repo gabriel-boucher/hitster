@@ -1,6 +1,6 @@
-package domain.game.deck.exception;
+package domain.game.currentDeck.exception;
 
-import domain.game.deck.token.TokenId;
+import domain.game.item.token.TokenId;
 import interfaces.exception.InvalidMoveException;
 
 public class TokenInactiveException extends InvalidMoveException {

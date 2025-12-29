@@ -1,6 +1,6 @@
 package interfaces.mapper;
 
-import domain.game.deck.token.Token;
+import domain.game.item.token.Token;
 import interfaces.dto.TokenDto;
 
 public class TokenMapper {

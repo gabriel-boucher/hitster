@@ -1,7 +1,7 @@
-package domain.game.deck.card;
+package domain.game.item.card;
 
-import domain.game.deck.Moveable;
-import domain.game.deck.ItemStatus;
+import domain.game.item.Moveable;
+import domain.game.item.ItemStatus;
 
 public class Card implements Moveable {
     private final CardId id;

@@ -1,4 +1,4 @@
-package domain.game.deck;
+package domain.game.item;
 
 public interface Moveable {
     ItemStatus getStatus();

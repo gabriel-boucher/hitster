@@ -1,4 +1,4 @@
-package domain.game.deck.card;
+package domain.game.item.card;
 
 public record CardId(String id) {
     @Override

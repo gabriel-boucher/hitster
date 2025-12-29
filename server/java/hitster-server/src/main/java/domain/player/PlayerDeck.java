@@ -1,9 +1,10 @@
-package domain.game.deck;
+package domain.player;
 
-import domain.game.deck.card.Card;
-import domain.game.deck.token.Token;
-import domain.game.deck.token.TokenId;
-import interfaces.exception.NotFoundException;
+import domain.game.item.ItemStatus;
+import domain.game.item.card.Card;
+import domain.game.item.token.Token;
+import domain.game.item.token.TokenId;
+import domain.player.exception.TokenNotFoundException;
 
 import java.util.List;
 
@@ -24,8 +25,19 @@ public class PlayerDeck {
         return tokens;
     }
 
+    public Token getTokenById(TokenId tokenId) {
+        return tokens.stream()
+                .filter(token -> token.getId().equals(tokenId))
+                .findFirst()
+                .orElseThrow(() -> new TokenNotFoundException(tokenId));
+    }
+
     public void addCard(Card card) {
         cards.add(card);
+    }
+
+    public void addToken(Token token) {
+        tokens.add(token);
     }
 
     public void addCurrentCardAndSetInactive(Card currentCard) {
@@ -37,16 +49,7 @@ public class PlayerDeck {
                 return;
             }
         }
-    }
-
-    public void addToken(Token token) {
-        tokens.add(token);
-    }
-
-    public Token getTokenById(TokenId tokenId) {
-        return tokens.stream()
-                .filter(token -> token.getId().equals(tokenId))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException("Token with ID " + tokenId + " not found in player's deck."));
+        cards.add(currentCard);
+        currentCard.setStatus(ItemStatus.INACTIVE);
     }
 }

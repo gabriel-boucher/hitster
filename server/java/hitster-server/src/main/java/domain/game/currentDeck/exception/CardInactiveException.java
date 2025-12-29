@@ -1,4 +1,4 @@
-package domain.game.deck.exception;
+package domain.game.currentDeck.exception;
 
 import interfaces.exception.InvalidMoveException;
 

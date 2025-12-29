@@ -1,9 +1,10 @@
 package domain.exception;
 
 import domain.spotify.PlaylistId;
+import interfaces.exception.NotFoundException;
 
-public class PlaylistNotFoundException extends RuntimeException {
+public class PlaylistNotFoundException extends NotFoundException {
     public PlaylistNotFoundException(PlaylistId playlistId) {
-        String message = "Playlist with ID " + playlistId + " not found.";
+        super("Playlist with ID " + playlistId + " not found.");
     }
 }

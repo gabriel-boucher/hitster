@@ -1,6 +1,6 @@
 package interfaces.mapper;
 
-import domain.game.deck.CurrentDeck;
+import domain.game.currentDeck.CurrentDeck;
 import interfaces.dto.CurrentDeckDto;
 
 public class CurrentDeckMapper {

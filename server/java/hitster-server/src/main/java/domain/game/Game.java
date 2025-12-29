@@ -1,9 +1,9 @@
 package domain.game;
 
-import domain.game.deck.CurrentDeck;
-import domain.game.deck.card.Card;
-import domain.game.deck.token.Token;
-import domain.game.deck.token.TokenId;
+import domain.game.currentDeck.CurrentDeck;
+import domain.game.item.card.Card;
+import domain.game.item.token.Token;
+import domain.game.item.token.TokenId;
 import domain.exception.InvalidGameStatusException;
 import domain.game.exception.InvalidPlayerTurnException;
 import domain.player.Player;

@@ -1,12 +1,14 @@
-package domain.game.deck;
+package domain.game.currentDeck;
 
-import domain.game.deck.card.Card;
-import domain.game.deck.exception.CardActiveException;
-import domain.game.deck.exception.CardInactiveException;
-import domain.game.deck.exception.TokenActiveException;
-import domain.game.deck.exception.TokenInactiveException;
+import domain.game.item.ItemStatus;
+import domain.game.item.card.Card;
+import domain.game.currentDeck.exception.CardActiveException;
+import domain.game.currentDeck.exception.CardInactiveException;
+import domain.game.currentDeck.exception.TokenActiveException;
+import domain.game.currentDeck.exception.TokenInactiveException;
+import domain.game.item.Moveable;
 import domain.player.PlayerId;
-import domain.game.deck.token.Token;
+import domain.game.item.token.Token;
 
 import java.util.List;
 

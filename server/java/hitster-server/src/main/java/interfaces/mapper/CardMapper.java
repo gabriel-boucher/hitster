@@ -1,6 +1,6 @@
 package interfaces.mapper;
 
-import domain.game.deck.card.Card;
+import domain.game.item.card.Card;
 import interfaces.dto.CardDto;
 
 public class CardMapper {

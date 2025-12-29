@@ -1,9 +1,8 @@
 package domain.player;
 
-import domain.game.deck.PlayerDeck;
-import domain.game.deck.card.Card;
-import domain.game.deck.token.Token;
-import domain.game.deck.token.TokenId;
+import domain.game.item.card.Card;
+import domain.game.item.token.Token;
+import domain.game.item.token.TokenId;
 
 public class Player {
     private final PlayerId id;

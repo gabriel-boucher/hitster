@@ -2,9 +2,9 @@ package infrastructure;
 
 import domain.game.CardRepository;
 import domain.spotify.PlaylistId;
-import domain.game.deck.ItemStatus;
-import domain.game.deck.card.Card;
-import domain.game.deck.card.CardId;
+import domain.game.item.ItemStatus;
+import domain.game.item.card.Card;
+import domain.game.item.card.CardId;
 
 import java.util.HashMap;
 import java.util.List;

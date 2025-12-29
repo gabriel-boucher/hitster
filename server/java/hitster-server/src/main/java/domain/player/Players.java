@@ -1,6 +1,6 @@
 package domain.player;
 
-import domain.game.deck.card.Card;
+import domain.game.item.card.Card;
 import domain.exception.PlayerNotFoundException;
 
 import java.util.List;

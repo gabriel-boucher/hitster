@@ -24,7 +24,7 @@ public class SpotifyAppService {
         if (room == null) {
             throw new RoomNotFoundException(roomId);
         }
-        room.validatePlayerExist(playerId);
+        room.searchPlaylists(playerId);
 
         return playlistRepository.searchPlaylistsByQuery(query);
     }

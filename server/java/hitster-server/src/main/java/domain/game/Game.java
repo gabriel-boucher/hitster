@@ -4,8 +4,6 @@ import domain.game.currentDeck.CurrentDeck;
 import domain.game.item.card.Card;
 import domain.game.item.token.Token;
 import domain.game.item.token.TokenId;
-import domain.exception.InvalidGameStatusException;
-import domain.game.exception.InvalidPlayerTurnException;
 import domain.player.Player;
 import domain.player.PlayerId;
 import domain.player.Players;
@@ -19,14 +17,16 @@ public class Game {
     private final Pile pile;
     private final CurrentDeck currentDeck;
     private final GameInitializer gameInitializer;
+    private final GameValidator gameValidator;
 
-    public Game(GameId gameId, GameStatus gameStatus, Players players, Pile pile, CurrentDeck currentDeck, GameInitializer gameInitializer) {
+    public Game(GameId gameId, GameStatus gameStatus, Players players, Pile pile, CurrentDeck currentDeck, GameInitializer gameInitializer, GameValidator gameValidator) {
         this.gameId = gameId;
         this.gameStatus = gameStatus;
         this.players = players;
         this.pile = pile;
         this.currentDeck = currentDeck;
         this.gameInitializer = gameInitializer;
+        this.gameValidator = gameValidator;
     }
 
     public GameId getId() {
@@ -51,8 +51,7 @@ public class Game {
 
     public void startGame(PlayerId playerId) {
         Player player = players.getPlayerById(playerId);
-        validateGameStatus(GameStatus.LOBBY);
-        validatePlayerTurn(player);
+        gameValidator.validateCanStartGame(gameStatus, player, players.getCurrentPlayer());
 
         gameStatus = GameStatus.PLAYING;
         gameInitializer.initialize(players, pile, currentDeck);
@@ -60,8 +59,7 @@ public class Game {
 
     public void nextTurn(PlayerId playerId) {
         Player player = players.getPlayerById(playerId);
-        validateGameStatus(GameStatus.PLAYING);
-        validatePlayerTurn(player);
+        gameValidator.validateIsPlayerTurn(gameStatus, player, players.getCurrentPlayer());
 
         Card currentCard = pile.getCurrentCard();
         PlayerId newCardOwnerId = currentDeck.getCurrentCardWinner(currentCard, playerId);
@@ -81,8 +79,7 @@ public class Game {
 
     public void addCurrentCardToCurrentDeck(PlayerId playerId, int position) {
         Player player = players.getPlayerById(playerId);
-        validateGameStatus(GameStatus.PLAYING);
-        validatePlayerTurn(player);
+        gameValidator.validateIsPlayerTurn(gameStatus, player, players.getCurrentPlayer());
 
         Card currentCard = pile.getCurrentCard();
         currentDeck.addCardAndSetActive(currentCard, position);
@@ -90,8 +87,7 @@ public class Game {
 
     public void removeCurrentCardFromCurrentDeck(PlayerId playerId) {
         Player player = players.getPlayerById(playerId);
-        validateGameStatus(GameStatus.PLAYING);
-        validatePlayerTurn(player);
+        gameValidator.validateIsPlayerTurn(gameStatus, player, players.getCurrentPlayer());
 
         Card currentCard = pile.getCurrentCard();
         currentDeck.removeCardAndSetInactive(currentCard);
@@ -99,8 +95,7 @@ public class Game {
 
     public void reorderCurrentCardInCurrentDeck(PlayerId playerId, int newPosition) {
         Player player = players.getPlayerById(playerId);
-        validateGameStatus(GameStatus.PLAYING);
-        validatePlayerTurn(player);
+        gameValidator.validateIsPlayerTurn(gameStatus, player, players.getCurrentPlayer());
 
         Card currentCard = pile.getCurrentCard();
         currentDeck.reorderCard(currentCard, newPosition);
@@ -108,8 +103,7 @@ public class Game {
 
     public void addTokenToCurrentDeck(PlayerId playerId, TokenId tokenId, int position) {
         Player player = players.getPlayerById(playerId);
-        validateGameStatus(GameStatus.PLAYING);
-        validateNotPlayerTurn(player);
+        gameValidator.validateIsNotPlayerTurn(gameStatus, player, players.getCurrentPlayer());
 
         Token token = player.getTokenById(tokenId);
         currentDeck.addTokenAndSetActive(token, position);
@@ -117,28 +111,9 @@ public class Game {
 
     public void removeTokenFromCurrentDeck(PlayerId playerId, TokenId tokenId) {
         Player player = players.getPlayerById(playerId);
-        validateGameStatus(GameStatus.PLAYING);
-        validateNotPlayerTurn(player);
+        gameValidator.validateIsNotPlayerTurn(gameStatus, player, players.getCurrentPlayer());
 
         Token token = player.getTokenById(tokenId);
         currentDeck.removeTokenAndSetInactive(token);
-    }
-
-    private void validateGameStatus(GameStatus gameStatus) {
-        if (this.gameStatus != gameStatus) {
-            throw new InvalidGameStatusException(gameStatus);
-        }
-    }
-
-    private void validatePlayerTurn(Player player) {
-        if (!players.getCurrentPlayer().equals(player)) {
-            throw new InvalidPlayerTurnException(player.getId());
-        }
-    }
-
-    private void validateNotPlayerTurn(Player player) {
-        if (players.getCurrentPlayer().equals(player)) {
-            throw new InvalidPlayerTurnException(player.getId());
-        }
     }
 }

@@ -1,8 +1,6 @@
 package application;
 
 import domain.exception.RoomNotFoundException;
-import domain.game.CardRepository;
-import domain.game.GameRepository;
 import domain.player.PlayerFactory;
 import domain.player.PlayerId;
 import domain.room.Room;
@@ -12,17 +10,15 @@ import domain.room.RoomRepository;
 import domain.spotify.Playlist;
 import domain.spotify.PlaylistId;
 
+import java.util.function.Consumer;
+
 public class RoomAppService {
     private final RoomRepository roomRepository;
-    private final GameRepository gameRepository;
-    private final CardRepository cardRepository;
     private final RoomFactory roomFactory;
     private final PlayerFactory playerFactory;
 
-    public RoomAppService(RoomRepository roomRepository, GameRepository gameRepository, CardRepository cardRepository, RoomFactory roomFactory, PlayerFactory playerFactory) {
+    public RoomAppService(RoomRepository roomRepository, RoomFactory roomFactory, PlayerFactory playerFactory) {
         this.roomRepository = roomRepository;
-        this.gameRepository = gameRepository;
-        this.cardRepository = cardRepository;
         this.roomFactory = roomFactory;
         this.playerFactory = playerFactory;
     }
@@ -34,31 +30,23 @@ public class RoomAppService {
     }
 
     public Room joinRoom(RoomId roomId, PlayerId playerId) {
-        Room room = roomRepository.getRoomById(roomId);
-        if (room == null) {
-            throw new RoomNotFoundException(roomId);
-        }
-        room.joinRoom(playerId);
-        roomRepository.saveRoom(room);
-        return room;
+        return execute(roomId, room -> room.joinRoom(playerId));
     }
 
     public Room addPlaylist(RoomId roomId, PlayerId playerId, Playlist playlist) {
-        Room room = roomRepository.getRoomById(roomId);
-        if (room == null) {
-            throw new RoomNotFoundException(roomId);
-        }
-        room.addPlaylist(playerId, playlist);
-        roomRepository.saveRoom(room);
-        return room;
+        return execute(roomId, room -> room.addPlaylist(playerId, playlist));
     }
 
     public Room removePlaylist(RoomId roomId, PlayerId playerId, PlaylistId playlistId) {
+        return execute(roomId, room -> room.removePlaylist(playerId, playlistId));
+    }
+
+    private Room execute(RoomId roomId, Consumer<Room> action) {
         Room room = roomRepository.getRoomById(roomId);
         if (room == null) {
             throw new RoomNotFoundException(roomId);
         }
-        room.removePlaylist(playerId, playlistId);
+        action.accept(room);
         roomRepository.saveRoom(room);
         return room;
     }

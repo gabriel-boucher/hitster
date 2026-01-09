@@ -16,7 +16,8 @@ public class GameFactory {
                 new Players(room.getPlayers(), 0),
                 new Pile(pile),
                 new CurrentDeck(new ArrayList<>()),
-                new GameInitializer()
+                new GameInitializer(),
+                new GameValidator()
         );
     }
 }

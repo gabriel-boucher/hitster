@@ -15,7 +15,8 @@ public class RoomFactory {
                 null,
                 new ArrayList<>(List.of(player)),
                 new ArrayList<>(),
-                playerFactory
+                playerFactory,
+                new RoomValidator()
         );
     }
 }

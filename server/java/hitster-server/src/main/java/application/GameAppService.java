@@ -33,10 +33,11 @@ public class GameAppService {
         if (room == null) {
             throw new RoomNotFoundException(roomId);
         }
-        List<Card> pile = cardRepository.getCardsByPlaylistIds(room.getPlaylists().stream().map(Playlist::id).toList());
-        if (pile.isEmpty()) {
+        if (room.getPlaylists().isEmpty()) {
             throw new NoPlaylistSelectedException();
         }
+
+        List<Card> pile = cardRepository.getCardsByPlaylistIds(room.getPlaylists().stream().map(Playlist::id).toList());
 
         Game game = gameFactory.createGame(room, pile);
         game.startGame(playerId);

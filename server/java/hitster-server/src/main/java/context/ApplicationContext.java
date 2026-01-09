@@ -6,9 +6,11 @@ import application.SpotifyAppService;
 import domain.game.CardRepository;
 import domain.game.GameFactory;
 import domain.game.GameRepository;
+import domain.game.GameValidator;
 import domain.player.PlayerFactory;
 import domain.room.RoomFactory;
 import domain.room.RoomRepository;
+import domain.room.RoomValidator;
 import domain.spotify.PlaylistRepository;
 import infrastructure.InMemoryCardRepository;
 import infrastructure.InMemoryGameRepository;
@@ -64,7 +66,7 @@ public class ApplicationContext {
         RoomFactory roomFactory = new RoomFactory();
         PlayerFactory playerFactory = new PlayerFactory();
 
-        RoomAppService roomAppService = new RoomAppService(roomRepository, gameRepository, cardRepository, roomFactory, playerFactory);
+        RoomAppService roomAppService = new RoomAppService(roomRepository, roomFactory, playerFactory);
         GameAppService gameAppService = new GameAppService(gameRepository, roomRepository, cardRepository, gameFactory);
         SpotifyAppService spotifyAppService = new SpotifyAppService(roomRepository, playlistRepository);
 

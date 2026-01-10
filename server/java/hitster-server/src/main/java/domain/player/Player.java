@@ -6,15 +6,27 @@ import domain.game.item.token.TokenId;
 
 public class Player {
     private final PlayerId id;
+    private String name;
+    private PlayerColor color;
     private final PlayerDeck deck;
 
-    public Player(PlayerId id, PlayerDeck deck) {
+    public Player(PlayerId id, String name, PlayerColor playerColor, PlayerDeck deck) {
         this.id = id;
         this.deck = deck;
+        this.name = name;
+        this.color = playerColor;
     }
 
     public PlayerId getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public PlayerColor getColor() {
+        return color;
     }
 
     public PlayerDeck getDeck() {
@@ -35,5 +47,13 @@ public class Player {
 
     public void addTokenToDeck(Token token) {
         deck.addToken(token);
+    }
+
+    public void setPlayerName(String newName) {
+        name = newName;
+    }
+
+    public void setPlayerColor(PlayerColor newColor) {
+        color = newColor;
     }
 }

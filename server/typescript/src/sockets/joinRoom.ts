@@ -3,7 +3,7 @@ import { PlayerInterface } from "../../../../shared/interfaces";
 import {
   gameStates,
   initialGameState,
-  PLAYERS_IMG,
+  PLAYER_COLORS,
   socketEvents,
 } from "../../../../shared/constants";
 import { v4 as uuidv4 } from "uuid";
@@ -33,7 +33,7 @@ export default async function joinRoom(this: Socket, roomId: string) {
       socketId: socket.id,
       name: "",
       active: true,
-      image: PLAYERS_IMG.filter(
+      image: PLAYER_COLORS.filter(
         (image: string) =>
           !game.players.some(
             (player: PlayerInterface) => player.image === image
@@ -45,7 +45,7 @@ export default async function joinRoom(this: Socket, roomId: string) {
       socketId: socket.id,
       name: "",
       active: false,
-      image: PLAYERS_IMG.filter(
+      image: PLAYER_COLORS.filter(
         (image: string) =>
           !game.players.some(
             (player: PlayerInterface) => player.image === image

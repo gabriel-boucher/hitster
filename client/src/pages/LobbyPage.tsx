@@ -1,81 +1,24 @@
 import styled from "styled-components";
 import { useStateProvider } from "../utils/StateProvider";
-import { socketEvents } from "@shared/constants";
-import { useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { PINK_COLOR__HEX, reducerCases } from "src/utils/constants";
+import { useState } from "react";
+import { PINK_COLOR__HEX } from "src/utils/constants";
 import PlayerInLobby from "src/components/elements/Player/PlayerInLobby";
-import { PlayerInterface, PlaylistInterface } from "@shared/interfaces";
+import { PlaylistInterface } from "@shared/interfaces";
 import { SpotifyModal } from "src/components/GamePage/SpotifyModal/SpotifyModal";
+import useJoinRoom from "../hooks/socket/room/useJoinRoom.ts";
+import useOnRoomState from "../hooks/socket/room/useOnRoomState.ts";
+import useChangePlayerName from "../hooks/socket/room/useChangePlayerName.ts";
+import useRemovePlayer from "../hooks/socket/room/useRemovePlayer.ts";
+import useStartGame from "../hooks/socket/room/useStartGame.ts";
 
 export default function LobbyPage() {
-  const [{ socket, gameState, items, players }, dispatch] = useStateProvider();
+  const [{ socket, roomId, players }] = useStateProvider();
   const [userName, setUserName] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedPlaylists, setSelectedPlaylists] = useState<
-    PlaylistInterface[]
-  >([]);
+  const [selectedPlaylists, setSelectedPlaylists] = useState<PlaylistInterface[]>([]);
 
-  const { search } = useLocation();
-  const params = new URLSearchParams(search);
-  const roomId = params.get("code");
-
-  useEffect(() => {
-    if (roomId) {
-      dispatch({ type: reducerCases.SET_ROOM_ID, roomId: roomId || "" });
-      socket.emit(socketEvents.JOIN_ROOM, roomId);
-    }
-  }, [roomId, socket, dispatch]);
-
-  const changePlayerImage = (image: string) => {
-    if (
-      !image ||
-      players.some((player: PlayerInterface) => player.image === image)
-    )
-      return;
-
-    const newPlayers = players.map((player: PlayerInterface) =>
-      player.socketId === socket.id ? { ...player, image } : player
-    );
-    socket.emit(socketEvents.UPDATE_GAME_STATE, {
-      gameState,
-      players: newPlayers,
-      items,
-    });
-  };
-
-  function changePlayerName() {
-    if (!userName || players.some((player) => player.name === userName)) return;
-
-    const newPlayers = players.map((player) =>
-      player.socketId === socket.id ? { ...player, name: userName } : player
-    );
-    socket.emit(socketEvents.UPDATE_GAME_STATE, {
-      gameState,
-      players: newPlayers,
-      items,
-    });
-  }
-
-  function removePlayer(socketId: string) {
-    const newPlayers = players.map((player) =>
-      player.socketId === socketId ? { ...player, name: "" } : player
-    );
-    socket.emit(socketEvents.UPDATE_GAME_STATE, {
-      gameState,
-      players: newPlayers,
-      items,
-    });
-  }
-
-  function startGame() {
-    if (
-      players.some((player) => !player.name) ||
-      selectedPlaylists.length === 0
-    )
-      return;
-    socket.emit(socketEvents.START_GAME, selectedPlaylists );
-  }
+  useJoinRoom();
+  useOnRoomState();
 
   function addSelectedPlaylist(playlist: PlaylistInterface) {
     setSelectedPlaylists([...selectedPlaylists, playlist]);
@@ -91,7 +34,7 @@ export default function LobbyPage() {
     <Container>
       <Logo>HITSTER</Logo>
       <Entries>
-        <PlayerInLobby changePlayerImage={changePlayerImage} />
+        <PlayerInLobby />
         <NameContainer>
           <NameInput
             className="username"
@@ -99,7 +42,7 @@ export default function LobbyPage() {
             onChange={(e) => setUserName(e.target.value)}
             placeholder="Enter your name..."
           />
-          <JoinButton onClick={changePlayerName}>Join</JoinButton>
+          <JoinButton onClick={() => useChangePlayerName(socket, roomId, userName)}>Join</JoinButton>
         </NameContainer>
       </Entries>
 
@@ -109,11 +52,11 @@ export default function LobbyPage() {
           {players
             .filter((player) => player.name)
             .map((player) => (
-              <li key={player.socketId}>
-                <PlayerImg $playerImage={player.image} />
+              <li key={player.id}>
+                <PlayerImg $playerColor={player.color} />
                 <NameBase>{player.name}</NameBase>
-                {socket.id === players[0].socketId && (
-                  <RemoveButton onClick={() => removePlayer(player.socketId)}>
+                {socket.id === players[0].id && (
+                  <RemoveButton onClick={() => useRemovePlayer(socket, roomId, player.id)}>
                     -
                   </RemoveButton>
                 )}
@@ -129,7 +72,7 @@ export default function LobbyPage() {
             <li key={playlist.id}>
               <PlaylistImg $playlistImage={playlist.images[0].url} />
               <NameBase>{playlist.name}</NameBase>
-              {socket.id === players[0].socketId && (
+              {socket.id === players[0].id && (
                 <RemoveButton
                   onClick={() => removeSelectedPlaylist(playlist.id)}
                 >
@@ -142,8 +85,8 @@ export default function LobbyPage() {
       </PlaylistList>
 
       <ButtonsContainer>
-        {players.length > 0 && players[0].socketId === socket.id && (
-          <StartButton onClick={startGame}>Start Game</StartButton>
+        {players.length > 0 && players[0].id === socket.id && (
+          <StartButton onClick={() => useStartGame(socket, roomId)}>Start Game</StartButton>
         )}
         <PlaylistButton onClick={() => setIsModalOpen(true)}>
           Choose playlist
@@ -249,9 +192,9 @@ const NameBase = styled.span`
   flex: 1;
 `;
 
-const PlayerImg = styled(ImgBase)<{ $playerImage: string }>`
+const PlayerImg = styled(ImgBase)<{ $playerColor: string }>`
   border-radius: 50%;
-  background-color: ${({ $playerImage }) => $playerImage};
+  background-color: ${({ $playerColor }) => $playerColor};
 `;
 
 const PlaylistImg = styled(ImgBase)<{ $playlistImage: string }>`

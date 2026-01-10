@@ -1,7 +1,12 @@
 package domain.room;
 
+import domain.game.Game;
+import domain.game.GameFactory;
 import domain.game.GameStatus;
+import domain.game.Pile;
+import domain.game.item.card.Card;
 import domain.player.Player;
+import domain.player.PlayerColor;
 import domain.player.PlayerFactory;
 import domain.player.PlayerId;
 import domain.spotify.Playlist;
@@ -14,15 +19,17 @@ public class Room {
     private final GameStatus gameStatus;
     private final List<Player> players;
     private final List<Playlist> playlists;
+    private final GameFactory gameFactory;
     private final PlayerFactory playerFactory;
     private final RoomValidator validator;
 
     public Room(RoomId id, GameStatus gameStatus, List<Player> players,
-                List<Playlist> playlists, PlayerFactory playerFactory, RoomValidator validator) {
+                List<Playlist> playlists, GameFactory gameFactory, PlayerFactory playerFactory, RoomValidator validator) {
         this.id = id;
         this.gameStatus = gameStatus;
         this.players = players;
         this.playlists = playlists;
+        this.gameFactory = gameFactory;
         this.playerFactory = playerFactory;
         this.validator = validator;
     }
@@ -41,8 +48,23 @@ public class Room {
 
     public void joinRoom(PlayerId playerId) {
         validator.validatePlayerCanJoin(playerId, players, gameStatus);
-        Player player = playerFactory.create(playerId);
+        Player player = playerFactory.create(playerId, players);
         players.add(player);
+    }
+
+    public void changePlayerName(PlayerId playerId, String newName) {
+        Player player = validator.validatePlayerCanChangeName(playerId, newName, players, gameStatus);
+        player.setPlayerName(newName);
+    }
+
+    public void changePlayerColor(PlayerId playerId, PlayerColor newColor) {
+        Player player = validator.validatePlayerCanChangeColor(playerId, newColor, players, gameStatus);
+        player.setPlayerColor(newColor);
+    }
+
+    public void removePlayer(PlayerId playerId, PlayerId playerToRemoveId) {
+        validator.validateCanRemovePlayer(playerId, playerToRemoveId, players, gameStatus);
+        players.removeIf(player -> player.getId().equals(playerToRemoveId));
     }
 
     public void addPlaylist(PlayerId playerId, Playlist playlist) {
@@ -57,5 +79,10 @@ public class Room {
 
     public void searchPlaylists(PlayerId playerId) {
         validator.validatePlayerCanSearchPlaylists(playerId, players);
+    }
+
+    public Game startGame(PlayerId playerId) {
+        validator.validatePlayerCanStartGame(playerId, players, playlists, gameStatus);
+        return gameFactory.createGame(this);
     }
 }

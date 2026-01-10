@@ -2,11 +2,12 @@ import { GameInterface } from "./interfaces";
 
 export enum socketEvents {
   JOIN_ROOM = "join-room",
+  CHANGE_PLAYER_NAME = "change-player-name",
+  CHANGE_PLAYER_COLOR = "change-player-color",
+  REMOVE_PLAYER = "remove-player",
   START_GAME = "start-game",
   NEXT_TURN = "next-turn",
   UPDATE_GAME_STATE = "update-game-state",
-  DISCONNECT = "disconnect",
-  ERROR = "error",
 }
 
 export enum gameStates {
@@ -19,9 +20,10 @@ export const initialGameState : GameInterface = {
   gameState: gameStates.LOBBY,
   players: [],
   items: [],
+  playlists: []
 };
 
-export const PLAYERS_IMG = [
+export const PLAYER_COLORS = [
   "red",
   "blue",
   "green",

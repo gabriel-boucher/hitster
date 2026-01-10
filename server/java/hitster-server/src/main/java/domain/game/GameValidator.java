@@ -3,25 +3,40 @@ package domain.game;
 import domain.exception.InvalidGameStatusException;
 import domain.game.exception.InvalidPlayerTurnException;
 import domain.player.Player;
+import domain.player.PlayerValidator;
 
 public class GameValidator {
-
-    public void validateCanStartGame(GameStatus currentStatus, Player requestingPlayer, Player currentPlayer) {
-        validateGameStatus(currentStatus, GameStatus.LOBBY);
+    public void validateCanGoNextTurn(Player requestingPlayer, Player currentPlayer, GameStatus currentStatus) {
         validatePlayerTurn(requestingPlayer, currentPlayer);
+        validateGameStatus(currentStatus, GameStatus.PLAYING);
     }
 
-    public void validateIsPlayerTurn(GameStatus currentStatus, Player requestingPlayer, Player currentPlayer) {
-        validateGameStatus(currentStatus, GameStatus.PLAYING);
+    public void validateCanAddCurrentCardToCurrentDeck(Player requestingPlayer, Player currentPlayer, GameStatus currentStatus) {
         validatePlayerTurn(requestingPlayer, currentPlayer);
+        validateGameStatus(currentStatus, GameStatus.PLAYING);
     }
 
-    public void validateIsNotPlayerTurn(GameStatus currentStatus, Player requestingPlayer, Player currentPlayer) {
+    public void validateCanReorderCurrentCardInCurrentDeck(Player requestingPlayer, Player currentPlayer, GameStatus currentStatus) {
+        validatePlayerTurn(requestingPlayer, currentPlayer);
         validateGameStatus(currentStatus, GameStatus.PLAYING);
+    }
+
+    public void validateCanRemoveCurrentCardFromCurrentDeck(Player requestingPlayer, Player currentPlayer, GameStatus currentStatus) {
+        validatePlayerTurn(requestingPlayer, currentPlayer);
+        validateGameStatus(currentStatus, GameStatus.PLAYING);
+    }
+
+    public void validateCanAddTokenToCurrentDeck(Player requestingPlayer, Player currentPlayer, GameStatus currentStatus) {
         validateNotPlayerTurn(requestingPlayer, currentPlayer);
+        validateGameStatus(currentStatus, GameStatus.PLAYING);
     }
 
-    private void validateGameStatus(GameStatus current, GameStatus expected) {
+    public void validateCanRemoveTokenFromCurrentDeck(Player requestingPlayer, Player currentPlayer, GameStatus currentStatus) {
+        validateNotPlayerTurn(requestingPlayer, currentPlayer);
+        validateGameStatus(currentStatus, GameStatus.PLAYING);
+    }
+
+    public void validateGameStatus(GameStatus current, GameStatus expected) {
         if (current != expected) {
             throw new InvalidGameStatusException(expected);
         }

@@ -8,7 +8,10 @@ public class CardMapper {
         return new CardDto(
                 card.getId().toString(),
                 card.getStatus().name(),
-                card.getDate()
+                card.getSong(),
+                card.getArtist(),
+                card.getDate(),
+                card.getAlbumUrl()
         );
     }
 }

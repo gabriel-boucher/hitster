@@ -1,7 +1,9 @@
 import { Socket } from "socket.io-client";
 import { reducerCases } from "./constants";
-import { GameInterface, CardInterface, PlayerInterface, TokenInterface } from "@shared/interfaces";
+import { GameInterface, CardInterface, TokenInterface } from "@shared/interfaces";
 import { gameStates } from "@shared/constants";
+import {Player} from "../type/player/Player.ts";
+import {Playlist} from "../type/spotify/Playlist.ts";
 
 export interface State extends GameInterface {
   socket: Socket;
@@ -26,12 +28,17 @@ export interface SetGameStateAction {
 
 export interface SetPlayersAction {
   type: reducerCases.SET_PLAYERS;
-  players: PlayerInterface[];
+  players: Player[];
 }
 
 export interface SetItemsAction {
   type: reducerCases.SET_ITEMS;
   items: (CardInterface | TokenInterface)[];
+}
+
+export interface SetPlaylistsAction {
+  type: reducerCases.SET_PLAYLISTS;
+  playlists: Playlist[];
 }
 
 export interface SetIsDragging {
@@ -45,4 +52,5 @@ export type Action =
   | SetGameStateAction
   | SetPlayersAction
   | SetItemsAction
+  | SetPlaylistsAction
   | SetIsDragging;

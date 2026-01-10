@@ -47,6 +47,12 @@ export const reducer = (state: State, action: Action) => {
         items: action.items,
       };
     }
+    case reducerCases.SET_PLAYLISTS: {
+      return {
+        ...state,
+        playlists: action.playlists,
+      }
+    }
     case reducerCases.SET_IS_DRAGGING: {
       return {
         ...state,

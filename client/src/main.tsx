@@ -7,9 +7,9 @@ import { initialState, reducer } from './utils/reducer.ts';
 
 createRoot(document.getElementById('root')!)
 .render(
-  <StrictMode>
+  // <StrictMode>
     <StateProvider initialState={initialState} reducer={reducer}>
       <App />
     </StateProvider>
-  </StrictMode>,
+  // </StrictMode>,
 )

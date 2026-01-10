@@ -1,48 +1,17 @@
 package application;
 
-import application.exception.NoPlaylistSelectedException;
-import domain.exception.RoomNotFoundException;
 import domain.game.*;
-import domain.game.item.card.Card;
 import domain.game.item.token.TokenId;
 import domain.exception.GameNotFoundException;
 import domain.player.PlayerId;
-import domain.room.Room;
-import domain.room.RoomId;
-import domain.room.RoomRepository;
-import domain.spotify.Playlist;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 public class GameAppService {
     private final GameRepository gameRepository;
-    private final RoomRepository roomRepository;
-    private final CardRepository cardRepository;
-    private final GameFactory gameFactory;
 
-    public GameAppService(GameRepository gameRepository, RoomRepository roomRepository, CardRepository cardRepository, GameFactory gameFactory) {
+    public GameAppService(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
-        this.roomRepository = roomRepository;
-        this.cardRepository = cardRepository;
-        this.gameFactory = gameFactory;
-    }
-
-    public Game startGame(RoomId roomId, PlayerId playerId) {
-        Room room = roomRepository.getRoomById(roomId);
-        if (room == null) {
-            throw new RoomNotFoundException(roomId);
-        }
-        if (room.getPlaylists().isEmpty()) {
-            throw new NoPlaylistSelectedException();
-        }
-
-        List<Card> pile = cardRepository.getCardsByPlaylistIds(room.getPlaylists().stream().map(Playlist::id).toList());
-
-        Game game = gameFactory.createGame(room, pile);
-        game.startGame(playerId);
-        gameRepository.saveGame(game);
-        return game;
     }
 
     public Game nextTurn(GameId gameId, PlayerId playerId) {

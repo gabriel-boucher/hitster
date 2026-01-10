@@ -1,22 +1,24 @@
 package domain.room;
 
-import domain.player.Player;
+import domain.game.GameFactory;
+import domain.game.GameStatus;
+import domain.game.GameValidator;
 import domain.player.PlayerFactory;
-import domain.player.PlayerId;
+import domain.player.PlayerValidator;
+import domain.spotify.PlaylistValidator;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class RoomFactory {
-    public Room create(PlayerId playerId, PlayerFactory playerFactory) {
-        Player player = playerFactory.create(playerId);
+    public Room create(GameFactory gameFactory, PlayerFactory playerFactory) {
         return new Room(
                 RoomId.create(),
-                null,
-                new ArrayList<>(List.of(player)),
+                GameStatus.LOBBY,
                 new ArrayList<>(),
+                new ArrayList<>(),
+                gameFactory,
                 playerFactory,
-                new RoomValidator()
+                new RoomValidator(new PlayerValidator(), new PlaylistValidator(), new GameValidator())
         );
     }
 }

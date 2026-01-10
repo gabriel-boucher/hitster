@@ -1,4 +1,4 @@
-package application.exception;
+package domain.room.exception;
 
 import interfaces.exception.InvalidStateException;
 

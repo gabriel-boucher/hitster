@@ -1,10 +1,13 @@
 import styled from "styled-components";
-import { getAuthUrl, PINK_COLOR__HEX } from "src/utils/constants";
+import {getAuthUrl, PINK_COLOR__HEX} from "src/utils/constants";
+import useCreateRoom from "../hooks/socket/room/useCreateRoom.ts";
 
 export default function HomePage() {
-  function authorization() {
+  const authorization = () => {
     window.location.href = getAuthUrl();
   }
+
+  useCreateRoom();
 
   return (
     <Container>

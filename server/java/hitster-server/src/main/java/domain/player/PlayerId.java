@@ -1,8 +1,10 @@
 package domain.player;
 
-public record PlayerId(String id) {
+import java.util.UUID;
+
+public record PlayerId(UUID id) {
     public static PlayerId fromString(String id) {
-        return new PlayerId(id);
+        return new PlayerId(UUID.fromString(id));
     }
 
     @Override

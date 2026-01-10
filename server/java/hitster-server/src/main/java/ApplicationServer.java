@@ -1,7 +1,8 @@
 import context.ApplicationContext;
-import interfaces.socket.game.GameRessource;
+import interfaces.socket.connection.ConnectionResource;
+import interfaces.socket.game.GameResource;
 import interfaces.rest.spotify.SpotifyResource;
-import interfaces.socket.room.RoomRessource;
+import interfaces.socket.room.RoomResource;
 import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOServer;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -11,9 +12,9 @@ import org.glassfish.jersey.server.ResourceConfig;
 import java.net.URI;
 
 public class ApplicationServer {
-    public static final String HTTP_BASE_URI = "http://127.0.0.1:4000/";
+    public static final String HTTP_BASE_URI = "http://127.0.0.1:3000/";
     public static final String SOCKET_IO_HOST = "127.0.0.1";
-    public static final int SOCKET_IO_PORT = 3000;
+    public static final int SOCKET_IO_PORT = 4000;
     
     private static HttpServer httpServer;
     private static SocketIOServer socketIOServer;
@@ -30,17 +31,20 @@ public class ApplicationServer {
     }
     
     public static void startWebSocketServer() {
-        GameRessource gameRessource = applicationContext.getGameRessource();
-        RoomRessource roomRessource = applicationContext.getRoomRessource();
+        ConnectionResource connectionResource = applicationContext.getConnectionResource();
+        RoomResource roomResource = applicationContext.getRoomRessource();
+        GameResource gameResource = applicationContext.getGameRessource();
 
         Configuration config = new Configuration();
         config.setHostname(SOCKET_IO_HOST);
         config.setPort(SOCKET_IO_PORT);
+        config.setOrigin("*");
 
         socketIOServer = new SocketIOServer(config);
 
-        roomRessource.setupEventListeners(socketIOServer);
-        gameRessource.setupEventListeners(socketIOServer);
+        connectionResource.setupEventListeners(socketIOServer);
+        roomResource.setupEventListeners(socketIOServer);
+        gameResource.setupEventListeners(socketIOServer);
 
         socketIOServer.start();
         System.out.println("Socket.IO server started at " + SOCKET_IO_HOST + ":" + SOCKET_IO_PORT);

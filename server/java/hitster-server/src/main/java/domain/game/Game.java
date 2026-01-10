@@ -49,17 +49,14 @@ public class Game {
         return pile.getCurrentCard();
     }
 
-    public void startGame(PlayerId playerId) {
-        Player player = players.getPlayerById(playerId);
-        gameValidator.validateCanStartGame(gameStatus, player, players.getCurrentPlayer());
-
-        gameStatus = GameStatus.PLAYING;
-        gameInitializer.initialize(players, pile, currentDeck);
+    public void startGame(List<Card> pile) {
+        this.pile.setPile(pile);
+        gameInitializer.initialize(players, this.pile, currentDeck);
     }
 
     public void nextTurn(PlayerId playerId) {
         Player player = players.getPlayerById(playerId);
-        gameValidator.validateIsPlayerTurn(gameStatus, player, players.getCurrentPlayer());
+        gameValidator.validateCanGoNextTurn(player, players.getCurrentPlayer(), gameStatus);
 
         Card currentCard = pile.getCurrentCard();
         PlayerId newCardOwnerId = currentDeck.getCurrentCardWinner(currentCard, playerId);
@@ -79,7 +76,7 @@ public class Game {
 
     public void addCurrentCardToCurrentDeck(PlayerId playerId, int position) {
         Player player = players.getPlayerById(playerId);
-        gameValidator.validateIsPlayerTurn(gameStatus, player, players.getCurrentPlayer());
+        gameValidator.validateCanAddCurrentCardToCurrentDeck(player, players.getCurrentPlayer(), gameStatus);
 
         Card currentCard = pile.getCurrentCard();
         currentDeck.addCardAndSetActive(currentCard, position);
@@ -87,7 +84,7 @@ public class Game {
 
     public void removeCurrentCardFromCurrentDeck(PlayerId playerId) {
         Player player = players.getPlayerById(playerId);
-        gameValidator.validateIsPlayerTurn(gameStatus, player, players.getCurrentPlayer());
+        gameValidator.validateCanRemoveCurrentCardFromCurrentDeck(player, players.getCurrentPlayer(), gameStatus);
 
         Card currentCard = pile.getCurrentCard();
         currentDeck.removeCardAndSetInactive(currentCard);
@@ -95,7 +92,7 @@ public class Game {
 
     public void reorderCurrentCardInCurrentDeck(PlayerId playerId, int newPosition) {
         Player player = players.getPlayerById(playerId);
-        gameValidator.validateIsPlayerTurn(gameStatus, player, players.getCurrentPlayer());
+        gameValidator.validateCanReorderCurrentCardInCurrentDeck(player, players.getCurrentPlayer(), gameStatus);
 
         Card currentCard = pile.getCurrentCard();
         currentDeck.reorderCard(currentCard, newPosition);
@@ -103,7 +100,7 @@ public class Game {
 
     public void addTokenToCurrentDeck(PlayerId playerId, TokenId tokenId, int position) {
         Player player = players.getPlayerById(playerId);
-        gameValidator.validateIsNotPlayerTurn(gameStatus, player, players.getCurrentPlayer());
+        gameValidator.validateCanAddTokenToCurrentDeck(player, players.getCurrentPlayer(), gameStatus);
 
         Token token = player.getTokenById(tokenId);
         currentDeck.addTokenAndSetActive(token, position);
@@ -111,7 +108,7 @@ public class Game {
 
     public void removeTokenFromCurrentDeck(PlayerId playerId, TokenId tokenId) {
         Player player = players.getPlayerById(playerId);
-        gameValidator.validateIsNotPlayerTurn(gameStatus, player, players.getCurrentPlayer());
+        gameValidator.validateCanRemoveTokenFromCurrentDeck(player, players.getCurrentPlayer(), gameStatus);
 
         Token token = player.getTokenById(tokenId);
         currentDeck.removeTokenAndSetInactive(token);

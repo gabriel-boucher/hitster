@@ -4,8 +4,9 @@ export enum reducerCases {
   SET_GAME_STATE = "SET_GAME_STATE",
   SET_PLAYERS = "SET_PLAYERS",
   SET_ITEMS = "SET_ITEMS",
+  SET_PLAYLISTS = "SET_PLAYLISTS",
   SET_IS_DRAGGING = "SET_IS_DRAGGING",
-};
+}
 
 export const WHITE_COLOR__HEX = "#FFFFFF";
 export const PINK_COLOR__HEX = "#FF00E0";
@@ -13,7 +14,7 @@ export const PINK_COLOR__HEX = "#FF00E0";
 
 
 const CLIENT_PORT = import.meta.env.VITE_CLIENT_PORT || "8000";
-const SERVER_PORT = parseInt(import.meta.env.VITE_SERVER_PORT || "3000");
+const SERVER_PORT = parseInt(import.meta.env.VITE_SOCKET_SERVER_PORT || "4000");
 const HOST_DEV = import.meta.env.VITE_HOST_DEV || 'localhost';
 const HOST_PROD = import.meta.env.VITE_HOST_PROD || 'localhost';
 const HOST_PROD_TUNNEl = "use.devtunnels.ms"

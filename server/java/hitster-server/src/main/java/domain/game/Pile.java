@@ -12,6 +12,11 @@ public class Pile {
         this.pile = pile;
     }
 
+    public void setPile(List<Card> pile) {
+        this.pile.clear();
+        this.pile.addAll(pile);
+    }
+
     public Card getCurrentCard() {
         if (pile.isEmpty()) {
             throw new InvalidPileException();

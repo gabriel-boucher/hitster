@@ -13,6 +13,8 @@ public class PlayerMapper {
     public PlayerDto toDto(Player player) {
         return new PlayerDto(
                 player.getId().toString(),
+                player.getName(),
+                player.getColor().toString(),
                 playerDeckMapper.toDto(player.getDeck())
         );
     }

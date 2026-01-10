@@ -16,11 +16,11 @@ public class InMemoryCardRepository implements CardRepository {
     public InMemoryCardRepository() {
         this.cards = new HashMap<>(
                 Map.of(new PlaylistId("1"), List.of(
-                        new Card(new CardId("1"), ItemStatus.INACTIVE, 1),
-                        new Card(new CardId("2"), ItemStatus.INACTIVE, 2),
-                        new Card(new CardId("3"), ItemStatus.INACTIVE, 3),
-                        new Card(new CardId("4"), ItemStatus.INACTIVE, 4),
-                        new Card(new CardId("5"), ItemStatus.INACTIVE, 5)
+                        new Card(new CardId("1"), ItemStatus.INACTIVE, "Song A", "Artist A", 2020, "urlA"),
+                        new Card(new CardId("2"), ItemStatus.INACTIVE, "Song B", "Artist B", 2019, "urlB"),
+                        new Card(new CardId("3"), ItemStatus.INACTIVE, "Song C", "Artist C", 2021, "urlC"),
+                        new Card(new CardId("4"), ItemStatus.INACTIVE, "Song D", "Artist D", 2018, "urlD"),
+                        new Card(new CardId("5"), ItemStatus.INACTIVE, "Song E", "Artist E", 2022, "urlE")
                 ))
         );
     }

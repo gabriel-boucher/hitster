@@ -1,4 +1,6 @@
 import { gameStates } from "./constants";
+import {Player} from "../client/src/type/player/Player";
+import {Playlist} from "../client/src/type/spotify/Playlist";
 
 export interface PlayerInterface {
   socketId: string;
@@ -26,8 +28,9 @@ export interface TokenInterface {
 
 export interface GameInterface {
   gameState: gameStates;
-  players: PlayerInterface[];
+  players: Player[];
   items: (CardInterface | TokenInterface)[];
+  playlists: Playlist[],
 }
 
 export interface PlaylistInterface {

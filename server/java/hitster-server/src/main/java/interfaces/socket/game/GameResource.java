@@ -3,6 +3,7 @@ package interfaces.socket.game;
 import application.GameAppService;
 import com.corundumstudio.socketio.SocketIOServer;
 import domain.game.Game;
+import interfaces.socket.SocketResource;
 import interfaces.socket.game.dto.GameStateResponse;
 import interfaces.socket.game.dto.addCurrentCard.AddCurrentCardData;
 import interfaces.socket.game.dto.addCurrentCard.AddCurrentCardRequest;
@@ -21,9 +22,8 @@ import interfaces.socket.game.dto.startGame.StartGameRequest;
 import interfaces.socket.game.mapper.*;
 import interfaces.mapper.GameStateMapper;
 
-public class GameRessource {
+public class GameResource implements SocketResource {
     private final GameAppService gameAppService;
-    private final StartGameMapper startGameMapper;
     private final NextTurnMapper nextTurnMapper;
     private final AddCurrentCardMapper addCurrentCardMapper;
     private final RemoveCurrentCardMapper removeCurrentCardMapper;
@@ -32,9 +32,8 @@ public class GameRessource {
     private final RemoveTokenMapper removeTokenMapper;
     private final GameStateMapper gameStateMapper;
 
-    public GameRessource(
+    public GameResource(
             GameAppService gameAppService,
-            StartGameMapper startGameMapper,
             NextTurnMapper nextTurnMapper,
             AddCurrentCardMapper addCurrentCardMapper,
             RemoveCurrentCardMapper removeCurrentCardMapper,
@@ -43,7 +42,6 @@ public class GameRessource {
             RemoveTokenMapper removeTokenMapper,
             GameStateMapper gameStateMapper) {
         this.gameAppService = gameAppService;
-        this.startGameMapper = startGameMapper;
         this.nextTurnMapper = nextTurnMapper;
         this.addCurrentCardMapper = addCurrentCardMapper;
         this.removeCurrentCardMapper = removeCurrentCardMapper;
@@ -53,55 +51,48 @@ public class GameRessource {
         this.gameStateMapper = gameStateMapper;
     }
 
-    public void setupEventListeners(SocketIOServer socketIOServer) {
-        socketIOServer.addEventListener("start-game", StartGameRequest.class, (client, request, ackSender) -> {
-            StartGameData data = startGameMapper.toDomain(request);
-            Game game = gameAppService.startGame(data.roomId(), data.playerId());
-            client.joinRoom(game.getId().toString());
-
-            broadcastGameState(game, socketIOServer);
-        });
-
-        socketIOServer.addEventListener("next-turn", NextTurnRequest.class, (client, request, ackSender) -> {
+    @Override
+    public void setupEventListeners(SocketIOServer server) {
+        server.addEventListener("next-turn", NextTurnRequest.class, (client, request, ackSender) -> {
             NextTurnData data = nextTurnMapper.toDomain(request);
             Game game = gameAppService.nextTurn(data.gameId(), data.playerId());
 
-            broadcastGameState(game, socketIOServer);
+            broadcastGameState(game, server);
         });
 
-        socketIOServer.addEventListener("add-current-card", AddCurrentCardRequest.class, (client, request, ackSender) -> {
+        server.addEventListener("add-current-card", AddCurrentCardRequest.class, (client, request, ackSender) -> {
             AddCurrentCardData data = addCurrentCardMapper.toDomain(request);
             Game game = gameAppService.addCurrentCard(data.gameId(), data.playerId(), data.position());
 
-            broadcastGameState(game, socketIOServer);
+            broadcastGameState(game, server);
         });
 
-        socketIOServer.addEventListener("remove-current-card", RemoveCurrentCardRequest.class, (client, request, ackSender) -> {
+        server.addEventListener("remove-current-card", RemoveCurrentCardRequest.class, (client, request, ackSender) -> {
             RemoveCurrentCardData data = removeCurrentCardMapper.toDomain(request);
             Game game = gameAppService.removeCurrentCard(data.gameId(), data.playerId());
 
-            broadcastGameState(game, socketIOServer);
+            broadcastGameState(game, server);
         });
 
-        socketIOServer.addEventListener("reorder-current-card", ReorderCurrentCardRequest.class, (client, request, ackSender) -> {
+        server.addEventListener("reorder-current-card", ReorderCurrentCardRequest.class, (client, request, ackSender) -> {
             ReorderCurrentCardData data = reorderCurrentCardMapper.toDomain(request);
             Game game = gameAppService.reorderCurrentCard(data.gameId(), data.playerId(), data.newPosition());
 
-            broadcastGameState(game, socketIOServer);
+            broadcastGameState(game, server);
         });
 
-        socketIOServer.addEventListener("add-token", AddTokenRequest.class, (client, request, ackSender) -> {
+        server.addEventListener("add-token", AddTokenRequest.class, (client, request, ackSender) -> {
             AddTokenData data = addTokenMapper.toDomain(request);
             Game game = gameAppService.addToken(data.gameId(), data.playerId(), data.tokenId(), data.position());
 
-            broadcastGameState(game, socketIOServer);
+            broadcastGameState(game, server);
         });
 
-        socketIOServer.addEventListener("remove-token", RemoveTokenRequest.class, (client, request, ackSender) -> {
+        server.addEventListener("remove-token", RemoveTokenRequest.class, (client, request, ackSender) -> {
             RemoveTokenData data = removeTokenMapper.toDomain(request);
             Game game = gameAppService.removeToken(data.gameId(), data.playerId(), data.tokenId());
 
-            broadcastGameState(game, socketIOServer);
+            broadcastGameState(game, server);
         });
     }
 

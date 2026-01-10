@@ -11,5 +11,4 @@ export const registerSockets = (socket: Socket) => {
   socket.on(socketEvents.START_GAME, startGame);
   socket.on(socketEvents.UPDATE_GAME_STATE, updateGameState);
   socket.on(socketEvents.NEXT_TURN, nextTurn);
-  socket.on(socketEvents.DISCONNECT, disconnect);
 };

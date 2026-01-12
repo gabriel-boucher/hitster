@@ -26,6 +26,8 @@ import interfaces.socket.room.mapper.*;
 import interfaces.socket.room.dto.addPlaylist.AddPlaylistData;
 import interfaces.socket.room.dto.addPlaylist.AddPlaylistRequest;
 
+import java.util.ArrayList;
+
 public class RoomResource implements SocketResource {
     private final RoomAppService roomAppService;
     private final JoinRoomMapper joinRoomMapper;
@@ -97,7 +99,7 @@ public class RoomResource implements SocketResource {
             RemovePlayerData data = removePlayerMapper.toDomain(request);
             Room room = roomAppService.removePlayer(data.roomId(), data.playerId(), data.playerToRemoveId());
 
-            broadcastRoomState(room, server);
+            broadcastRoomStateExceptPlayer(room, server, data.playerToRemoveId().toString());
         });
 
         server.addEventListener("add-playlist", AddPlaylistRequest.class, (client, request, ackSender) -> {
@@ -126,6 +128,20 @@ public class RoomResource implements SocketResource {
     private void broadcastRoomState(Room room, SocketIOServer socketIOServer) {
         RoomStateResponse response = roomStateMapper.toDto(room);
         socketIOServer.getRoomOperations(room.getId().toString()).sendEvent("room-state", response);
+    }
+
+    private void broadcastRoomStateExceptPlayer(Room room, SocketIOServer socketIOServer, String excludedPlayerId) {
+        RoomStateResponse response = roomStateMapper.toDto(room);
+        socketIOServer.getRoomOperations(room.getId().toString())
+                .getClients()
+                .forEach(client -> {
+                    if (client.getSessionId().toString().equals(excludedPlayerId)) {
+                        RoomStateResponse excludedResponse = new RoomStateResponse("", new ArrayList<>(), new ArrayList<>());
+                        client.sendEvent("room-state", excludedResponse);
+                    } else {
+                        client.sendEvent("room-state", response);
+                    }
+                });
     }
 
     private void broadcastGameState(Game game, SocketIOServer socketIOServer) {

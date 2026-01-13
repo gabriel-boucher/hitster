@@ -12,7 +12,7 @@ import {Player} from "../../../type/player/Player.ts";
 import useChangePlayerColor from "../../../hooks/socket/room/useChangePlayerColor.ts";
 
 export default function PlayerInLobby() {
-  const [{ socket, roomId, players }] = useStateProvider();
+  const [{ socket, roomId, playerId, players }] = useStateProvider();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -69,7 +69,7 @@ export default function PlayerInLobby() {
                 key={index}
                 $playerColor={color}
                 onClick={() => {
-                  useChangePlayerColor(socket, roomId, color);
+                  useChangePlayerColor(socket, roomId, playerId, color);
                   setIsMenuOpen(false);
                 }}
               />

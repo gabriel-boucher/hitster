@@ -5,7 +5,7 @@ import { errorHandler } from "./errorHandler";
 export default async function getPlaylistItems(roomId: string, playlistId: string, offset?: number) {
   try {
     const response = await axios.get(
-      `${getBaseUrl(ConnectionType.SERVER)}/api/getPlaylist/${playlistId}`,
+      `${getBaseUrl(ConnectionType.HTTP_SERVER)}/api/getPlaylist/${playlistId}`,
       {
         params: { offset },
         headers: {

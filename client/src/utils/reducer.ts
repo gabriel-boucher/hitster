@@ -4,12 +4,13 @@ import { ConnectionType, getBaseUrl, reducerCases } from "./constants";
 import { Dispatch } from "react";
 import { io } from "socket.io-client";
 
-const socket = io(getBaseUrl(ConnectionType.SERVER));
+const socket = io(getBaseUrl(ConnectionType.WS_SERVER));
 
 export const initialState = {
   ...initialGameState,
   socket,
   roomId: "",
+  payerId: "",
   isDragging: false,
 };
 
@@ -27,6 +28,12 @@ export const reducer = (state: State, action: Action) => {
       return {
         ...state,
         roomId: action.roomId,
+      };
+    }
+    case reducerCases.SET_PLAYER_ID: {
+      return {
+        ...state,
+        playerId: action.playerId,
       };
     }
     case reducerCases.SET_GAME_STATE: {

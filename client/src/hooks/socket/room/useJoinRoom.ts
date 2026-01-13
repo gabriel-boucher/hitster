@@ -6,7 +6,7 @@ import {RoomId} from "../../../type/room/RoomState.ts";
 import {RoomSocketEvents} from "./roomSocketEvents.ts";
 import {ConnectionSocketEvents} from "../connection/connectionSocketEvents.ts";
 
-export default function useJoinRoom() {
+export default function useJoinRoom(playerIdRef: React.RefObject<PlayerId>) {
   const [{ socket }, dispatch] = useStateProvider();
 
   useEffect(() => {
@@ -16,6 +16,8 @@ export default function useJoinRoom() {
     const handleConnect = () => {
       if (roomId && socket.id) {
         const playerId: PlayerId = socket.id;
+        playerIdRef.current = playerId;
+        dispatch({ type: reducerCases.SET_PLAYER_ID, playerId });
         socket.emit(RoomSocketEvents.JOIN_ROOM, { roomId, playerId });
       }
     };

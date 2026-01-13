@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import {getAuthUrl, PINK_COLOR__HEX} from "src/utils/constants";
+import {getSpotifyAuthUrl, PINK_COLOR__HEX} from "src/utils/constants";
 import useCreateRoom from "../hooks/socket/room/useCreateRoom.ts";
 
 export default function HomePage() {
   const authorization = () => {
-    window.location.href = getAuthUrl();
+    window.location.href = getSpotifyAuthUrl();
   }
 
   useCreateRoom();

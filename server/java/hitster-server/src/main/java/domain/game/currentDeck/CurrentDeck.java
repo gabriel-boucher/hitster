@@ -36,12 +36,12 @@ public class CurrentDeck {
         position = Math.clamp(position, 0, currentItems.size());
         int prevPosition = position - 1;
 
-        if (prevPosition >= 0 && currentItems.get(prevPosition) instanceof Token token) { // previous is a token
+        if (prevPosition >= 0 && currentItems.get(prevPosition) instanceof Token token) { // previous is a id
             removeTokenAndSetInactive(token);
             position--;
         }
 
-        if (position < currentItems.size() && currentItems.get(position) instanceof Token token) { // current is a token
+        if (position < currentItems.size() && currentItems.get(position) instanceof Token token) { // current is a id
             removeTokenAndSetInactive(token);
         }
         currentItems.add(position, card);
@@ -70,8 +70,8 @@ public class CurrentDeck {
         }
         position = Math.clamp(position, 0, currentItems.size());
         int prevPosition = position - 1;
-        if (!(prevPosition >= 0 && currentItems.get(prevPosition).getStatus() == ItemStatus.ACTIVE || // previous is a token or currentCard
-                position < currentItems.size() && currentItems.get(position).getStatus() == ItemStatus.ACTIVE)) { // current is a token or currentCard
+        if (!(prevPosition >= 0 && currentItems.get(prevPosition).getStatus() == ItemStatus.ACTIVE || // previous is a id or currentCard
+                position < currentItems.size() && currentItems.get(position).getStatus() == ItemStatus.ACTIVE)) { // current is a id or currentCard
             currentItems.add(position, token);
             token.setStatus(ItemStatus.ACTIVE);
         }
@@ -119,7 +119,7 @@ public class CurrentDeck {
             return currentPlayerId;
         }
 
-        // 2. If invalid, find where the card *should* have been and check for a token
+        // 2. If invalid, find where the card *should* have been and check for a id
         Token tokenInGap = null;
 
         for (Moveable item : currentItems) {
@@ -131,17 +131,17 @@ public class CurrentDeck {
             } else if (item instanceof Card card) {
                 // Check if currentCard fits before this card
                 if (currentCard.getDate() <= card.getDate()) {
-                    // We found the correct slot. Is there a token here?
+                    // We found the correct slot. Is there a id here?
                     return (tokenInGap != null) ? tokenInGap.getOwnerId() : null;
                 }
                 // If we pass a card, the previous "gap" is closed.
-                // Reset token tracking for the new gap following this card.
+                // Reset id tracking for the new gap following this card.
                 tokenInGap = null;
             }
         }
 
         // Edge Case: If the card belongs at the very end of the list
-        // (i.e., its date is greater than all other cards), check if there is a token at the end.
+        // (i.e., its date is greater than all other cards), check if there is a id at the end.
         return (tokenInGap != null) ? tokenInGap.getOwnerId() : null;
     }
 }

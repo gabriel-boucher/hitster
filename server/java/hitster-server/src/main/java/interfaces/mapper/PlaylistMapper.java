@@ -9,7 +9,8 @@ public class PlaylistMapper {
         return new Playlist(
                 new PlaylistId(playlistDto.id()),
                 playlistDto.name(),
-                playlistDto.imageUrl()
+                playlistDto.imageUrl(),
+                playlistDto.totalTracks()
         );
     }
 
@@ -17,7 +18,8 @@ public class PlaylistMapper {
         return new PlaylistDto(
                 playlist.id().toString(),
                 playlist.name(),
-                playlist.imageUrl()
+                playlist.imageUrl(),
+                playlist.totalTracks()
         );
     }
 }

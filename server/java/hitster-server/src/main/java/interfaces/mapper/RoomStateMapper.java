@@ -1,7 +1,7 @@
 package interfaces.mapper;
 
 import domain.room.Room;
-import interfaces.socket.room.dto.RoomStateResponse;
+import interfaces.socket.room.RoomStateResponse;
 
 public class RoomStateMapper {
     private final PlayerMapper playerMapper;

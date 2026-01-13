@@ -1,6 +1,7 @@
 export enum reducerCases {
   SET_SOCKET = "SET_SOCKET",
   SET_ROOM_ID = "SET_ROOM_ID",
+  SET_PLAYER_ID = "SET_PLAYER_ID",
   SET_GAME_STATE = "SET_GAME_STATE",
   SET_PLAYERS = "SET_PLAYERS",
   SET_ITEMS = "SET_ITEMS",
@@ -14,22 +15,31 @@ export const PINK_COLOR__HEX = "#FF00E0";
 
 
 const CLIENT_PORT = import.meta.env.VITE_CLIENT_PORT || "8000";
-const SERVER_PORT = parseInt(import.meta.env.VITE_SOCKET_SERVER_PORT || "4000");
+const HTTP_SERVER_PORT = import.meta.env.VITE_HTTP_SERVER_PORT || "3000";
+const WS_SERVER_PORT = import.meta.env.VITE_SOCKET_SERVER_PORT || "3001";
 const HOST_DEV = import.meta.env.VITE_HOST_DEV || 'localhost';
 const HOST_PROD = import.meta.env.VITE_HOST_PROD || 'localhost';
 const HOST_PROD_TUNNEl = "use.devtunnels.ms"
 
 export enum ConnectionType {
-  SERVER = "SERVER",
   CLIENT = "CLIENT",
+  WS_SERVER = "WS_SERVER",
+  HTTP_SERVER = "HTTP_SERVER",
 }
 
 export function getBaseUrl(connectionType: ConnectionType) {
-  const isServer = connectionType === ConnectionType.SERVER;
+  const portMap = {
+    [ConnectionType.CLIENT]: CLIENT_PORT,
+    [ConnectionType.WS_SERVER]: WS_SERVER_PORT,
+    [ConnectionType.HTTP_SERVER]: HTTP_SERVER_PORT,
+  };
+
+  const port = portMap[connectionType];
+
   if (import.meta.env.VITE_IS_PROD === "true") {
-    return `https://${HOST_PROD}-${isServer ? SERVER_PORT : CLIENT_PORT}.${HOST_PROD_TUNNEl}`
+    return `https://${HOST_PROD}-${port}.${HOST_PROD_TUNNEl}`
   } else {
-    return `http://${HOST_DEV}:${isServer ? SERVER_PORT : CLIENT_PORT}`;
+    return `http://${HOST_DEV}:${port}`;
   }
 }
 
@@ -42,7 +52,7 @@ const REDIRECT_URI_DEV = `http://${HOST_DEV}:${CLIENT_PORT}`;
 const REDIRECT_URI_PROD = `https://${HOST_PROD}-${CLIENT_PORT}.${HOST_PROD_TUNNEl}`;
 const SCOPE = ["streaming", "user-read-email", "user-read-private", "user-library-read", "user-library-modify", "user-read-playback-state", "user-modify-playback-state"].join("%20");
 
-export function getAuthUrl() {
+export function getSpotifyAuthUrl() {
   if (import.meta.env.VITE_IS_PROD === "true") {
     return `${AUTH_BASE_URL}?client_id=${CLIENT_ID}&response_type=${RESPONSE_TYPE}&redirect_uri=${REDIRECT_URI_PROD}&scope=${SCOPE}&show_dialog=true`;
   } else {

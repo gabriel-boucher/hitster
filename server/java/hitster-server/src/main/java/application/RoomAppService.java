@@ -13,8 +13,10 @@ import domain.room.Room;
 import domain.room.RoomFactory;
 import domain.room.RoomId;
 import domain.room.RoomRepository;
-import domain.spotify.Playlist;
-import domain.spotify.PlaylistId;
+import domain.spotify.*;
+import domain.spotify.accessToken.AccessCode;
+import domain.spotify.accessToken.AccessToken;
+import domain.spotify.accessToken.AccessTokenRepository;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -22,22 +24,25 @@ import java.util.function.Consumer;
 public class RoomAppService {
     private final RoomRepository roomRepository;
     private final GameRepository gameRepository;
+    private final AccessTokenRepository accessTokenRepository;
     private final CardRepository cardRepository;
     private final RoomFactory roomFactory;
     private final GameFactory gameFactory;
     private final PlayerFactory playerFactory;
 
-    public RoomAppService(RoomRepository roomRepository, GameRepository gameRepository, CardRepository cardRepository, RoomFactory roomFactory, GameFactory gameFactory, PlayerFactory playerFactory) {
+    public RoomAppService(RoomRepository roomRepository, GameRepository gameRepository, AccessTokenRepository accessTokenRepository, CardRepository cardRepository, RoomFactory roomFactory, GameFactory gameFactory, PlayerFactory playerFactory) {
         this.roomRepository = roomRepository;
         this.gameRepository = gameRepository;
+        this.accessTokenRepository = accessTokenRepository;
         this.cardRepository = cardRepository;
         this.roomFactory = roomFactory;
         this.gameFactory = gameFactory;
         this.playerFactory = playerFactory;
     }
 
-    public Room createRoom() {
-        Room room = roomFactory.create(gameFactory, playerFactory);
+    public Room createRoom(AccessCode accessCode) {
+        AccessToken accessToken = accessTokenRepository.getAccessTokenByAccessCode(accessCode);
+        Room room = roomFactory.create(accessToken, gameFactory, playerFactory);
         roomRepository.saveRoom(room);
         return room;
     }

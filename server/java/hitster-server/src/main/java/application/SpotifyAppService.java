@@ -26,6 +26,6 @@ public class SpotifyAppService {
         }
         room.searchPlaylists(playerId);
 
-        return playlistRepository.searchPlaylistsByQuery(query);
+        return playlistRepository.searchPlaylistsByQuery(room.getAccessToken(), query);
     }
 }

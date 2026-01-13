@@ -6,30 +6,38 @@ import domain.game.Game;
 import domain.room.Room;
 import interfaces.mapper.GameStateMapper;
 import interfaces.socket.SocketResource;
-import interfaces.socket.game.dto.GameStateResponse;
-import interfaces.socket.game.dto.startGame.StartGameData;
-import interfaces.socket.game.dto.startGame.StartGameRequest;
-import interfaces.socket.game.mapper.StartGameMapper;
-import interfaces.socket.room.dto.RoomStateResponse;
+import interfaces.socket.game.GameStateResponse;
+import interfaces.socket.game.startGame.StartGameData;
+import interfaces.socket.game.startGame.StartGameRequest;
+import interfaces.socket.game.startGame.StartGameMapper;
 import interfaces.mapper.RoomStateMapper;
-import interfaces.socket.room.dto.changePlayerColor.ChangePlayerColorData;
-import interfaces.socket.room.dto.changePlayerColor.ChangePlayerColorRequest;
-import interfaces.socket.room.dto.changePlayerName.ChangePlayerNameData;
-import interfaces.socket.room.dto.changePlayerName.ChangePlayerNameRequest;
-import interfaces.socket.room.dto.joinRoom.JoinRoomData;
-import interfaces.socket.room.dto.joinRoom.JoinRoomRequest;
-import interfaces.socket.room.dto.removePlayer.RemovePlayerData;
-import interfaces.socket.room.dto.removePlayer.RemovePlayerRequest;
-import interfaces.socket.room.dto.removePlaylist.RemovePlaylistData;
-import interfaces.socket.room.dto.removePlaylist.RemovePlaylistRequest;
-import interfaces.socket.room.mapper.*;
-import interfaces.socket.room.dto.addPlaylist.AddPlaylistData;
-import interfaces.socket.room.dto.addPlaylist.AddPlaylistRequest;
+import interfaces.socket.room.addPlaylist.AddPlaylistMapper;
+import interfaces.socket.room.changePlayerColor.ChangePlayerColorData;
+import interfaces.socket.room.changePlayerColor.ChangePlayerColorMapper;
+import interfaces.socket.room.changePlayerColor.ChangePlayerColorRequest;
+import interfaces.socket.room.changePlayerName.ChangePlayerNameData;
+import interfaces.socket.room.changePlayerName.ChangePlayerNameMapper;
+import interfaces.socket.room.changePlayerName.ChangePlayerNameRequest;
+import interfaces.socket.room.createRoom.CreateRoomData;
+import interfaces.socket.room.createRoom.CreateRoomMapper;
+import interfaces.socket.room.createRoom.CreateRoomRequest;
+import interfaces.socket.room.joinRoom.JoinRoomData;
+import interfaces.socket.room.joinRoom.JoinRoomMapper;
+import interfaces.socket.room.joinRoom.JoinRoomRequest;
+import interfaces.socket.room.removePlayer.RemovePlayerData;
+import interfaces.socket.room.removePlayer.RemovePlayerMapper;
+import interfaces.socket.room.removePlayer.RemovePlayerRequest;
+import interfaces.socket.room.removePlaylist.RemovePlaylistData;
+import interfaces.socket.room.removePlaylist.RemovePlaylistMapper;
+import interfaces.socket.room.removePlaylist.RemovePlaylistRequest;
+import interfaces.socket.room.addPlaylist.AddPlaylistData;
+import interfaces.socket.room.addPlaylist.AddPlaylistRequest;
 
 import java.util.ArrayList;
 
 public class RoomResource implements SocketResource {
     private final RoomAppService roomAppService;
+    private final CreateRoomMapper createRoomMapper;
     private final JoinRoomMapper joinRoomMapper;
     private final ChangePlayerNameMapper changePlayerNameMapper;
     private final ChangePlayerColorMapper changePlayerColorMapper;
@@ -42,6 +50,7 @@ public class RoomResource implements SocketResource {
 
     public RoomResource(
             RoomAppService roomAppService,
+            CreateRoomMapper createRoomMapper,
             JoinRoomMapper joinRoomMapper,
             ChangePlayerNameMapper changePlayerNameMapper,
             ChangePlayerColorMapper changePlayerColorMapper,
@@ -52,6 +61,7 @@ public class RoomResource implements SocketResource {
             RoomStateMapper roomStateMapper,
             GameStateMapper gameStateMapper) {
         this.roomAppService = roomAppService;
+        this.createRoomMapper = createRoomMapper;
         this.joinRoomMapper = joinRoomMapper;
         this.changePlayerNameMapper = changePlayerNameMapper;
         this.changePlayerColorMapper = changePlayerColorMapper;
@@ -65,8 +75,9 @@ public class RoomResource implements SocketResource {
 
     @Override
     public void setupEventListeners(SocketIOServer server) {
-        server.addEventListener("create-room", Object.class, (client, request, ackSender) -> {
-            Room room = roomAppService.createRoom();
+        server.addEventListener("create-room", CreateRoomRequest.class, (client, request, ackSender) -> {
+            CreateRoomData data = createRoomMapper.toDomain(request);
+            Room room = roomAppService.createRoom(data.accessCode());
             System.out.println("Create room : RoomId = " + room.getId().toString());
 
             ackSender.sendAckData(room.getId().toString());

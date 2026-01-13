@@ -1,7 +1,7 @@
 package interfaces.mapper;
 
 import domain.game.Game;
-import interfaces.socket.game.dto.GameStateResponse;
+import interfaces.socket.game.GameStateResponse;
 
 public class GameStateMapper {
     private final PlayerMapper playerMapper;

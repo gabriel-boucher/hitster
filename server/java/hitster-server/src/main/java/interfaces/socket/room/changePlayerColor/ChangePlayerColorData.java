@@ -1,0 +1,12 @@
+package interfaces.socket.room.changePlayerColor;
+
+import domain.player.PlayerColor;
+import domain.player.PlayerId;
+import domain.room.RoomId;
+
+public record ChangePlayerColorData(
+        RoomId roomId,
+        PlayerId playerId,
+        PlayerColor newColor
+) {
+}

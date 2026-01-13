@@ -1,33 +1,33 @@
 import styled from "styled-components";
 import { useStateProvider } from "../utils/StateProvider";
-import { useState } from "react";
+import {useRef, useState} from "react";
 import { PINK_COLOR__HEX } from "src/utils/constants";
 import PlayerInLobby from "src/components/elements/Player/PlayerInLobby";
-import { PlaylistInterface } from "@shared/interfaces";
-import { SpotifyModal } from "src/components/GamePage/SpotifyModal/SpotifyModal";
+import { SpotifyModal } from "../components/LobbyPage/SpotifyModal/SpotifyModal";
 import useJoinRoom from "../hooks/socket/room/useJoinRoom.ts";
 import useOnRoomState from "../hooks/socket/room/useOnRoomState.ts";
 import useChangePlayerName from "../hooks/socket/room/useChangePlayerName.ts";
 import useRemovePlayer from "../hooks/socket/room/useRemovePlayer.ts";
 import useStartGame from "../hooks/socket/room/useStartGame.ts";
+import {Playlist} from "../type/spotify/Playlist.ts";
+import {PlayerId} from "../type/player/Player.ts";
 
 export default function LobbyPage() {
-  const [{ socket, roomId, players }] = useStateProvider();
+  const [{ socket, roomId, playerId, players, playlists }] = useStateProvider();
   const [userName, setUserName] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedPlaylists, setSelectedPlaylists] = useState<PlaylistInterface[]>([]);
 
-  useJoinRoom();
-  useOnRoomState();
+  const playerIdRef = useRef<PlayerId>(playerId);
 
-  function addSelectedPlaylist(playlist: PlaylistInterface) {
-    setSelectedPlaylists([...selectedPlaylists, playlist]);
+  useJoinRoom(playerIdRef);
+  useOnRoomState(playerIdRef);
+
+  function addSelectedPlaylist(playlist: Playlist) {
+    socket.emit("add_playlist", { roomId, playerId, playlist });
   }
 
-  function removeSelectedPlaylist(playlistId: string) {
-    setSelectedPlaylists(
-      selectedPlaylists.filter((playlist) => playlist.id !== playlistId)
-    );
+  function removeSelectedPlaylist(playlistId: PlayerId) {
+    socket.emit("remove_playlist", { roomId, playerId, playlistId });
   }
 
   return (
@@ -42,7 +42,7 @@ export default function LobbyPage() {
             onChange={(e) => setUserName(e.target.value)}
             placeholder="Enter your name..."
           />
-          <JoinButton onClick={() => useChangePlayerName(socket, roomId, userName)}>Join</JoinButton>
+          <JoinButton onClick={() => useChangePlayerName(socket, roomId, playerId, userName)}>Join</JoinButton>
         </NameContainer>
       </Entries>
 
@@ -55,8 +55,8 @@ export default function LobbyPage() {
               <li key={player.id}>
                 <PlayerImg $playerColor={player.color} />
                 <NameBase>{player.name}</NameBase>
-                {socket.id === players[0].id && (
-                  <RemoveButton onClick={() => useRemovePlayer(socket, roomId, player.id)}>
+                {playerId === players[0].id && (
+                  <RemoveButton onClick={() => useRemovePlayer(socket, roomId, playerId, player.id)}>
                     -
                   </RemoveButton>
                 )}
@@ -68,11 +68,11 @@ export default function LobbyPage() {
       <PlaylistList>
         <h2>Selected Playlists</h2>
         <ul>
-          {selectedPlaylists?.map((playlist) => (
+          {playlists?.map((playlist) => (
             <li key={playlist.id}>
-              <PlaylistImg $playlistImage={playlist.images[0].url} />
+              <PlaylistImg $playlistImage={playlist.imageUrl} />
               <NameBase>{playlist.name}</NameBase>
-              {socket.id === players[0].id && (
+              {playerId === players[0].id && (
                 <RemoveButton
                   onClick={() => removeSelectedPlaylist(playlist.id)}
                 >
@@ -85,14 +85,14 @@ export default function LobbyPage() {
       </PlaylistList>
 
       <ButtonsContainer>
-        {players.length > 0 && players[0].id === socket.id && (
-          <StartButton onClick={() => useStartGame(socket, roomId)}>Start Game</StartButton>
+        {players.length > 0 && players[0].id === playerId && (
+          <StartButton onClick={() => useStartGame(socket, roomId, playerId)}>Start Game</StartButton>
         )}
         <PlaylistButton onClick={() => setIsModalOpen(true)}>
           Choose playlist
         </PlaylistButton>
         <SpotifyModal
-          selectedPlaylists={selectedPlaylists}
+          selectedPlaylists={playlists}
           isModalOpen={isModalOpen}
           closeModal={() => setIsModalOpen(false)}
           addSelectedPlaylist={addSelectedPlaylist}

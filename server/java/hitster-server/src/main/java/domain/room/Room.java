@@ -3,12 +3,11 @@ package domain.room;
 import domain.game.Game;
 import domain.game.GameFactory;
 import domain.game.GameStatus;
-import domain.game.Pile;
-import domain.game.item.card.Card;
 import domain.player.Player;
 import domain.player.PlayerColor;
 import domain.player.PlayerFactory;
 import domain.player.PlayerId;
+import domain.spotify.accessToken.AccessToken;
 import domain.spotify.Playlist;
 import domain.spotify.PlaylistId;
 
@@ -16,6 +15,7 @@ import java.util.List;
 
 public class Room {
     private final RoomId id;
+    private final AccessToken accessToken;
     private final GameStatus gameStatus;
     private final List<Player> players;
     private final List<Playlist> playlists;
@@ -23,9 +23,10 @@ public class Room {
     private final PlayerFactory playerFactory;
     private final RoomValidator validator;
 
-    public Room(RoomId id, GameStatus gameStatus, List<Player> players,
+    public Room(RoomId id, AccessToken accessToken, GameStatus gameStatus, List<Player> players,
                 List<Playlist> playlists, GameFactory gameFactory, PlayerFactory playerFactory, RoomValidator validator) {
         this.id = id;
+        this.accessToken = accessToken;
         this.gameStatus = gameStatus;
         this.players = players;
         this.playlists = playlists;
@@ -36,6 +37,10 @@ public class Room {
 
     public RoomId getId() {
         return id;
+    }
+
+    public AccessToken getAccessToken() {
+        return accessToken;
     }
 
     public List<Player> getPlayers() {

@@ -1,4 +1,5 @@
 import context.ApplicationContext;
+import interfaces.filter.CORSFilter;
 import interfaces.socket.connection.ConnectionResource;
 import interfaces.socket.game.GameResource;
 import interfaces.rest.spotify.SpotifyResource;
@@ -11,11 +12,9 @@ import org.glassfish.jersey.server.ResourceConfig;
 
 import java.net.URI;
 
+import static environments.Env.*;
+
 public class ApplicationServer {
-    public static final String HTTP_BASE_URI = "http://127.0.0.1:3000/";
-    public static final String SOCKET_IO_HOST = "127.0.0.1";
-    public static final int SOCKET_IO_PORT = 4000;
-    
     private static HttpServer httpServer;
     private static SocketIOServer socketIOServer;
     private final static ApplicationContext applicationContext = new ApplicationContext();
@@ -24,10 +23,12 @@ public class ApplicationServer {
         SpotifyResource spotifyResource = applicationContext.getSpotifyResource();
 
         final ResourceConfig rc = new ResourceConfig()
-                .register(spotifyResource);
+                .register(spotifyResource)
+                .register(CORSFilter.class);
 
-        httpServer = GrizzlyHttpServerFactory.createHttpServer(URI.create(HTTP_BASE_URI), rc);
-        System.out.println("HTTP server started at " + HTTP_BASE_URI);
+        String baseUrl = "http://" + HOST + ":" + HTTP_SERVER_PORT;
+        httpServer = GrizzlyHttpServerFactory.createHttpServer(URI.create(baseUrl), rc);
+        System.out.println("HTTP server started at " + baseUrl);
     }
     
     public static void startWebSocketServer() {
@@ -36,8 +37,8 @@ public class ApplicationServer {
         GameResource gameResource = applicationContext.getGameRessource();
 
         Configuration config = new Configuration();
-        config.setHostname(SOCKET_IO_HOST);
-        config.setPort(SOCKET_IO_PORT);
+        config.setHostname(HOST);
+        config.setPort(Integer.parseInt(WS_SERVER_PORT));
         config.setOrigin("*");
 
         socketIOServer = new SocketIOServer(config);
@@ -47,7 +48,7 @@ public class ApplicationServer {
         gameResource.setupEventListeners(socketIOServer);
 
         socketIOServer.start();
-        System.out.println("Socket.IO server started at " + SOCKET_IO_HOST + ":" + SOCKET_IO_PORT);
+        System.out.println("Socket.IO server started at ws://" + HOST + ":" + WS_SERVER_PORT);
     }
     
     public static void stopHttpServer() {

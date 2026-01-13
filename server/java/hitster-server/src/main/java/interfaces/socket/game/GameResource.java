@@ -4,22 +4,24 @@ import application.GameAppService;
 import com.corundumstudio.socketio.SocketIOServer;
 import domain.game.Game;
 import interfaces.socket.SocketResource;
-import interfaces.socket.game.dto.GameStateResponse;
-import interfaces.socket.game.dto.addCurrentCard.AddCurrentCardData;
-import interfaces.socket.game.dto.addCurrentCard.AddCurrentCardRequest;
-import interfaces.socket.game.dto.addToken.AddTokenData;
-import interfaces.socket.game.dto.addToken.AddTokenRequest;
-import interfaces.socket.game.dto.nextTurn.NextTurnData;
-import interfaces.socket.game.dto.nextTurn.NextTurnRequest;
-import interfaces.socket.game.dto.removeCurrentCard.RemoveCurrentCardData;
-import interfaces.socket.game.dto.removeCurrentCard.RemoveCurrentCardRequest;
-import interfaces.socket.game.dto.removeToken.RemoveTokenData;
-import interfaces.socket.game.dto.removeToken.RemoveTokenRequest;
-import interfaces.socket.game.dto.reorderCurrentCard.ReorderCurrentCardData;
-import interfaces.socket.game.dto.reorderCurrentCard.ReorderCurrentCardRequest;
-import interfaces.socket.game.dto.startGame.StartGameData;
-import interfaces.socket.game.dto.startGame.StartGameRequest;
-import interfaces.socket.game.mapper.*;
+import interfaces.socket.game.addCurrentCard.AddCurrentCardData;
+import interfaces.socket.game.addCurrentCard.AddCurrentCardMapper;
+import interfaces.socket.game.addCurrentCard.AddCurrentCardRequest;
+import interfaces.socket.game.addToken.AddTokenData;
+import interfaces.socket.game.addToken.AddTokenMapper;
+import interfaces.socket.game.addToken.AddTokenRequest;
+import interfaces.socket.game.nextTurn.NextTurnData;
+import interfaces.socket.game.nextTurn.NextTurnMapper;
+import interfaces.socket.game.nextTurn.NextTurnRequest;
+import interfaces.socket.game.removeCurrentCard.RemoveCurrentCardData;
+import interfaces.socket.game.removeCurrentCard.RemoveCurrentCardMapper;
+import interfaces.socket.game.removeCurrentCard.RemoveCurrentCardRequest;
+import interfaces.socket.game.removeToken.RemoveTokenData;
+import interfaces.socket.game.removeToken.RemoveTokenMapper;
+import interfaces.socket.game.removeToken.RemoveTokenRequest;
+import interfaces.socket.game.reorderCurrentCard.ReorderCurrentCardData;
+import interfaces.socket.game.reorderCurrentCard.ReorderCurrentCardMapper;
+import interfaces.socket.game.reorderCurrentCard.ReorderCurrentCardRequest;
 import interfaces.mapper.GameStateMapper;
 
 public class GameResource implements SocketResource {
@@ -81,14 +83,14 @@ public class GameResource implements SocketResource {
             broadcastGameState(game, server);
         });
 
-        server.addEventListener("add-token", AddTokenRequest.class, (client, request, ackSender) -> {
+        server.addEventListener("add-id", AddTokenRequest.class, (client, request, ackSender) -> {
             AddTokenData data = addTokenMapper.toDomain(request);
             Game game = gameAppService.addToken(data.gameId(), data.playerId(), data.tokenId(), data.position());
 
             broadcastGameState(game, server);
         });
 
-        server.addEventListener("remove-token", RemoveTokenRequest.class, (client, request, ackSender) -> {
+        server.addEventListener("remove-id", RemoveTokenRequest.class, (client, request, ackSender) -> {
             RemoveTokenData data = removeTokenMapper.toDomain(request);
             Game game = gameAppService.removeToken(data.gameId(), data.playerId(), data.tokenId());
 

@@ -6,14 +6,14 @@ import {RoomSocketEvents} from "./roomSocketEvents.ts";
 
 export default function useCreateRoom() {
   const [{ socket }, dispatch] = useStateProvider();
-  const code = new URLSearchParams(window.location.search).get("code");
+  const accessCode = new URLSearchParams(window.location.search).get("code");
 
   useEffect(() => {
-    if (code) {
-      socket.emit(RoomSocketEvents.CREATE_ROOM, (roomId: RoomId) => {
+    if (accessCode) {
+      socket.emit(RoomSocketEvents.CREATE_ROOM, { accessCode }, (roomId: RoomId) => {
         dispatch({ type: reducerCases.SET_ROOM_ID, roomId: roomId });
         window.history.pushState({}, "", "/" + roomId);
       });
     }
-  }, [code, socket, dispatch]);
+  }, [accessCode, socket, dispatch]);
 }

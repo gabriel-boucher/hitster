@@ -1,22 +1,19 @@
 import XMark from "../../icons/XMark.tsx";
 import styled, { keyframes } from "styled-components";
 import useSearchPlaylists from "../../../hooks/http/spotify/useSearchPlaylists.ts";
-import {Playlist, PlaylistId} from "../../../type/spotify/Playlist.ts";
+import {useStateProvider} from "../../../utils/StateProvider.tsx";
+import useRemovePlaylist from "../../../hooks/socket/room/useRemovePlaylist.ts";
+import useAddPlaylist from "../../../hooks/socket/room/useAddPlaylist.ts";
 
 interface Props {
-  selectedPlaylists: Playlist[];
-  addSelectedPlaylist: (playlist: Playlist) => void;
-  removeSelectedPlaylist: (playlistId: PlaylistId) => void;
   closeModal: () => void;
 }
 
-export const PlaylistList = ({
-  selectedPlaylists,
-  addSelectedPlaylist,
-  removeSelectedPlaylist,
-  closeModal,
-}: Props) => {
-  const { playlists, loading, query, setQuery } = useSearchPlaylists();
+export const PlaylistList = ({ closeModal }: Props) => {
+  const [{ playlists }] = useStateProvider();
+  const { searchedPlaylists, loading, query, setQuery } = useSearchPlaylists();
+  const addPlaylist = useAddPlaylist();
+  const removePlaylist = useRemovePlaylist();
 
   return (
     <Container>
@@ -36,8 +33,8 @@ export const PlaylistList = ({
 
       <List>
         {loading && <LoadingSpinner />}
-        {playlists.map((playlist) => {
-          const isSelected = selectedPlaylists.some(
+        {searchedPlaylists.map((playlist) => {
+          const isSelected = playlists.some(
             (p) => p.id === playlist.id
           );
           return (
@@ -45,13 +42,13 @@ export const PlaylistList = ({
               <Image src={playlist.imageUrl} alt={playlist.name} />
               <Info>
                 <Name>{playlist.name}</Name>
-                {/*<TrackNumber>{playlist.tracks.total} tracks</TrackNumber>*/}
+                <TrackNumber>{playlist.totalTracks} tracks</TrackNumber>
               </Info>
 
               {isSelected ? (
                 <RemoveButton
                   onClick={() => {
-                    removeSelectedPlaylist(playlist.id);
+                    removePlaylist(playlist.id);
                   }}
                 >
                   <Minus />
@@ -59,7 +56,7 @@ export const PlaylistList = ({
               ) : (
                 <AddButton
                   onClick={() => {
-                    addSelectedPlaylist(playlist);
+                    addPlaylist(playlist);
                   }}
                 >
                   <Plus />
@@ -159,7 +156,6 @@ const Item = styled.li`
 const Info = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: left;
   gap: 0.5rem;
   flex: 1;
   cursor: default;

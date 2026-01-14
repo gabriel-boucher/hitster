@@ -1,19 +1,27 @@
-import { useEffect } from "react";
-import { reducerCases } from "../../../utils/constants.ts";
-import { RoomId } from "../../../type/room/RoomState.ts";
-import { useStateProvider } from "../../../utils/StateProvider.tsx";
+import {useCallback} from "react";
+import {ConnectionType, getBaseUrl, reducerCases} from "../../../utils/constants.ts";
+import {useStateProvider} from "../../../utils/StateProvider.tsx";
 import {RoomSocketEvents} from "./roomSocketEvents.ts";
+import {EventResponse} from "../../../type/EventResponse.ts";
+import {CreateRoomResponse} from "../../../type/room/CreateRoomResponse.ts";
 
 export default function useCreateRoom() {
   const [{ socket }, dispatch] = useStateProvider();
-  const accessCode = new URLSearchParams(window.location.search).get("code");
 
-  useEffect(() => {
-    if (accessCode) {
-      socket.emit(RoomSocketEvents.CREATE_ROOM, { accessCode }, (roomId: RoomId) => {
-        dispatch({ type: reducerCases.SET_ROOM_ID, roomId: roomId });
+  return useCallback((accessCode: string, onComplete?: (success: boolean) => void) => {
+    const callback = (response: EventResponse<CreateRoomResponse>) => {
+      const roomId = response.data?.roomId;
+
+      if (response.success && roomId) {
         window.history.pushState({}, "", "/" + roomId);
-      });
+        dispatch({type: reducerCases.SET_ROOM_ID, roomId: roomId});
+        onComplete?.(true);
+      } else {
+        window.location.href = getBaseUrl(ConnectionType.CLIENT);
+        onComplete?.(false);
+      }
     }
-  }, [accessCode, socket, dispatch]);
+
+    socket.emit(RoomSocketEvents.CREATE_ROOM, {accessCode}, callback);
+  }, [socket, dispatch]);
 }

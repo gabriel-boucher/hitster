@@ -6,13 +6,14 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PlayersTest {
-    private final static PlayerId A_PLAYER_ID = new PlayerId("player-1");
-    private final static PlayerId ANOTHER_PLAYER_ID = new PlayerId("player-2");
+    private final static PlayerId A_PLAYER_ID = new PlayerId(UUID.randomUUID());
+    private final static PlayerId ANOTHER_PLAYER_ID = new PlayerId(UUID.randomUUID());
 
     private final PlayerBuilder playerBuilder = new PlayerBuilder();
 

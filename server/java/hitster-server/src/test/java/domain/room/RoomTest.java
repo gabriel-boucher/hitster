@@ -8,8 +8,8 @@ import domain.player.Player;
 import domain.player.PlayerBuilder;
 import domain.player.PlayerFactory;
 import domain.player.PlayerId;
-import domain.room.exception.PlayerInRoomException;
-import domain.room.exception.PlaylistInRoomException;
+import domain.room.exception.PlayerAlreadyInRoomException;
+import domain.room.exception.PlaylistAlreadyInRoomException;
 import domain.spotify.Playlist;
 import domain.spotify.PlaylistBuilder;
 import domain.spotify.PlaylistId;
@@ -21,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.willReturn;
@@ -28,7 +29,7 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class RoomTest {
-    private final static PlayerId A_PLAYER_ID = new PlayerId("player-1");
+    private final static PlayerId A_PLAYER_ID = new PlayerId(UUID.randomUUID());
     private final static PlaylistId A_PLAYLIST_ID = new PlaylistId("playlist-1");
 
     @Mock
@@ -62,7 +63,7 @@ class RoomTest {
                 .withGameStatus(GameStatus.LOBBY)
                 .withPlayers(new ArrayList<>())
                 .build();
-        willReturn(player).given(playerFactory).create(A_PLAYER_ID);
+        willReturn(player).given(playerFactory).create(A_PLAYER_ID, new ArrayList<>());
 
         room.joinRoom(A_PLAYER_ID);
 
@@ -78,7 +79,7 @@ class RoomTest {
 
         room.joinRoom(A_PLAYER_ID);
 
-        verify(playerFactory).create(A_PLAYER_ID);
+        verify(playerFactory).create(A_PLAYER_ID, new ArrayList<>());
     }
 
     @Test
@@ -88,7 +89,7 @@ class RoomTest {
                 .build();
 
         assertThrows(
-                PlayerInRoomException.class,
+                PlayerAlreadyInRoomException.class,
                 () -> room.joinRoom(A_PLAYER_ID)
         );
     }
@@ -140,7 +141,7 @@ class RoomTest {
                 .build();
 
         assertThrows(
-                PlaylistInRoomException.class,
+                PlaylistAlreadyInRoomException.class,
                 () -> room.addPlaylist(A_PLAYER_ID, playlist)
         );
     }

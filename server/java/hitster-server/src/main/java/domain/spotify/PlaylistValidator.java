@@ -1,7 +1,7 @@
 package domain.spotify;
 
 import domain.exception.PlaylistNotFoundException;
-import domain.room.exception.PlaylistInRoomException;
+import domain.room.exception.PlaylistAlreadyInRoomException;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class PlaylistValidator {
         boolean playlistExists = playlists.stream()
                 .anyMatch(playlist -> playlist.id().equals(playlistId));
         if (playlistExists) {
-            throw new PlaylistInRoomException(playlistId);
+            throw new PlaylistAlreadyInRoomException(playlistId);
         }
     }
 }

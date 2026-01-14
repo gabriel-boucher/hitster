@@ -3,6 +3,8 @@ package interfaces.socket.room.addPlaylist;
 import domain.player.PlayerId;
 import domain.room.RoomId;
 import interfaces.mapper.PlaylistMapper;
+import interfaces.socket.room.addPlaylist.dto.AddPlaylistData;
+import interfaces.socket.room.addPlaylist.dto.AddPlaylistRequest;
 
 public class AddPlaylistMapper {
     private final PlaylistMapper playlistMapper;

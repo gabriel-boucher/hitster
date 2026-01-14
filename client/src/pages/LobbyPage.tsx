@@ -1,34 +1,26 @@
 import styled from "styled-components";
 import { useStateProvider } from "../utils/StateProvider";
-import {useRef, useState} from "react";
+import { useState } from "react";
 import { PINK_COLOR__HEX } from "src/utils/constants";
 import PlayerInLobby from "src/components/elements/Player/PlayerInLobby";
 import { SpotifyModal } from "../components/LobbyPage/SpotifyModal/SpotifyModal";
-import useJoinRoom from "../hooks/socket/room/useJoinRoom.ts";
-import useOnRoomState from "../hooks/socket/room/useOnRoomState.ts";
 import useChangePlayerName from "../hooks/socket/room/useChangePlayerName.ts";
 import useRemovePlayer from "../hooks/socket/room/useRemovePlayer.ts";
 import useStartGame from "../hooks/socket/room/useStartGame.ts";
-import {Playlist} from "../type/spotify/Playlist.ts";
-import {PlayerId} from "../type/player/Player.ts";
+import useRemovePlaylist from "../hooks/socket/room/useRemovePlaylist.ts";
 
-export default function LobbyPage() {
+interface Props {
+  setLoading: (loading: boolean) => void;
+}
+
+export default function LobbyPage({ setLoading }: Props) {
   const [{ socket, roomId, playerId, players, playlists }] = useStateProvider();
   const [userName, setUserName] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const playerIdRef = useRef<PlayerId>(playerId);
-
-  useJoinRoom(playerIdRef);
-  useOnRoomState(playerIdRef);
-
-  function addSelectedPlaylist(playlist: Playlist) {
-    socket.emit("add_playlist", { roomId, playerId, playlist });
-  }
-
-  function removeSelectedPlaylist(playlistId: PlayerId) {
-    socket.emit("remove_playlist", { roomId, playerId, playlistId });
-  }
+  const changePlayerName = useChangePlayerName();
+  const removePlayer = useRemovePlayer();
+  const removePlaylist = useRemovePlaylist();
 
   return (
     <Container>
@@ -42,7 +34,7 @@ export default function LobbyPage() {
             onChange={(e) => setUserName(e.target.value)}
             placeholder="Enter your name..."
           />
-          <JoinButton onClick={() => useChangePlayerName(socket, roomId, playerId, userName)}>Join</JoinButton>
+          <ChangeNameButton onClick={() => changePlayerName(userName)}>Change name</ChangeNameButton>
         </NameContainer>
       </Entries>
 
@@ -55,8 +47,8 @@ export default function LobbyPage() {
               <li key={player.id}>
                 <PlayerImg $playerColor={player.color} />
                 <NameBase>{player.name}</NameBase>
-                {playerId === players[0].id && (
-                  <RemoveButton onClick={() => useRemovePlayer(socket, roomId, playerId, player.id)}>
+                {playerId === players[0].id && playerId != player.id && (
+                  <RemoveButton onClick={() => removePlayer(player.id)}>
                     -
                   </RemoveButton>
                 )}
@@ -74,7 +66,7 @@ export default function LobbyPage() {
               <NameBase>{playlist.name}</NameBase>
               {playerId === players[0].id && (
                 <RemoveButton
-                  onClick={() => removeSelectedPlaylist(playlist.id)}
+                  onClick={() => removePlaylist(playlist.id)}
                 >
                   -
                 </RemoveButton>
@@ -86,17 +78,14 @@ export default function LobbyPage() {
 
       <ButtonsContainer>
         {players.length > 0 && players[0].id === playerId && (
-          <StartButton onClick={() => useStartGame(socket, roomId, playerId)}>Start Game</StartButton>
+          <StartButton onClick={() => useStartGame(socket, roomId, playerId, setLoading)}>Start Game</StartButton>
         )}
         <PlaylistButton onClick={() => setIsModalOpen(true)}>
           Choose playlist
         </PlaylistButton>
         <SpotifyModal
-          selectedPlaylists={playlists}
           isModalOpen={isModalOpen}
           closeModal={() => setIsModalOpen(false)}
-          addSelectedPlaylist={addSelectedPlaylist}
-          removeSelectedPlaylist={removeSelectedPlaylist}
         />
       </ButtonsContainer>
     </Container>
@@ -168,7 +157,7 @@ const NameInput = styled.input`
   }
 `;
 
-const JoinButton = styled.button`
+const ChangeNameButton = styled.button`
   background-color: #00f2ff;
   padding: 1rem 1.5rem;
   font-size: 1.5rem;

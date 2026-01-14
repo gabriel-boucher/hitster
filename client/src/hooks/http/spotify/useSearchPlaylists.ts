@@ -5,7 +5,7 @@ import {useStateProvider} from "../../../utils/StateProvider.tsx";
 import {Playlist} from "../../../type/spotify/Playlist.ts";
 
 interface UseSearchPlaylistsSearch {
-  playlists: Playlist[];
+  searchedPlaylists: Playlist[];
   loading: boolean;
   query: string;
   setQuery: (query: string) => void;
@@ -14,7 +14,7 @@ interface UseSearchPlaylistsSearch {
 export default function useSearchPlaylists (): UseSearchPlaylistsSearch {
   const [{ roomId, playerId }] = useStateProvider();
   const [query, setQuery] = useState("");
-  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [searchedPlaylists, setSearchedPlaylists] = useState<Playlist[]>([]);
   const [loading, setLoading] = useState(false);
 
   const debouncedQuery = useDebounce(query, 500);
@@ -22,19 +22,19 @@ export default function useSearchPlaylists (): UseSearchPlaylistsSearch {
   useEffect(() => {
     if (!debouncedQuery.trim()) {
       setLoading(false);
-      setPlaylists([]);
+      setSearchedPlaylists([]);
       return;
     }
 
     const fetchPlaylists = async () => {
       setLoading(true);
       const playlistsResponse = await searchPlaylists(roomId, playerId, debouncedQuery);
-      setPlaylists(playlistsResponse);
+      setSearchedPlaylists(playlistsResponse);
       setLoading(false);
     };
 
     fetchPlaylists();
   }, [roomId, debouncedQuery]);
 
-  return { playlists, loading, query, setQuery };
+  return { searchedPlaylists, loading, query, setQuery };
 };

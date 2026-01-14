@@ -1,4 +1,3 @@
-import { PLAYER_COLORS } from "@shared/constants";
 import { useEffect, useRef, useState } from "react";
 import Plus from "src/components/icons/Plus";
 import XMark from "src/components/icons/XMark";
@@ -8,13 +7,15 @@ import {
 } from "src/utils/constants";
 import { useStateProvider } from "src/utils/StateProvider";
 import styled from "styled-components";
-import {Player} from "../../../type/player/Player.ts";
+import {Player, PlayerColor} from "../../../type/player/Player.ts";
 import useChangePlayerColor from "../../../hooks/socket/room/useChangePlayerColor.ts";
 
 export default function PlayerInLobby() {
-  const [{ socket, roomId, playerId, players }] = useStateProvider();
+  const [{ socket, players }] = useStateProvider();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  const changePlayerColor = useChangePlayerColor();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -40,7 +41,7 @@ export default function PlayerInLobby() {
         $playerColor={
           players.find(
             (player: Player) => player.id === socket.id
-          )?.color || ""
+          )?.color || PlayerColor.RED
         }
         onClick={() => setIsMenuOpen((prev) => !prev)}
       >
@@ -49,19 +50,21 @@ export default function PlayerInLobby() {
 
       {isMenuOpen && (
         <PlayerColorMenu>
-        {PLAYER_COLORS.map((color: string, index: number) => {
-          const isTaken = players.some((player: Player) => player.color === color);
+        {(Object.keys(PlayerColor) as PlayerColor[]).map((color: PlayerColor, index: number) => {
+          const isColorTaken = players.some((player: Player) => {
+            return player.color === color as PlayerColor;
+          });
           
-          if (isTaken) {
+          if (isColorTaken) {
             return (
-              <PlayerImgInMenuTaken
+              <PlayerColorInMenuTaken
                 key={index}
                 $playerColor={color}
               >
                 <XMarkContainer>
                   <XMark/>
                 </XMarkContainer>
-              </PlayerImgInMenuTaken>
+              </PlayerColorInMenuTaken>
             );
           } else {
             return (
@@ -69,7 +72,7 @@ export default function PlayerInLobby() {
                 key={index}
                 $playerColor={color}
                 onClick={() => {
-                  useChangePlayerColor(socket, roomId, playerId, color);
+                  changePlayerColor(color);
                   setIsMenuOpen(false);
                 }}
               />
@@ -98,7 +101,7 @@ const PlusIcon = styled.div`
   z-index: 3;
 `;
 
-const PlayerImg = styled.div<{ $playerColor: string }>`
+const PlayerImg = styled.div<{ $playerColor: PlayerColor }>`
   aspect-ratio: 1/1;
   border-radius: 50%;
   /* background-image: url(${({ $playerColor }) => $playerColor}); */
@@ -130,7 +133,7 @@ const PlayerColorInMenu = styled(PlayerImg)`
   }
 `;
 
-const PlayerImgInMenuTaken = styled(PlayerImg)`
+const PlayerColorInMenuTaken = styled(PlayerImg)`
   width: 5vh;
   border: 1px solid black;
   pointer-events: none;

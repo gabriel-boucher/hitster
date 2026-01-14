@@ -19,12 +19,13 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class PlayerTest {
-    private final static PlayerId A_PLAYER_ID = new PlayerId("player-1");
+    private final static PlayerId A_PLAYER_ID = new PlayerId(UUID.randomUUID());
     private final static TokenId A_TOKEN_ID = new TokenId(UUID.randomUUID());
 
     @Mock
     private PlayerDeck playerDeck;
 
+    private final PlayerBuilder playerBuilder = new PlayerBuilder();
     private final CardBuilder cardBuilder = new CardBuilder();
     private final TokenBuilder tokenBuilder = new TokenBuilder();
 
@@ -34,7 +35,10 @@ class PlayerTest {
 
     @BeforeEach
     public void setUp() {
-        player = new Player(A_PLAYER_ID, playerDeck);
+        player = playerBuilder
+                .withPlayerId(A_PLAYER_ID)
+                .withDeck(playerDeck)
+                .build();
         card = cardBuilder.build();
         token = tokenBuilder
                 .withId(A_TOKEN_ID)

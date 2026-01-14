@@ -16,7 +16,6 @@ import infrastructure.*;
 import infrastructure.accessToken.mapper.AccessTokenSpotifyMapper;
 import infrastructure.accessToken.repository.SpotifyApiAccessTokenRepository;
 import infrastructure.playlist.mapper.SearchPlaylistsSpotifyMapper;
-import infrastructure.playlist.repository.InMemoryPlaylistRepository;
 import infrastructure.playlist.repository.SpotifyApiPlaylistRepository;
 import interfaces.mapper.*;
 import interfaces.socket.connection.ConnectionResource;
@@ -26,7 +25,15 @@ import interfaces.socket.game.nextTurn.NextTurnMapper;
 import interfaces.socket.game.removeCurrentCard.RemoveCurrentCardMapper;
 import interfaces.socket.game.removeToken.RemoveTokenMapper;
 import interfaces.socket.game.reorderCurrentCard.ReorderCurrentCardMapper;
-import interfaces.socket.game.startGame.StartGameMapper;
+import interfaces.socket.room.addPlaylist.AddPlaylistHandler;
+import interfaces.socket.room.changePlayerColor.ChangePlayerColorHandler;
+import interfaces.socket.room.changePlayerName.ChangePlayerNameHandler;
+import interfaces.socket.room.createRoom.CreateRoomHandler;
+import interfaces.socket.room.joinRoom.JoinRoomHandler;
+import interfaces.socket.room.removePlayer.RemovePlayerHandler;
+import interfaces.socket.room.removePlaylist.RemovePlaylistHandler;
+import interfaces.socket.room.startGame.StartGameHandler;
+import interfaces.socket.room.startGame.StartGameMapper;
 import interfaces.socket.room.RoomResource;
 import interfaces.socket.room.addPlaylist.AddPlaylistMapper;
 import interfaces.socket.room.changePlayerColor.ChangePlayerColorMapper;
@@ -100,8 +107,17 @@ public class ApplicationContext {
         GameAppService gameAppService = new GameAppService(gameRepository);
         SpotifyAppService spotifyAppService = new SpotifyAppService(roomRepository, playlistRepository);
 
+        CreateRoomHandler createRoomHandler = new CreateRoomHandler(roomAppService, roomStateMapper, gameStateMapper, createRoomMapper);
+        JoinRoomHandler joinRoomHandler = new JoinRoomHandler(roomAppService, roomStateMapper, gameStateMapper, joinRoomMapper);
+        ChangePlayerNameHandler changePlayerNameHandler = new ChangePlayerNameHandler(roomAppService, roomStateMapper, gameStateMapper, changePlayerNameMapper);
+        ChangePlayerColorHandler changePlayerColorHandler = new ChangePlayerColorHandler(roomAppService, roomStateMapper, gameStateMapper, changePlayerColorMapper);
+        RemovePlayerHandler removePlayerHandler = new RemovePlayerHandler(roomAppService, roomStateMapper, gameStateMapper, removePlayerMapper);
+        AddPlaylistHandler addPlaylistHandler = new AddPlaylistHandler(roomAppService, roomStateMapper, gameStateMapper, addPlaylistMapper);
+        RemovePlaylistHandler removePlaylistHandler = new RemovePlaylistHandler(roomAppService, roomStateMapper, gameStateMapper, removePlaylistMapper);
+        StartGameHandler startGameHandler = new StartGameHandler(roomAppService, roomStateMapper, gameStateMapper, startGameMapper);
+
         connectionResource = new ConnectionResource();
-        roomResource = new RoomResource(roomAppService, createRoomMapper, joinRoomMapper, changePlayerNameMapper, changePlayerColorMapper, removePlayerMapper, addPlaylistMapper, removePlaylistMapper, startGameMapper, roomStateMapper, gameStateMapper);
+        roomResource = new RoomResource(createRoomHandler, joinRoomHandler, changePlayerNameHandler, changePlayerColorHandler, removePlayerHandler, addPlaylistHandler, removePlaylistHandler, startGameHandler);
         gameResource = new GameResource(gameAppService, nextTurnMapper, addCurrentCardMapper, removeCurrentCardMapper, reorderCurrentCardMapper, addTokenMapper, removeTokenMapper, gameStateMapper);
         spotifyResource = new SpotifyResource(spotifyAppService, searchPlaylistMapper);
     }

@@ -7,7 +7,8 @@ import interfaces.dto.PlayerDto;
 import java.util.List;
 
 public record GameStateResponse(
-        String gameId,
+        String id,
+        String status,
         List<PlayerDto> players,
         CurrentDeckDto currentDeck,
         CardDto currentCard,

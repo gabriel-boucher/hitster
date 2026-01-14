@@ -6,7 +6,7 @@ import domain.spotify.accessToken.AccessToken;
 import domain.spotify.accessToken.AccessTokenId;
 import domain.spotify.accessToken.AccessTokenRepository;
 import infrastructure.accessToken.dto.AccessTokenSpotifyDto;
-import infrastructure.accessToken.exception.SpotifyApiAccessTokenException;
+import infrastructure.accessToken.exception.AccessTokenException;
 import infrastructure.accessToken.mapper.AccessTokenSpotifyMapper;
 
 import java.net.URI;
@@ -45,7 +45,7 @@ public class SpotifyApiAccessTokenRepository implements AccessTokenRepository {
 
             return mapper.toDomain(dto);
         } catch (Exception e) {
-            throw new SpotifyApiAccessTokenException(accessCode);
+            throw new AccessTokenException(accessCode);
         }
     }
 
@@ -60,7 +60,7 @@ public class SpotifyApiAccessTokenRepository implements AccessTokenRepository {
 
             return mapper.toDomain(dto);
         } catch (Exception e) {
-            throw new SpotifyApiAccessTokenException(refreshId);
+            throw new AccessTokenException(refreshId);
         }
     }
 

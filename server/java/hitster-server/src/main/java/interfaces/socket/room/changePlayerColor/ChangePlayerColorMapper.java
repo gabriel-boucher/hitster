@@ -3,6 +3,8 @@ package interfaces.socket.room.changePlayerColor;
 import domain.player.PlayerColor;
 import domain.player.PlayerId;
 import domain.room.RoomId;
+import interfaces.socket.room.changePlayerColor.dto.ChangePlayerColorData;
+import interfaces.socket.room.changePlayerColor.dto.ChangePlayerColorRequest;
 
 public class ChangePlayerColorMapper {
     public ChangePlayerColorData toDomain(ChangePlayerColorRequest request) {

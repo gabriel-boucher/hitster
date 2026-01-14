@@ -1,12 +1,15 @@
 import {RoomSocketEvents} from "./roomSocketEvents.ts";
-import {Socket} from "socket.io-client";
-import {RoomId} from "../../../type/room/RoomState.ts";
-import {PlayerId} from "../../../type/player/Player.ts";
+import {useStateProvider} from "../../../utils/StateProvider.tsx";
+import {useCallback} from "react";
 
-export default function useChangePlayerColor(socket: Socket, roomId: RoomId, playerId: PlayerId, color: string) {
-  socket.emit(RoomSocketEvents.CHANGE_PLAYER_COLOR, {
-    roomId,
-    playerId,
-    newColor: color,
-  })
+export default function useChangePlayerColor() {
+  const [{socket, roomId, playerId}] = useStateProvider();
+
+  return useCallback((color: string) => {
+    socket.emit(RoomSocketEvents.CHANGE_PLAYER_COLOR, {
+      roomId,
+      playerId,
+      newColor: color,
+    })
+  }, [socket, roomId, playerId]);
 }

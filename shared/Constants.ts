@@ -22,26 +22,3 @@ export const initialGameState : GameInterface = {
   items: [],
   playlists: []
 };
-
-export const PLAYER_COLORS = [
-  "red",
-  "blue",
-  "green",
-  "yellow",
-  "orange",
-  "purple",
-  "pink",
-  "brown",
-  "black",
-  "white",
-  "gray",
-  "cyan",
-  "magenta",
-  "lime",
-  "teal",
-  "navy",
-  "maroon",
-  "olive",
-  "gold",
-  "silver"
-];

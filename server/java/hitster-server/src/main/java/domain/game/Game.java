@@ -11,17 +11,17 @@ import domain.player.Players;
 import java.util.List;
 
 public class Game {
-    private final GameId gameId;
-    private GameStatus gameStatus;
+    private final GameId id;
+    private final GameStatus status;
     private final Players players;
     private final Pile pile;
     private final CurrentDeck currentDeck;
     private final GameInitializer gameInitializer;
     private final GameValidator gameValidator;
 
-    public Game(GameId gameId, GameStatus gameStatus, Players players, Pile pile, CurrentDeck currentDeck, GameInitializer gameInitializer, GameValidator gameValidator) {
-        this.gameId = gameId;
-        this.gameStatus = gameStatus;
+    public Game(GameId id, GameStatus status, Players players, Pile pile, CurrentDeck currentDeck, GameInitializer gameInitializer, GameValidator gameValidator) {
+        this.id = id;
+        this.status = status;
         this.players = players;
         this.pile = pile;
         this.currentDeck = currentDeck;
@@ -30,7 +30,11 @@ public class Game {
     }
 
     public GameId getId() {
-        return gameId;
+        return id;
+    }
+
+    public GameStatus getStatus() {
+        return status;
     }
 
     public List<Player> getPlayers() {
@@ -56,7 +60,7 @@ public class Game {
 
     public void nextTurn(PlayerId playerId) {
         Player player = players.getPlayerById(playerId);
-        gameValidator.validateCanGoNextTurn(player, players.getCurrentPlayer(), gameStatus);
+        gameValidator.validateCanGoNextTurn(player, players.getCurrentPlayer(), status);
 
         Card currentCard = pile.getCurrentCard();
         PlayerId newCardOwnerId = currentDeck.getCurrentCardWinner(currentCard, playerId);
@@ -76,7 +80,7 @@ public class Game {
 
     public void addCurrentCardToCurrentDeck(PlayerId playerId, int position) {
         Player player = players.getPlayerById(playerId);
-        gameValidator.validateCanAddCurrentCardToCurrentDeck(player, players.getCurrentPlayer(), gameStatus);
+        gameValidator.validateCanAddCurrentCardToCurrentDeck(player, players.getCurrentPlayer(), status);
 
         Card currentCard = pile.getCurrentCard();
         currentDeck.addCardAndSetActive(currentCard, position);
@@ -84,7 +88,7 @@ public class Game {
 
     public void removeCurrentCardFromCurrentDeck(PlayerId playerId) {
         Player player = players.getPlayerById(playerId);
-        gameValidator.validateCanRemoveCurrentCardFromCurrentDeck(player, players.getCurrentPlayer(), gameStatus);
+        gameValidator.validateCanRemoveCurrentCardFromCurrentDeck(player, players.getCurrentPlayer(), status);
 
         Card currentCard = pile.getCurrentCard();
         currentDeck.removeCardAndSetInactive(currentCard);
@@ -92,7 +96,7 @@ public class Game {
 
     public void reorderCurrentCardInCurrentDeck(PlayerId playerId, int newPosition) {
         Player player = players.getPlayerById(playerId);
-        gameValidator.validateCanReorderCurrentCardInCurrentDeck(player, players.getCurrentPlayer(), gameStatus);
+        gameValidator.validateCanReorderCurrentCardInCurrentDeck(player, players.getCurrentPlayer(), status);
 
         Card currentCard = pile.getCurrentCard();
         currentDeck.reorderCard(currentCard, newPosition);
@@ -100,7 +104,7 @@ public class Game {
 
     public void addTokenToCurrentDeck(PlayerId playerId, TokenId tokenId, int position) {
         Player player = players.getPlayerById(playerId);
-        gameValidator.validateCanAddTokenToCurrentDeck(player, players.getCurrentPlayer(), gameStatus);
+        gameValidator.validateCanAddTokenToCurrentDeck(player, players.getCurrentPlayer(), status);
 
         Token token = player.getTokenById(tokenId);
         currentDeck.addTokenAndSetActive(token, position);
@@ -108,7 +112,7 @@ public class Game {
 
     public void removeTokenFromCurrentDeck(PlayerId playerId, TokenId tokenId) {
         Player player = players.getPlayerById(playerId);
-        gameValidator.validateCanRemoveTokenFromCurrentDeck(player, players.getCurrentPlayer(), gameStatus);
+        gameValidator.validateCanRemoveTokenFromCurrentDeck(player, players.getCurrentPlayer(), status);
 
         Token token = player.getTokenById(tokenId);
         currentDeck.removeTokenAndSetInactive(token);

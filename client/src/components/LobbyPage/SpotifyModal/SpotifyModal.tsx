@@ -1,23 +1,19 @@
 import styled from "styled-components";
 import { PlaylistList } from "./PlaylistList.tsx";
-import {Playlist} from "../../../type/spotify/Playlist.ts";
 
 interface Props {
-  selectedPlaylists: Playlist[]
   isModalOpen: boolean;
   closeModal: () => void;
-  addSelectedPlaylist: (playlist: Playlist) => void
-  removeSelectedPlaylist: (playlistId: string) => void
 }
 
-export const SpotifyModal = ({ selectedPlaylists, isModalOpen, closeModal, addSelectedPlaylist, removeSelectedPlaylist }: Props) => {
+export const SpotifyModal = ({ isModalOpen, closeModal }: Props) => {
 
   if (!isModalOpen) return null;
 
   return (
     <Overlay>
       <ModalContainer>
-          <PlaylistList selectedPlaylists={selectedPlaylists} addSelectedPlaylist={addSelectedPlaylist} removeSelectedPlaylist={removeSelectedPlaylist} closeModal={closeModal} />
+          <PlaylistList closeModal={closeModal} />
       </ModalContainer>
     </Overlay>
   );

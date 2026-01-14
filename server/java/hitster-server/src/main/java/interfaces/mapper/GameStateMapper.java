@@ -17,6 +17,7 @@ public class GameStateMapper {
     public GameStateResponse toDto(Game game) {
         return new GameStateResponse(
                 game.getId().toString(),
+                game.getStatus().toString(),
                 game.getPlayers().stream().map(playerMapper::toDto).toList(),
                 currentDeckMapper.toDto(game.getCurrentDeck()),
                 cardMapper.toDto(game.getCurrentCard()),

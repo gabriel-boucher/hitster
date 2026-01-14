@@ -7,7 +7,16 @@ import java.util.List;
 
 public class PlayerFactory {
     public Player create(PlayerId playerId, List <Player> players) {
-        return new Player(playerId, "", getAvailableColor(players), new PlayerDeck(new ArrayList<>(), new ArrayList<>()));
+        int count = players.size();
+        while (true) {
+            final String playerName = "Player " + (count + 1);
+            final boolean nameExists = players.stream()
+                    .anyMatch(player -> player.getName().equals(playerName));
+            if (!nameExists) {
+                return new Player(playerId, playerName, getAvailableColor(players), new PlayerDeck(new ArrayList<>(), new ArrayList<>()));
+            }
+            count++;
+        }
     }
 
     public PlayerColor getAvailableColor(List<Player> players) {

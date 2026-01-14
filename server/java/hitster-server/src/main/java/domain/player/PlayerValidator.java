@@ -1,7 +1,7 @@
 package domain.player;
 
 import domain.exception.PlayerNotFoundException;
-import domain.room.exception.PlayerInRoomException;
+import domain.room.exception.PlayerAlreadyInRoomException;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public class PlayerValidator {
         boolean playerExists = players.stream()
                 .anyMatch(player -> player.getId().equals(playerId));
         if (playerExists) {
-            throw new PlayerInRoomException(playerId);
+            throw new PlayerAlreadyInRoomException(playerId);
         }
     }
 }

@@ -17,6 +17,7 @@ import domain.spotify.*;
 import domain.spotify.accessToken.AccessCode;
 import domain.spotify.accessToken.AccessToken;
 import domain.spotify.accessToken.AccessTokenRepository;
+import interfaces.exception.InvalidStateException;
 
 import java.util.List;
 import java.util.function.Consumer;

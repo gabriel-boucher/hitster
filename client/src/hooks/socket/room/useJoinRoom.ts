@@ -1,37 +1,28 @@
-import {useEffect} from "react";
+import {useCallback} from "react";
 import {PlayerId} from "../../../type/player/Player.ts";
 import {useStateProvider} from "../../../utils/StateProvider.tsx";
-import {reducerCases} from "../../../utils/constants.ts";
-import {RoomId} from "../../../type/room/RoomState.ts";
+import {ConnectionType, getBaseUrl, reducerCases} from "../../../utils/constants.ts";
 import {RoomSocketEvents} from "./roomSocketEvents.ts";
-import {ConnectionSocketEvents} from "../connection/connectionSocketEvents.ts";
+import {EventResponse, EventResponseStatus} from "../../../type/EventResponse.ts";
 
-export default function useJoinRoom(playerIdRef: React.RefObject<PlayerId>) {
+export default function useJoinRoom() {
   const [{ socket }, dispatch] = useStateProvider();
 
-  useEffect(() => {
-    const roomId: RoomId = window.location.pathname.substring(1) || "";
-    dispatch({ type: reducerCases.SET_ROOM_ID, roomId: roomId });
+  return useCallback((roomId: string, onComplete?: (success: boolean) => void) => {
+    const playerId: PlayerId = socket.id as PlayerId;
 
-    const handleConnect = () => {
-      if (roomId && socket.id) {
-        const playerId: PlayerId = socket.id;
-        playerIdRef.current = playerId;
-        dispatch({ type: reducerCases.SET_PLAYER_ID, playerId });
-        socket.emit(RoomSocketEvents.JOIN_ROOM, { roomId, playerId });
+    const callback = (response: EventResponse<undefined>) => {
+      const failedWithRoomNotFound = response?.success === false && response.status === EventResponseStatus.ROOM_NOT_FOUND;
+
+      if (failedWithRoomNotFound) {
+        window.location.href = getBaseUrl(ConnectionType.CLIENT);
+      } else {
+        dispatch({type: reducerCases.SET_PLAYER_ID, playerId: socket.id as PlayerId});
       }
-    };
 
-    if (socket.connected) {
-      handleConnect();
-    } else {
-      socket.on(ConnectionSocketEvents.CONNECT, handleConnect);
+      onComplete?.(!failedWithRoomNotFound);
     }
 
-    return () => {
-      if (socket) {
-        socket.off(ConnectionSocketEvents.CONNECT, handleConnect);
-      }
-    };
-  }, [socket, dispatch]);
+    socket.emit(RoomSocketEvents.JOIN_ROOM, {roomId, playerId}, callback);
+  }, [socket]);
 }

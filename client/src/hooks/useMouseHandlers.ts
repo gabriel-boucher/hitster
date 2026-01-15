@@ -20,7 +20,7 @@ export default function useMouseHandlers(
   setDragPosition: (position: { x: number; y: number }) => void,
 ) {
   const [
-    { socket, gameState, players, items, isDragging }, dispatch
+    { socket, gameStatus, players, items, isDragging }, dispatch
   ] = useStateProvider();
 
   const lastEmitTime = useRef(0);
@@ -65,12 +65,12 @@ export default function useMouseHandlers(
 
       const newItems = setActiveToken([...items], clickToken);
       socket.emit(socketEvents.UPDATE_GAME_STATE, {
-        gameState,
+        gameState: gameStatus,
         players,
         items: newItems,
       });
     },
-    [socket, gameState, players, items]
+    [socket, gameStatus, players, items]
   );
 
   const handleMouseDown = useCallback(
@@ -99,7 +99,7 @@ export default function useMouseHandlers(
         if (isActiveCardInStack()) {
           const newItems = moveActiveCardToBoard([...items]);
           socket.emit(socketEvents.UPDATE_GAME_STATE, {
-            gameState,
+            gameState: gameStatus,
             players,
             items: newItems,
           });
@@ -108,7 +108,7 @@ export default function useMouseHandlers(
     },
     [
       socket,
-      gameState,
+      gameStatus,
       players,
       items,
       dispatch,
@@ -148,7 +148,7 @@ export default function useMouseHandlers(
       if (isActiveCardInBoard()) {
         const newItems = moveActiveCardToStack([...items]);
         socket.emit(socketEvents.UPDATE_GAME_STATE, {
-          gameState,
+          gameState: gameStatus,
           players,
           items: newItems,
         });
@@ -157,7 +157,7 @@ export default function useMouseHandlers(
   }, [
     isDragging,
     socket,
-    gameState,
+    gameStatus,
     players,
     items,
     dispatch,
@@ -175,14 +175,14 @@ export default function useMouseHandlers(
     }
 
     socket.emit(socketEvents.UPDATE_GAME_STATE, {
-      gameState,
+      gameState: gameStatus,
       players,
       items: newItems,
     });
   }, [
     isDragging,
     socket,
-    gameState,
+    gameStatus,
     players,
     items,
   ]);
@@ -208,7 +208,7 @@ export default function useMouseHandlers(
           handleTokenLogic(newItems);
   
           socket.emit(socketEvents.UPDATE_GAME_STATE, {
-            gameState,
+            gameState: gameStatus,
             players,
             items: newItems,
           });
@@ -217,7 +217,7 @@ export default function useMouseHandlers(
     },
     [
       socket,
-      gameState,
+      gameStatus,
       players,
       items,
       isOverActiveCard,
@@ -246,7 +246,7 @@ export default function useMouseHandlers(
         handleTokenLogic(newItems);
 
         socket.emit(socketEvents.UPDATE_GAME_STATE, {
-          gameState,
+          gameState: gameStatus,
           players,
           items: newItems,
         });
@@ -254,7 +254,7 @@ export default function useMouseHandlers(
     },
     [
       socket,
-      gameState,
+      gameStatus,
       players,
       items,
       getNewIndex,

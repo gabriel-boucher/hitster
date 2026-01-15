@@ -11,6 +11,7 @@ import interfaces.socket.game.GameStateResponse;
 
 import java.util.ArrayList;
 
+import static interfaces.dto.responseDto.EventResponseStatus.GAME_STATE;
 import static interfaces.dto.responseDto.EventResponseStatus.ROOM_STATE;
 
 public abstract class RoomSocketEventHandler {
@@ -45,6 +46,6 @@ public abstract class RoomSocketEventHandler {
 
     protected void broadcastGameState(Game game, SocketIOServer socketIOServer) {
         GameStateResponse response = gameStateMapper.toDto(game);
-        socketIOServer.getRoomOperations(game.getId().toString()).sendEvent("game-state", response);
+        socketIOServer.getRoomOperations(game.getId().toString()).sendEvent("game-state", new OkSuccessResponse<>(GAME_STATE, response));
     }
 }

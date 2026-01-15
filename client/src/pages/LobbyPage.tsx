@@ -14,13 +14,14 @@ interface Props {
 }
 
 export default function LobbyPage({ setLoading }: Props) {
-  const [{ socket, roomId, playerId, players, playlists }] = useStateProvider();
+  const [{ playerId, players, playlists }] = useStateProvider();
   const [userName, setUserName] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const changePlayerName = useChangePlayerName();
   const removePlayer = useRemovePlayer();
   const removePlaylist = useRemovePlaylist();
+  const startGame = useStartGame();
 
   return (
     <Container>
@@ -78,7 +79,7 @@ export default function LobbyPage({ setLoading }: Props) {
 
       <ButtonsContainer>
         {players.length > 0 && players[0].id === playerId && (
-          <StartButton onClick={() => useStartGame(socket, roomId, playerId, setLoading)}>Start Game</StartButton>
+          <StartButton onClick={() => startGame(setLoading)}>Start Game</StartButton>
         )}
         <PlaylistButton onClick={() => setIsModalOpen(true)}>
           Choose playlist

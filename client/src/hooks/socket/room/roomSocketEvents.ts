@@ -8,4 +8,5 @@ export enum RoomSocketEvents {
   REMOVE_PLAYLIST = "remove-playlist",
   START_GAME = "start-game",
   ROOM_STATE = "room-state",
+  GAME_STATE = "game-state",
 }

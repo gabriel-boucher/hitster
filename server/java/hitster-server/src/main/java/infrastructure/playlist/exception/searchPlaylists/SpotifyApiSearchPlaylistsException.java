@@ -1,4 +1,4 @@
-package infrastructure.playlist.exception;
+package infrastructure.playlist.exception.searchPlaylists;
 
 import domain.spotify.accessToken.AccessToken;
 

@@ -1,7 +1,6 @@
 package application;
 
 import domain.exception.RoomNotFoundException;
-import domain.game.CardRepository;
 import domain.game.Game;
 import domain.game.GameFactory;
 import domain.game.GameRepository;
@@ -17,7 +16,6 @@ import domain.spotify.*;
 import domain.spotify.accessToken.AccessCode;
 import domain.spotify.accessToken.AccessToken;
 import domain.spotify.accessToken.AccessTokenRepository;
-import interfaces.exception.InvalidStateException;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -26,16 +24,16 @@ public class RoomAppService {
     private final RoomRepository roomRepository;
     private final GameRepository gameRepository;
     private final AccessTokenRepository accessTokenRepository;
-    private final CardRepository cardRepository;
+    private final PlaylistRepository playlistRepository;
     private final RoomFactory roomFactory;
     private final GameFactory gameFactory;
     private final PlayerFactory playerFactory;
 
-    public RoomAppService(RoomRepository roomRepository, GameRepository gameRepository, AccessTokenRepository accessTokenRepository, CardRepository cardRepository, RoomFactory roomFactory, GameFactory gameFactory, PlayerFactory playerFactory) {
+    public RoomAppService(RoomRepository roomRepository, GameRepository gameRepository, AccessTokenRepository accessTokenRepository, PlaylistRepository playlistRepository, RoomFactory roomFactory, GameFactory gameFactory, PlayerFactory playerFactory) {
         this.roomRepository = roomRepository;
         this.gameRepository = gameRepository;
         this.accessTokenRepository = accessTokenRepository;
-        this.cardRepository = cardRepository;
+        this.playlistRepository = playlistRepository;
         this.roomFactory = roomFactory;
         this.gameFactory = gameFactory;
         this.playerFactory = playerFactory;
@@ -81,7 +79,7 @@ public class RoomAppService {
         Game game = room.startGame(playerId);
         roomRepository.saveRoom(room);
 
-        List<Card> pile = cardRepository.getCardsByPlaylistIds(room.getPlaylists().stream().map(Playlist::id).toList());
+        List<Card> pile = playlistRepository.getCardsByPlaylistId(room.getAccessToken(), room.getPlaylists().stream().map(Playlist::id).toList());
         game.startGame(pile);
         gameRepository.saveGame(game);
         return game;

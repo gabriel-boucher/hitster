@@ -1,4 +1,4 @@
-package infrastructure.playlist.dto;
+package infrastructure.playlist.dto.searchPlaylists;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

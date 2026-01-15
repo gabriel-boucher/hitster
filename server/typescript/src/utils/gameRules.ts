@@ -5,7 +5,7 @@ import { Console } from "console";
 import { get } from "http";
 
 export default function useGameRules({
-  gameState,
+  gameStatus,
   players,
   items,
 }: GameInterface) {
@@ -26,7 +26,7 @@ export default function useGameRules({
       setNextActiveCard();
       setNextActivePlayer();
     }
-    return { gameState, players, items };
+    return { gameState: gameStatus, players, items };
   }
 
   function isCardRightAnswer() {

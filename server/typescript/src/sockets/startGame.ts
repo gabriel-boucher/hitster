@@ -6,7 +6,7 @@ import {
   TrackInterface,
 } from "../../../../shared/interfaces";
 import {
-  gameStates,
+  gameStatus,
   socketEvents,
 } from "../../../../shared/constants";
 import { v4 as uuidv4 } from "uuid";
@@ -64,7 +64,7 @@ export default async function startGame(this: Socket, selectedPlaylists: Playlis
 
   game = {
     ...game,
-    gameState: gameStates.PLAYING,
+    gameStatus: gameStatus.PLAYING,
     items: [...tokens, ...cards],
   };
 

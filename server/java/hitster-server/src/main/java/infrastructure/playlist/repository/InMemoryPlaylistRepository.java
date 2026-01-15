@@ -1,10 +1,10 @@
 package infrastructure.playlist.repository;
 
+import domain.game.item.card.Card;
 import domain.spotify.Playlist;
 import domain.spotify.PlaylistId;
 import domain.spotify.PlaylistRepository;
 import domain.spotify.accessToken.AccessToken;
-import infrastructure.playlist.dto.SearchPlaylistsSpotifyDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,5 +23,10 @@ public class InMemoryPlaylistRepository implements PlaylistRepository {
     @Override
     public List<Playlist> searchPlaylistsByQuery(AccessToken accessToken, String query) {
         return playlists;
+    }
+
+    @Override
+    public List<Card> getCardsByPlaylistId(AccessToken accessToken, List<PlaylistId> playlistIds) {
+        return List.of();
     }
 }

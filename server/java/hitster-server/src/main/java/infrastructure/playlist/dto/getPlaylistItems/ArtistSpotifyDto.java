@@ -1,9 +1,9 @@
-package infrastructure.playlist.dto;
+package infrastructure.playlist.dto.getPlaylistItems;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record PlaylistImageSpotifyDto(
-        String url
+public record ArtistSpotifyDto(
+        String name
 ) {
 }

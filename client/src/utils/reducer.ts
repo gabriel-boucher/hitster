@@ -1,16 +1,19 @@
 import { Action, State } from "./interfaces";
-import { initialGameState } from "../../../shared/constants";
 import { ConnectionType, getBaseUrl, reducerCases } from "./constants";
 import { Dispatch } from "react";
 import { io } from "socket.io-client";
+import {GameStatus} from "../type/game/GameState.ts";
 
 const socket = io(getBaseUrl(ConnectionType.WS_SERVER));
 
 export const initialState = {
-  ...initialGameState,
   socket,
   roomId: "",
   playerId: "",
+  gameStatus: GameStatus.LOBBY,
+  players: [],
+  items: [],
+  playlists: [],
   isDragging: false,
 };
 
@@ -36,10 +39,10 @@ export const reducer = (state: State, action: Action) => {
         playerId: action.playerId,
       };
     }
-    case reducerCases.SET_GAME_STATE: {
+    case reducerCases.SET_GAME_STATUS: {
       return {
         ...state,
-        gameState: action.gameState,
+        gameStatus: action.gameStatus,
       };
     }
     case reducerCases.SET_PLAYERS: {

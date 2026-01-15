@@ -3,7 +3,7 @@ import {
     CardInterface,
 } from "../../../../shared/interfaces";
 import {
-    gameStates,
+    gameStatus,
   socketEvents,
 } from "../../../../shared/constants";
 import { getActivePlayerId, isCard } from "../../../../shared/utils";
@@ -19,7 +19,7 @@ export default function disconnect(this: Socket) {
 
   const game = rooms[roomId];
 
-  if (game.gameState === gameStates.PLAYING) {
+  if (game.gameState === gameStatus.PLAYING) {
     // Set the next active player
     if (socket.id === getActivePlayerId(game.players)) {
       const activePlayerIndex = game.players.findIndex(

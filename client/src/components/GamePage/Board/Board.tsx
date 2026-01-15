@@ -28,11 +28,11 @@ export default function Board({
   handleMouseLeave,
   activePlayerItemsComponent,
 }: Props) {
-  const [{ socket, gameState, players, items }] = useStateProvider();
+  const [{ socket, gameStatus, players, items }] = useStateProvider();
 
   function handleNextTurn() {
     socket.emit(socketEvents.NEXT_TURN, {
-      gameState,
+      gameState: gameStatus,
       players,
       items,
     });

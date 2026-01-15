@@ -1,7 +1,9 @@
 package interfaces.mapper;
 
 import domain.game.currentDeck.CurrentDeck;
-import interfaces.dto.CurrentDeckDto;
+import interfaces.dto.MoveableDto;
+
+import java.util.List;
 
 public class CurrentDeckMapper {
     private final MoveableMapper moveableMapper;
@@ -10,9 +12,7 @@ public class CurrentDeckMapper {
         this.moveableMapper = moveableMapper;
     }
 
-    public CurrentDeckDto toDto(CurrentDeck currentDeck) {
-        return new CurrentDeckDto(
-                currentDeck.getCurrentItems().stream().map(moveableMapper::toDto).toList()
-        );
+    public List<MoveableDto> toDto(CurrentDeck currentDeck) {
+        return currentDeck.getCurrentItems().stream().map(moveableMapper::toDto).toList();
     }
 }

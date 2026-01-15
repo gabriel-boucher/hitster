@@ -15,7 +15,8 @@ import domain.spotify.PlaylistRepository;
 import infrastructure.*;
 import infrastructure.accessToken.mapper.AccessTokenSpotifyMapper;
 import infrastructure.accessToken.repository.SpotifyApiAccessTokenRepository;
-import infrastructure.playlist.mapper.SearchPlaylistsSpotifyMapper;
+import infrastructure.playlist.mapper.getPlaylistItems.GetPlaylistItemsSpotifyMapper;
+import infrastructure.playlist.mapper.searchPlaylists.SearchPlaylistsSpotifyMapper;
 import infrastructure.playlist.repository.SpotifyApiPlaylistRepository;
 import interfaces.mapper.*;
 import interfaces.socket.connection.ConnectionResource;
@@ -92,18 +93,18 @@ public class ApplicationContext {
         // SpotifyRepository mappers
         AccessTokenSpotifyMapper accessTokenSpotifyMapper = new AccessTokenSpotifyMapper();
         SearchPlaylistsSpotifyMapper searchPlaylistsSpotifyMapper = new SearchPlaylistsSpotifyMapper();
+        GetPlaylistItemsSpotifyMapper getPlaylistItemsSpotifyMapper = new GetPlaylistItemsSpotifyMapper();
 
         GameRepository gameRepository = new InMemoryGameRepository();
         RoomRepository roomRepository = new InMemoryRoomRepository();
         AccessTokenRepository accessTokenRepository = new SpotifyApiAccessTokenRepository(accessTokenSpotifyMapper, objectMapper);
-        CardRepository cardRepository = new InMemoryCardRepository();
-        PlaylistRepository playlistRepository = new SpotifyApiPlaylistRepository(searchPlaylistsSpotifyMapper, objectMapper);
+        PlaylistRepository playlistRepository = new SpotifyApiPlaylistRepository(searchPlaylistsSpotifyMapper, getPlaylistItemsSpotifyMapper, objectMapper);
 
         GameFactory gameFactory = new GameFactory();
         RoomFactory roomFactory = new RoomFactory();
         PlayerFactory playerFactory = new PlayerFactory();
 
-        RoomAppService roomAppService = new RoomAppService(roomRepository, gameRepository, accessTokenRepository, cardRepository, roomFactory, gameFactory, playerFactory);
+        RoomAppService roomAppService = new RoomAppService(roomRepository, gameRepository, accessTokenRepository, playlistRepository, roomFactory, gameFactory, playerFactory);
         GameAppService gameAppService = new GameAppService(gameRepository);
         SpotifyAppService spotifyAppService = new SpotifyAppService(roomRepository, playlistRepository);
 

@@ -1,7 +1,7 @@
 import { Socket } from "socket.io";
 import { PlayerInterface } from "../../../../shared/interfaces";
 import {
-  gameStates,
+  gameStatus,
   initialGameState,
   PLAYER_COLORS,
   socketEvents,
@@ -54,7 +54,7 @@ export default async function joinRoom(this: Socket, roomId: string) {
     });
   }
 
-  if (game.gameState === gameStates.PLAYING) {
+  if (game.gameStatus === gameStatus.PLAYING) {
     // Assign a starting card to the new player
     game.items.findLast(
       (item) => isCard(item) && !item.playerId && !item.active

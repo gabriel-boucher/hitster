@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import searchPlaylists from "src/api/searchPlaylists";
 import { useDebounce } from "src/hooks/useDebounce";
-import {useStateProvider} from "../../../utils/StateProvider.tsx";
 import {Playlist} from "../../../type/spotify/Playlist.ts";
+import {useConnectionStateProvider} from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
 
 interface UseSearchPlaylistsSearch {
   searchedPlaylists: Playlist[];
@@ -12,7 +12,7 @@ interface UseSearchPlaylistsSearch {
 }
 
 export default function useSearchPlaylists (): UseSearchPlaylistsSearch {
-  const [{ roomId, playerId }] = useStateProvider();
+  const [{ roomId, playerId }] = useConnectionStateProvider();
   const [query, setQuery] = useState("");
   const [searchedPlaylists, setSearchedPlaylists] = useState<Playlist[]>([]);
   const [loading, setLoading] = useState(false);

@@ -1,12 +1,13 @@
 import {useCallback} from "react";
 import {PlayerId} from "../../../type/player/Player.ts";
-import {useStateProvider} from "../../../utils/StateProvider.tsx";
-import {ConnectionType, getBaseUrl, reducerCases} from "../../../utils/constants.ts";
+import {ConnectionType, getBaseUrl} from "../../../utils/constants.ts";
 import {RoomSocketEvents} from "./roomSocketEvents.ts";
 import {EventResponse, EventResponseStatus} from "../../../type/EventResponse.ts";
+import {useConnectionStateProvider} from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
+import {connectionReducerCases} from "../../../stateProvider/connection/ConnectionReducerCases.ts";
 
 export default function useJoinRoom() {
-  const [{ socket }, dispatch] = useStateProvider();
+  const [{ socket }, connectionDispatch] = useConnectionStateProvider();
 
   return useCallback((roomId: string, onComplete?: (success: boolean) => void) => {
     const playerId: PlayerId = socket.id as PlayerId;
@@ -17,7 +18,7 @@ export default function useJoinRoom() {
       if (failedWithRoomNotFound) {
         window.location.href = getBaseUrl(ConnectionType.CLIENT);
       } else {
-        dispatch({type: reducerCases.SET_PLAYER_ID, playerId: socket.id as PlayerId});
+        connectionDispatch({type: connectionReducerCases.SET_PLAYER_ID, playerId: socket.id as PlayerId});
       }
 
       onComplete?.(!failedWithRoomNotFound);

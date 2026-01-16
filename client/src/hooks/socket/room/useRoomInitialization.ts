@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import useJoinRoom from "./useJoinRoom";
 import useCreateRoom from "./useCreateRoom";
-import {useStateProvider} from "../../../utils/StateProvider.tsx";
 import {ConnectionSocketEvents} from "../connection/connectionSocketEvents.ts";
+import {useConnectionStateProvider} from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
 
 export default function useRoomInitialization() {
-  const [{ socket, roomId }] = useStateProvider();
+  const [{ socket, roomId }] = useConnectionStateProvider();
   const [loading, setLoading] = useState(false);
   const joinRoom = useJoinRoom();
   const createRoom = useCreateRoom();

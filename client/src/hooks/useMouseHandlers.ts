@@ -1,5 +1,4 @@
 import { useCallback, useRef } from "react";
-import { useStateProvider } from "../utils/StateProvider";
 import { CardInterface, TokenInterface } from "@shared/interfaces";
 import { socketEvents } from "@shared/constants";
 import { useMouseHandlersHelpers } from "./useMouseHandlersHelpers";
@@ -14,14 +13,17 @@ import {
 } from "../utils/itemsManipulation";
 import { getActiveCard, getActivePlayerId, isCard, isToken } from "@shared/utils";
 import { reducerCases } from "../utils/constants";
+import {useConnectionStateProvider} from "../stateProvider/connection/ConnectionStateProvider.tsx";
+import {useRoomStateProvider} from "../stateProvider/room/RoomStateProvider.tsx";
+import {useGameStateProvider} from "../stateProvider/game/GameStateProvider.tsx";
 
 export default function useMouseHandlers(
   activeCardWidth: number,
   setDragPosition: (position: { x: number; y: number }) => void,
 ) {
-  const [
-    { socket, gameStatus, players, items, isDragging }, dispatch
-  ] = useStateProvider();
+  const [{ socket }] = useConnectionStateProvider();
+  const [{ players }] = useRoomStateProvider();
+  const [{ gameStatus, items, isDragging }, dispatch] = useGameStateProvider();
 
   const lastEmitTime = useRef(0);
 

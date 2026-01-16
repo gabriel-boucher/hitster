@@ -1,12 +1,16 @@
 import {useEffect} from "react";
 import {RoomState} from "../../../type/room/RoomState.ts";
-import {ConnectionType, getBaseUrl, reducerCases} from "../../../utils/constants.ts";
-import {useStateProvider} from "../../../utils/StateProvider.tsx";
+import {ConnectionType, getBaseUrl} from "../../../utils/constants.ts";
 import {RoomSocketEvents} from "./roomSocketEvents.ts";
 import {EventResponse} from "../../../type/EventResponse.ts";
+import {useConnectionStateProvider} from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
+import {connectionReducerCases} from "../../../stateProvider/connection/ConnectionReducerCases.ts";
+import {roomReducerCases} from "../../../stateProvider/room/RoomReducerCases.ts";
+import {useRoomStateProvider} from "../../../stateProvider/room/RoomStateProvider.tsx";
 
 export default function useRoomState() {
-  const [{ socket }, dispatch] = useStateProvider();
+  const [{ socket }, connectionDispatch] = useConnectionStateProvider();
+  const [{ }, roomDispatch] = useRoomStateProvider();
 
   useEffect(() => {
     if (!socket) {
@@ -16,9 +20,9 @@ export default function useRoomState() {
     const handleRoomState = (response: EventResponse<RoomState>) => {
       const roomState = response.data;
       if (response.success && roomState) {
-        dispatch({ type: reducerCases.SET_ROOM_ID, roomId: roomState.roomId });
-        dispatch({ type: reducerCases.SET_PLAYERS, players: roomState.players });
-        dispatch({ type: reducerCases.SET_PLAYLISTS, playlists: roomState.playlists });
+        connectionDispatch({ type: connectionReducerCases.SET_ROOM_ID, roomId: roomState.roomId });
+        roomDispatch({ type: roomReducerCases.SET_PLAYERS, players: roomState.players });
+        roomDispatch({ type: roomReducerCases.SET_PLAYLISTS, playlists: roomState.playlists });
         if (roomState.roomId === "") {
           window.location.href = getBaseUrl(ConnectionType.CLIENT);
         }
@@ -30,5 +34,5 @@ export default function useRoomState() {
     return () => {
       socket.off(RoomSocketEvents.ROOM_STATE, handleRoomState);
     }
-  }, [socket, dispatch]);
+  }, [socket, connectionDispatch, roomDispatch]);
 }

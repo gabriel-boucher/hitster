@@ -1,9 +1,9 @@
 import {RoomSocketEvents} from "./roomSocketEvents.ts";
 import {useCallback} from "react";
-import {useStateProvider} from "../../../utils/StateProvider.tsx";
+import {useConnectionStateProvider} from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
 
 export default function useChangePlayerName() {
-  const [{socket, roomId, playerId}] = useStateProvider();
+  const [{socket, roomId, playerId}] = useConnectionStateProvider();
   return useCallback((userName: string) => {
     socket.emit(RoomSocketEvents.CHANGE_PLAYER_NAME, {
       roomId,

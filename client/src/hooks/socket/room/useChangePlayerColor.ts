@@ -1,9 +1,9 @@
 import {RoomSocketEvents} from "./roomSocketEvents.ts";
-import {useStateProvider} from "../../../utils/StateProvider.tsx";
 import {useCallback} from "react";
+import {useConnectionStateProvider} from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
 
 export default function useChangePlayerColor() {
-  const [{socket, roomId, playerId}] = useStateProvider();
+  const [{socket, roomId, playerId}] = useConnectionStateProvider();
 
   return useCallback((color: string) => {
     socket.emit(RoomSocketEvents.CHANGE_PLAYER_COLOR, {

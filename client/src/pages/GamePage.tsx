@@ -1,17 +1,17 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import useMouseHandlers from "../hooks/useMouseHandlers";
-import { useStateProvider } from "../utils/StateProvider";
 import Header from "src/components/GamePage/Header/Header";
 import Deck from "src/components/GamePage/Deck/Deck";
 import DraggingOverlay from "src/components/GamePage/DraggingOverlay/DraggingOverlay";
 import Board from "src/components/GamePage/Board/Board";
 import ActivePlayerItems from "src/components/GamePage/ActiveItems/ActivePlayerItems";
+import {useConnectionStateProvider} from "../stateProvider/connection/ConnectionStateProvider.tsx";
+import {useGameStateProvider} from "../stateProvider/game/GameStateProvider.tsx";
 
 export default function GamePage() {
-  const [
-    { socket, isDragging }
-  ] = useStateProvider();
+  const [{ socket }] = useConnectionStateProvider();
+  const [{ isDragging }] = useGameStateProvider();
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
   const [activeCardWidth, setActiveCardWidth] = useState(0);
   const [hoveredPlayerId, setHoveredPlayerId] = useState(socket.id!);

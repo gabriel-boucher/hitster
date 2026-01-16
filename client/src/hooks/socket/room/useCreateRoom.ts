@@ -1,12 +1,13 @@
 import {useCallback} from "react";
-import {ConnectionType, getBaseUrl, reducerCases} from "../../../utils/constants.ts";
-import {useStateProvider} from "../../../utils/StateProvider.tsx";
+import {ConnectionType, getBaseUrl} from "../../../utils/constants.ts";
 import {RoomSocketEvents} from "./roomSocketEvents.ts";
 import {EventResponse} from "../../../type/EventResponse.ts";
 import {CreateRoomResponse} from "../../../type/room/CreateRoomResponse.ts";
+import {useConnectionStateProvider} from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
+import {connectionReducerCases} from "../../../stateProvider/connection/ConnectionReducerCases.ts";
 
 export default function useCreateRoom() {
-  const [{ socket }, dispatch] = useStateProvider();
+  const [{ socket }, connectionDispatch] = useConnectionStateProvider();
 
   return useCallback((accessCode: string, onComplete?: (success: boolean) => void) => {
     const callback = (response: EventResponse<CreateRoomResponse>) => {
@@ -14,7 +15,7 @@ export default function useCreateRoom() {
 
       if (response.success && roomId) {
         window.history.pushState({}, "", "/" + roomId);
-        dispatch({type: reducerCases.SET_ROOM_ID, roomId: roomId});
+        connectionDispatch({type: connectionReducerCases.SET_ROOM_ID, roomId: roomId});
         onComplete?.(true);
       } else {
         window.location.href = getBaseUrl(ConnectionType.CLIENT);
@@ -23,5 +24,5 @@ export default function useCreateRoom() {
     }
 
     socket.emit(RoomSocketEvents.CREATE_ROOM, {accessCode}, callback);
-  }, [socket, dispatch]);
+  }, [socket, connectionDispatch]);
 }

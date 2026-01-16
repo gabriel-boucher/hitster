@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { useStateProvider } from "../utils/StateProvider";
 import { useState } from "react";
 import { PINK_COLOR__HEX } from "src/utils/constants";
 import PlayerInLobby from "src/components/elements/Player/PlayerInLobby";
@@ -8,14 +7,17 @@ import useChangePlayerName from "../hooks/socket/room/useChangePlayerName.ts";
 import useRemovePlayer from "../hooks/socket/room/useRemovePlayer.ts";
 import useStartGame from "../hooks/socket/room/useStartGame.ts";
 import useRemovePlaylist from "../hooks/socket/room/useRemovePlaylist.ts";
+import {useConnectionStateProvider} from "../stateProvider/connection/ConnectionStateProvider.tsx";
+import {useRoomStateProvider} from "../stateProvider/room/RoomStateProvider.tsx";
 
 interface Props {
   setLoading: (loading: boolean) => void;
 }
 
 export default function LobbyPage({ setLoading }: Props) {
-  const [{ playerId, players, playlists }] = useStateProvider();
-  const [userName, setUserName] = useState("");
+  const [{ playerId }] = useConnectionStateProvider();
+  const [{ players, playlists }] = useRoomStateProvider();
+  const [userName, setUserName] = useState(players.find((p) => p.id === playerId)?.name || "");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const changePlayerName = useChangePlayerName();
@@ -35,7 +37,7 @@ export default function LobbyPage({ setLoading }: Props) {
             onChange={(e) => setUserName(e.target.value)}
             placeholder="Enter your name..."
           />
-          <ChangeNameButton onClick={() => changePlayerName(userName)}>Change name</ChangeNameButton>
+          <ChangeNameButton onClick={() => changePlayerName(userName)}>Join</ChangeNameButton>
         </NameContainer>
       </Entries>
 

@@ -1,10 +1,10 @@
 import {RoomSocketEvents} from "./roomSocketEvents.ts";
 import {Playlist} from "../../../type/spotify/Playlist.ts";
-import {useStateProvider} from "../../../utils/StateProvider.tsx";
 import {useCallback} from "react";
+import {useConnectionStateProvider} from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
 
 export default function useAddPlaylist() {
-  const [{ socket, roomId, playerId }] = useStateProvider();
+  const [{ socket, roomId, playerId }] = useConnectionStateProvider();
 
   return useCallback((playlist: Playlist) => {
     socket.emit(RoomSocketEvents.ADD_PLAYLIST, {

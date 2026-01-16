@@ -1,0 +1,5 @@
+export enum gameReducerCases {
+  SET_GAME_STATUS = "SET_GAME_STATUS",
+  SET_ITEMS = "SET_ITEMS",
+  SET_IS_DRAGGING = "SET_IS_DRAGGING",
+}

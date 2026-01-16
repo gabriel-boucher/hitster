@@ -1,16 +1,16 @@
 import XMark from "../../icons/XMark.tsx";
 import styled, { keyframes } from "styled-components";
 import useSearchPlaylists from "../../../hooks/http/spotify/useSearchPlaylists.ts";
-import {useStateProvider} from "../../../utils/StateProvider.tsx";
 import useRemovePlaylist from "../../../hooks/socket/room/useRemovePlaylist.ts";
 import useAddPlaylist from "../../../hooks/socket/room/useAddPlaylist.ts";
+import {useRoomStateProvider} from "../../../stateProvider/room/RoomStateProvider.tsx";
 
 interface Props {
   closeModal: () => void;
 }
 
 export const PlaylistList = ({ closeModal }: Props) => {
-  const [{ playlists }] = useStateProvider();
+  const [{ playlists }] = useRoomStateProvider();
   const { searchedPlaylists, loading, query, setQuery } = useSearchPlaylists();
   const addPlaylist = useAddPlaylist();
   const removePlaylist = useRemovePlaylist();

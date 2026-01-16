@@ -1,10 +1,10 @@
 import {RoomSocketEvents} from "./roomSocketEvents.ts";
-import {useStateProvider} from "../../../utils/StateProvider.tsx";
 import {useCallback} from "react";
 import {EventResponse} from "../../../type/EventResponse.ts";
+import {useConnectionStateProvider} from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
 
 export default function useStartGame() {
-  const [{ socket, roomId, playerId }] = useStateProvider();
+  const [{ socket, roomId, playerId }] = useConnectionStateProvider();
 
   return useCallback((setLoading: (loading: boolean) => void) => {
     const callback = (response: EventResponse<undefined>) => {

@@ -1,72 +1,53 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import useMouseHandlers from "../hooks/useMouseHandlers";
-import { useStateProvider } from "../utils/StateProvider";
 import Header from "src/components/GamePage/Header/Header";
 import Deck from "src/components/GamePage/Deck/Deck";
 import DraggingOverlay from "src/components/GamePage/DraggingOverlay/DraggingOverlay";
 import Board from "src/components/GamePage/Board/Board";
-import ActivePlayerItems from "src/components/GamePage/ActiveItems/ActivePlayerItems";
+import {useConnectionStateProvider} from "../stateProvider/connection/ConnectionStateProvider.tsx";
+import {useMovementStateProvider} from "../stateProvider/movement/MovementStateProvider.tsx";
+import useMouseDrag from "../hooks/socket/movement/useMouseDrag.ts";
+import useMouseUpCard from "../hooks/socket/movement/useMouseUpCard.ts";
 
 export default function GamePage() {
-  const [
-    { socket, isDragging }
-  ] = useStateProvider();
-  const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
-  const [activeCardWidth, setActiveCardWidth] = useState(0);
-  const [hoveredPlayerId, setHoveredPlayerId] = useState(socket.id!);
+  const [{ playerId }] = useConnectionStateProvider();
+  const [{ isDragging }] = useMovementStateProvider();
+  const [hoveredPlayerId, setHoveredPlayerId] = useState(playerId);
   const [isClickedPlayer, setIsClickedPlayer] = useState(false);
 
-  const {
-    handleMouseClick,
-    handleMouseDown,
-    handleMouseMove,
-    handleMouseUp,
-    handleMouseLeave,
-    handleMouseDraggingOver,
-    handleMouseOver,
-  } = useMouseHandlers(activeCardWidth, setDragPosition);
-
-  const activePlayerItemsComponent = ActivePlayerItems({
-    setActiveCardWidth,
-    handleMouseClick,
-    handleMouseDown,
-    handleMouseLeave,
-    handleMouseDraggingOver,
-    handleMouseOver,
-  });
+  const mouseDrag = useMouseDrag()
+  const mouseUpCard = useMouseUpCard()
 
   useEffect(() => {
-    if (isDragging) {
+    if (!isDragging) return;
+    // Mouse events
+    window.addEventListener("mousemove", mouseDrag);
+    window.addEventListener("mouseup", mouseUpCard);
+
+    // Touch events
+    window.addEventListener("touchmove", mouseDrag);
+    window.addEventListener("touchend", mouseUpCard);
+
+    return () => {
       // Mouse events
-      window.addEventListener("mousemove", handleMouseMove);
-      window.addEventListener("mouseup", handleMouseUp);
-  
+      window.removeEventListener("mousemove", mouseDrag);
+      window.removeEventListener("mouseup", mouseUpCard);
+
       // Touch events
-      window.addEventListener("touchmove", handleMouseMove);
-      window.addEventListener("touchend", handleMouseUp);
-  
-      return () => {
-        // Mouse events
-        window.removeEventListener("mousemove", handleMouseMove);
-        window.removeEventListener("mouseup", handleMouseUp);
-  
-        // Touch events
-        window.removeEventListener("touchmove", handleMouseMove);
-        window.removeEventListener("touchend", handleMouseUp);
-      };
-    }
-  }, [isDragging, handleMouseMove, handleMouseUp]);
+      window.removeEventListener("touchmove", mouseDrag);
+      window.removeEventListener("touchend", mouseUpCard);
+    };
+  }, [isDragging, mouseDrag, mouseUpCard]);
   
 
   return (
     <Container>
       <DisableHoverContainer className={isDragging ? "disable-hover" : ""}>
         <Header />
-        <Board setHoveredPlayerId={setHoveredPlayerId} setIsClickedPlayer={setIsClickedPlayer} handleMouseDown={handleMouseDown} handleMouseLeave={handleMouseLeave} activePlayerItemsComponent={activePlayerItemsComponent} />
+        <Board setHoveredPlayerId={setHoveredPlayerId} setIsClickedPlayer={setIsClickedPlayer} />
       </DisableHoverContainer>
-      <Deck hoveredPlayerId={hoveredPlayerId} isClickedPlayer={isClickedPlayer} activePlayerItemsComponent={activePlayerItemsComponent} />
-      <DraggingOverlay dragPosition={dragPosition} activeCardWidth={activeCardWidth} />
+      <Deck hoveredPlayerId={hoveredPlayerId} isClickedPlayer={isClickedPlayer} />
+      <DraggingOverlay />
     </Container>
   );
 }

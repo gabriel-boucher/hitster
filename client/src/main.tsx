@@ -2,14 +2,30 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
-import { StateProvider } from './utils/StateProvider.tsx';
-import { initialState, reducer } from './utils/reducer.ts';
+import {ConnectionStateProvider} from "./stateProvider/connection/ConnectionStateProvider.tsx";
+import {connectionInitialState} from "./stateProvider/connection/ConnectionInitialState.ts";
+import {connectionReducer} from "./stateProvider/connection/ConnectionReducer.ts";
+import {RoomStateProvider} from "./stateProvider/room/RoomStateProvider.tsx";
+import {roomInitialState} from "./stateProvider/room/RoomInitialState.ts";
+import {GameStateProvider} from "./stateProvider/game/GameStateProvider.tsx";
+import {gameInitialState} from "./stateProvider/game/GameInitialState.ts";
+import {gameReducer} from "./stateProvider/game/GameReducer.ts";
+import {roomReducer} from "./stateProvider/room/RoomReducer.ts";
+import {MovementStateProvider} from "./stateProvider/movement/MovementStateProvider.tsx";
+import {movementInitialState} from "./stateProvider/movement/MovementInitialState.ts";
+import {movementReducer} from "./stateProvider/movement/MovementReducer.ts";
 
 createRoot(document.getElementById('root')!)
 .render(
-  <StrictMode>
-    <StateProvider initialState={initialState} reducer={reducer}>
-      <App />
-    </StateProvider>
-  </StrictMode>,
+  // <StrictMode>
+  <ConnectionStateProvider initialState={connectionInitialState} reducer={connectionReducer} >
+    <RoomStateProvider initialState={roomInitialState} reducer={roomReducer} >
+      <GameStateProvider initialState={gameInitialState} reducer={gameReducer} >
+          <MovementStateProvider initialState={movementInitialState} reducer={movementReducer}>
+            <App />
+          </MovementStateProvider>
+      </GameStateProvider>
+    </RoomStateProvider>
+  </ConnectionStateProvider>
+  // </StrictMode>,
 )

@@ -1,9 +1,14 @@
 import styled from "styled-components";
-import { getAuthUrl, PINK_COLOR__HEX } from "src/utils/constants";
+import {getSpotifyAuthUrl, PINK_COLOR__HEX} from "src/utils/constants";
 
-export default function HomePage() {
-  function authorization() {
-    window.location.href = getAuthUrl();
+interface Props {
+  setLoading: (loading: boolean) => void;
+}
+
+export default function HomePage({ setLoading }: Props) {
+  const authorization = () => {
+    setLoading(true);
+    window.location.href = getSpotifyAuthUrl();
   }
 
   return (

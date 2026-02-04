@@ -1,5 +1,3 @@
-import { PLAYERS_IMG } from "@shared/constants";
-import { PlayerInterface } from "@shared/interfaces";
 import { useEffect, useRef, useState } from "react";
 import Plus from "src/components/icons/Plus";
 import XMark from "src/components/icons/XMark";
@@ -7,17 +5,19 @@ import {
   PINK_COLOR__HEX,
   WHITE_COLOR__HEX,
 } from "src/utils/constants";
-import { useStateProvider } from "src/utils/StateProvider";
 import styled from "styled-components";
+import {Player, PlayerColor} from "../../../type/player/Player.ts";
+import useChangePlayerColor from "../../../hooks/socket/room/useChangePlayerColor.ts";
+import {useConnectionStateProvider} from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
+import {useRoomStateProvider} from "../../../stateProvider/room/RoomStateProvider.tsx";
 
-interface Props {
-  changePlayerImage: (image: string) => void;
-}
-
-export default function PlayerInLobby({ changePlayerImage }: Props) {
-  const [{ socket, players }] = useStateProvider();
+export default function PlayerInLobby() {
+  const [{ socket }] = useConnectionStateProvider();
+  const [{ players }] = useRoomStateProvider();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  const changePlayerColor = useChangePlayerColor();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -39,47 +39,49 @@ export default function PlayerInLobby({ changePlayerImage }: Props) {
 
   return (
     <Container ref={menuRef}>
-      <PlayerImgSelected
-        $playerImage={
+      <PlayerColorSelected
+        $playerColor={
           players.find(
-            (player: PlayerInterface) => player.socketId === socket.id
-          )?.image || ""
+            (player: Player) => player.id === socket.id
+          )?.color || PlayerColor.RED
         }
         onClick={() => setIsMenuOpen((prev) => !prev)}
       >
         <PlusIcon><Plus /></PlusIcon>
-      </PlayerImgSelected>
+      </PlayerColorSelected>
 
       {isMenuOpen && (
-        <PlayerImgMenu>
-        {PLAYERS_IMG.map((image: string, index: number) => {
-          const isTaken = players.some((player: PlayerInterface) => player.image === image);
+        <PlayerColorMenu>
+        {(Object.keys(PlayerColor) as PlayerColor[]).map((color: PlayerColor, index: number) => {
+          const isColorTaken = players.some((player: Player) => {
+            return player.color === color as PlayerColor;
+          });
           
-          if (isTaken) {
+          if (isColorTaken) {
             return (
-              <PlayerImgInMenuTaken
+              <PlayerColorInMenuTaken
                 key={index}
-                $playerImage={image}
+                $playerColor={color}
               >
                 <XMarkContainer>
                   <XMark/>
                 </XMarkContainer>
-              </PlayerImgInMenuTaken>
+              </PlayerColorInMenuTaken>
             );
           } else {
             return (
-              <PlayerImgInMenu
+              <PlayerColorInMenu
                 key={index}
-                $playerImage={image}
+                $playerColor={color}
                 onClick={() => {
-                  changePlayerImage(image);
+                  changePlayerColor(color);
                   setIsMenuOpen(false);
                 }}
               />
             );
           }
         })}
-      </PlayerImgMenu>      
+      </PlayerColorMenu>
       )}
     </Container>
   );
@@ -101,18 +103,18 @@ const PlusIcon = styled.div`
   z-index: 3;
 `;
 
-const PlayerImg = styled.div<{ $playerImage: string }>`
+const PlayerImg = styled.div<{ $playerColor: PlayerColor }>`
   aspect-ratio: 1/1;
   border-radius: 50%;
-  /* background-image: url(${({ $playerImage }) => $playerImage}); */
+  /* background-image: url(${({ $playerColor }) => $playerColor}); */
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   cursor: pointer;
-  background-color: ${({ $playerImage }) => $playerImage};
+  background-color: ${({ $playerColor }) => $playerColor};
 `;
 
-const PlayerImgSelected = styled(PlayerImg)`
+const PlayerColorSelected = styled(PlayerImg)`
   width: 7vh;
   border: 2px solid black;
   box-shadow: 0 0 0 2px ${PINK_COLOR__HEX};
@@ -122,7 +124,7 @@ const PlayerImgSelected = styled(PlayerImg)`
   }
 `;
 
-const PlayerImgInMenu = styled(PlayerImg)`
+const PlayerColorInMenu = styled(PlayerImg)`
   width: 5vh;
   border: 1px solid black;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -133,7 +135,7 @@ const PlayerImgInMenu = styled(PlayerImg)`
   }
 `;
 
-const PlayerImgInMenuTaken = styled(PlayerImg)`
+const PlayerColorInMenuTaken = styled(PlayerImg)`
   width: 5vh;
   border: 1px solid black;
   pointer-events: none;
@@ -146,7 +148,7 @@ const XMarkContainer = styled.div`
   background: hsla(0, 0%, 0%, 60%);
 `
 
-const PlayerImgMenu = styled.div`
+const PlayerColorMenu = styled.div`
   position: absolute;
   top: 110%;
   left: 50%;

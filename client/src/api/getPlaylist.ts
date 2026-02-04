@@ -5,7 +5,7 @@ import { errorHandler } from "./errorHandler";
 export default async function getPlaylist(roomId: string, playlistId: string) {
   try {
     const response = await axios.get(
-      `${getBaseUrl(ConnectionType.SERVER)}/api/getPlaylist/${playlistId}`,
+      `${getBaseUrl(ConnectionType.HTTP_SERVER)}/api/getPlaylist/${playlistId}`,
       {
         headers: {
           "x-room-id": roomId,

@@ -46,6 +46,8 @@ const Playback = styled.div`
   gap: 1rem;
   color: ${WHITE_COLOR__HEX};
   margin-bottom: 4px;
+  -webkit-user-select: none; /* Safari */
+  user-select: none; /* Standard syntax */
 
   .time {
     width: 2.5rem;

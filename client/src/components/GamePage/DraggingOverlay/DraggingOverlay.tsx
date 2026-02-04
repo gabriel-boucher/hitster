@@ -1,22 +1,14 @@
 import DraggableCard from "src/components/elements/Card/DraggableCard";
-import { useStateProvider } from "src/utils/StateProvider";
 import styled from "styled-components";
+import {useMovementStateProvider} from "../../../stateProvider/movement/MovementStateProvider.tsx";
 
-interface CardProps {
-    dragPosition: { x: number; y: number };
-    activeCardWidth: number;
-}
-
-export default function DraggingOverlay({ dragPosition, activeCardWidth }: CardProps) {
-  const [{ isDragging }] = useStateProvider();
+export default function DraggingOverlay() {
+  const [{ isDragging }] = useMovementStateProvider();
 
   return (
       <Container>
         {isDragging && (
-          <DraggableCard
-            dragPosition={dragPosition}
-            activeCardWidth={activeCardWidth}
-          />
+          <DraggableCard />
       )}
       </Container>
   );

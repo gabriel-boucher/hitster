@@ -1,11 +1,12 @@
-import { PlayerInterface } from "@shared/interfaces";
-import { isCard, isToken } from "@shared/utils";
-import { PINK_COLOR__HEX, WHITE_COLOR__HEX } from "src/utils/constants";
-import { useStateProvider } from "src/utils/StateProvider";
+import {PINK_COLOR__HEX, WHITE_COLOR__HEX} from "src/utils/constants";
 import styled from "styled-components";
+import {Player} from "../../../type/player/Player.ts";
+import {useConnectionStateProvider} from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
+import {useGameStateProvider} from "../../../stateProvider/game/GameStateProvider.tsx";
+import {ItemStatus} from "../../../type/item/ItemStatus.ts";
 
 interface PlayerProps {
-  player: PlayerInterface;
+  player: Player;
   setHoveredPlayerId: (playerId: string) => void;
   setIsClickedPlayer: (isClicked: boolean) => void;
 }
@@ -15,14 +16,15 @@ export default function PlayerInGame({
   setHoveredPlayerId,
   setIsClickedPlayer,
 }: PlayerProps) {
-  const [{ socket, items }] = useStateProvider();
+  const [{ socket }] = useConnectionStateProvider();
+  const [{ currentPlayerId }] = useGameStateProvider();
 
   const handleMouseClick = () => {
     setIsClickedPlayer(true);
   };
 
   const handleMouseOver = () => {
-    setHoveredPlayerId(player.socketId);
+    setHoveredPlayerId(player.id);
   };
 
   const handleMouseLeave = () => {
@@ -33,8 +35,8 @@ export default function PlayerInGame({
   return (
     <Container>
       <PlayerIcon
-        $isActivePlayer={player.active}
-        $playerImage={player.image}
+        $isActivePlayer={player.id === currentPlayerId}
+        $playerImage={player.color}
         onClick={handleMouseClick}
         onMouseOver={handleMouseOver}
         onMouseLeave={handleMouseLeave}
@@ -44,22 +46,11 @@ export default function PlayerInGame({
         <PlayerScoresContainer>
           <PlayerScores>
             <CardIcon />
-            {
-              items.filter(
-                (item) =>
-                  isCard(item) &&
-                  item.playerId === player.socketId &&
-                  !item.active
-              ).length
-            }
+            {player.deck.cards.length}
           </PlayerScores>
           <PlayerScores>
             <TokenIcon />
-            {
-              items.filter(
-                (item) => isToken(item) && item.playerId === player.socketId
-              ).length
-            }
+            {player.deck.tokens.filter(token => token.status !== ItemStatus.USED).length}
           </PlayerScores>
         </PlayerScoresContainer>
       </PlayerInfo>
@@ -87,7 +78,6 @@ const PlayerScores = styled.div`
   line-height: 0.75rem;
   font-size: 0.75rem;
   font-weight: normal;
-  width: 4vh;
 `;
 
 const PlayerScoresContainer = styled.div`
@@ -107,7 +97,6 @@ const PlayerInfo = styled.div`
   flex-direction: column;
   gap: 0.5vh;
   color: ${WHITE_COLOR__HEX};
-  width: 15vh;
   line-height: 1.5rem;
 `;
 

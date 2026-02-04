@@ -1,67 +1,60 @@
 import styled from "styled-components";
-import { TokenInterface } from "@shared/interfaces";
-import { useMemo } from "react";
-import { useStateProvider } from "../../../utils/StateProvider";
+import {useMemo} from "react";
+import {Token} from "../../../type/item/Token.ts";
+import {ItemStatus} from "../../../type/item/ItemStatus.ts";
+import {useRoomStateProvider} from "../../../stateProvider/room/RoomStateProvider.tsx";
+import {useMovementStateProvider} from "../../../stateProvider/movement/MovementStateProvider.tsx";
+import useMouseDragOverDeck from "../../../hooks/socket/movement/useMouseDragOverDeck.ts";
+import useMouseOverDeck from "../../../hooks/socket/movement/useMouseOverDeck.ts";
+import useMouseClickToken from "../../../hooks/socket/movement/useMouseClickToken.ts";
+import * as React from "react";
 
-interface TokenProps {
-  token: TokenInterface;
-  handleMouseClick: (token: TokenInterface) => void;
-  handleMouseDraggingOver: (
-    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
-    token: TokenInterface
-  ) => void;
-  handleMouseOver: (
-    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
-    token: TokenInterface
-  ) => void;
-}
+export default function ActiveToken({ token } : { token: Token }) {
+  const [{ players }] = useRoomStateProvider();
+  const [{ isDragging }] = useMovementStateProvider();
 
-export default function ActiveToken({
-  token,
-  handleMouseClick,
-  handleMouseDraggingOver,
-  handleMouseOver,
-}: TokenProps) {
-  const [{ players, isDragging }] = useStateProvider();
+  const mouseDragOverDeck = useMouseDragOverDeck()
+  const mouseOverDeck = useMouseOverDeck()
+  const mouseClickToken = useMouseClickToken()
 
   const handleMouseEvents = useMemo(
     () => ({
-      onClick: () => handleMouseClick(token),
+      onClick: () => mouseClickToken(token),
       onMouseOver: (e: React.MouseEvent<HTMLDivElement>) =>
         isDragging
-          ? handleMouseDraggingOver(e, token)
-          : handleMouseOver(e, token),
+          ? mouseDragOverDeck(e, token)
+          : mouseOverDeck(e, token),
       onTouchStart : (e: React.TouchEvent<HTMLDivElement>) =>
         isDragging
-          ? handleMouseDraggingOver(e, token)
-          : handleMouseOver(e, token),
+          ? mouseDragOverDeck(e, token)
+          : mouseOverDeck(e, token),
       onTouchMove : (e: React.TouchEvent<HTMLDivElement>) =>
         isDragging
-          ? handleMouseDraggingOver(e, token)
-          : handleMouseOver(e, token),
+          ? mouseDragOverDeck(e, token)
+          : mouseOverDeck(e, token),
     }),
-    [token, isDragging, handleMouseDraggingOver, handleMouseOver, handleMouseClick]
+    [token, isDragging, mouseDragOverDeck, mouseOverDeck, mouseClickToken]
   );
 
   const style = {
-    opacity: token.active ? 1 : 0.3,
-    border: token.active ? "none" : "2px solid white",
+    opacity: token.status === ItemStatus.ACTIVE_IN_CURRENT_DECK ? 1 : 0.3,
+    border: token.status === ItemStatus.ACTIVE_IN_CURRENT_DECK ? "none" : "2px solid white",
   };
 
   return (
-    <Token {...handleMouseEvents}>
+    <ActiveTokenComponent {...handleMouseEvents}>
       <div className="token-container" style={style}>
         <div className="details">
           <div className="player-name">
-            {players.find((player) => player.socketId === token.playerId)?.name}
+            {players.find((player) => player.id === token.ownerId)?.name}
           </div>
         </div>
       </div>
-    </Token>
+    </ActiveTokenComponent>
   );
 }
 
-const Token = styled.div`
+const ActiveTokenComponent = styled.div`
   aspect-ratio: 1; // gotta keep the size to prevent flickering
   height: 100%;
   width: auto;

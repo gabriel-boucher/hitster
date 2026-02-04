@@ -1,42 +1,25 @@
-import { CardInterface } from "@shared/interfaces";
-import { useStateProvider } from "src/utils/StateProvider";
 import styled from "styled-components";
 import StackCards from "./StackCards";
 import Button from "src/components/elements/Button";
 import Next from "src/components/icons/Next";
-import { socketEvents } from "@shared/constants";
-import { JSX } from "react";
-import { getActivePlayerId } from "@shared/utils";
 import PlayerBar from "./PlayerBar";
 import SpotifyPlayer from "../SpotifyPlayer/SpotifyPlayer";
+import {useConnectionStateProvider} from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
+import {useGameStateProvider} from "../../../stateProvider/game/GameStateProvider.tsx";
+import {PlayerId} from "../../../type/player/Player.ts";
+import ActivePlayerItems from "../ActiveItems/ActivePlayerItems.tsx";
+import useNextTurn from "../../../hooks/socket/game/useNextTurn.ts";
 
 interface Props {
-  setHoveredPlayerId: (playerId: string) => void;
+  setHoveredPlayerId: (playerId: PlayerId) => void;
   setIsClickedPlayer: (isClicked: boolean) => void;
-  handleMouseDown: (
-    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
-    card: CardInterface
-  ) => void;
-  handleMouseLeave: () => void;
-  activePlayerItemsComponent: JSX.Element;
 }
 
-export default function Board({
-  setHoveredPlayerId,
-  setIsClickedPlayer,
-  handleMouseDown,
-  handleMouseLeave,
-  activePlayerItemsComponent,
-}: Props) {
-  const [{ socket, gameState, players, items }] = useStateProvider();
+export default function Board({ setHoveredPlayerId, setIsClickedPlayer }: Props) {
+  const [{ playerId }] = useConnectionStateProvider();
+  const [{ currentPlayerId }] = useGameStateProvider();
 
-  function handleNextTurn() {
-    socket.emit(socketEvents.NEXT_TURN, {
-      gameState,
-      players,
-      items,
-    });
-  }
+  const nextTurn = useNextTurn();
 
   return (
     <Container>
@@ -44,22 +27,19 @@ export default function Board({
         setHoveredPlayerId={setHoveredPlayerId}
         setIsClickedPlayer={setIsClickedPlayer}
       />
-      {socket.id === getActivePlayerId(players) ? (
+      {playerId === currentPlayerId ? (
         <>
           <Center>
-            <StackCards
-              handleMouseDown={handleMouseDown}
-              handleMouseLeave={handleMouseLeave}
-            />
+            <StackCards />
             <SpotifyPlayer />
           </Center>
           <NextButton>
-            <Button iconComponent={Next()} handleClick={handleNextTurn} />
+            <Button iconComponent={Next()} handleClick={nextTurn} />
           </NextButton>
         </>
       ) : (
         <>
-          {activePlayerItemsComponent}
+          <ActivePlayerItems />
           <Filler />
         </>
       )}

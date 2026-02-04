@@ -12,6 +12,7 @@ import domain.spotify.Playlist;
 import domain.spotify.PlaylistId;
 
 import java.util.List;
+import java.util.Random;
 
 public class Room {
     private final RoomId id;

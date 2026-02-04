@@ -1,22 +1,21 @@
-import { useStateProvider } from "src/utils/StateProvider";
 import styled from "styled-components";
 import PlayerCards from "./PlayerCards";
 import PlayerTokens from "./PlayerTokens";
-import { JSX } from "react";
-import { getActivePlayerId } from "@shared/utils";
+import {useConnectionStateProvider} from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
+import {useGameStateProvider} from "../../../stateProvider/game/GameStateProvider.tsx";
+import ActivePlayerItems from "../ActiveItems/ActivePlayerItems.tsx";
 
 interface PlayerProps {
   hoveredPlayerId: string;
   isClickedPlayer: boolean;
-  activePlayerItemsComponent: JSX.Element;
 }
 
 export default function Deck({
   hoveredPlayerId,
   isClickedPlayer,
-  activePlayerItemsComponent,
 }: PlayerProps) {
-  const [{ socket, players }] = useStateProvider();
+  const [{ playerId }] = useConnectionStateProvider();
+  const [{ currentPlayerId }] = useGameStateProvider();
 
   return (
     <Container>
@@ -26,8 +25,8 @@ export default function Deck({
             />
         </DeckTokens>
         <DeckCards>
-            {socket.id === getActivePlayerId(players) ? (
-                activePlayerItemsComponent
+            {playerId === currentPlayerId ? (
+                <ActivePlayerItems />
             ) : (
                 <PlayerCards
                     hoveredPlayerId={hoveredPlayerId}

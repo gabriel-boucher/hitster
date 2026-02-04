@@ -11,21 +11,22 @@ import domain.room.Room;
 import domain.room.exception.PlayerColorAlreadyExistsException;
 import interfaces.dto.responseDto.exceptionDto.BadRequestExceptionResponse;
 import interfaces.dto.responseDto.exceptionDto.NotFoundExceptionResponse;
-import interfaces.mapper.GameStateMapper;
-import interfaces.mapper.RoomStateMapper;
+import interfaces.socket.SocketEventBroadcaster;
 import interfaces.socket.SocketEventHandler;
-import interfaces.socket.room.RoomSocketEventHandler;
 import interfaces.socket.room.changePlayerColor.dto.ChangePlayerColorData;
 import interfaces.socket.room.changePlayerColor.dto.ChangePlayerColorRequest;
 
 import static interfaces.dto.responseDto.EventResponseStatus.*;
 
-public class ChangePlayerColorHandler extends RoomSocketEventHandler implements SocketEventHandler<ChangePlayerColorRequest> {
+public class ChangePlayerColorHandler implements SocketEventHandler<ChangePlayerColorRequest> {
+    private final RoomAppService roomAppService;
     private final ChangePlayerColorMapper changePlayerColorMapper;
+    private final SocketEventBroadcaster socketEventBroadcaster;
 
-    public ChangePlayerColorHandler(RoomAppService roomAppService, RoomStateMapper roomStateMapper, GameStateMapper gameStateMapper, ChangePlayerColorMapper changePlayerColorMapper) {
-        super(roomAppService, roomStateMapper, gameStateMapper);
+    public ChangePlayerColorHandler(RoomAppService roomAppService, ChangePlayerColorMapper changePlayerColorMapper, SocketEventBroadcaster socketEventBroadcaster) {
+        this.roomAppService = roomAppService;
         this.changePlayerColorMapper = changePlayerColorMapper;
+        this.socketEventBroadcaster = socketEventBroadcaster;
     }
 
     @Override
@@ -34,7 +35,7 @@ public class ChangePlayerColorHandler extends RoomSocketEventHandler implements 
             ChangePlayerColorData data = changePlayerColorMapper.toDomain(request);
             Room room = roomAppService.changePlayerColor(data.roomId(), data.playerId(), data.newColor());
 
-            broadcastRoomState(room, server);
+            socketEventBroadcaster.broadcastRoomState(room, server);
         } catch (RoomNotFoundException e) {
             ackRequest.sendAckData(new NotFoundExceptionResponse(ROOM_NOT_FOUND, e.getMessage()));
         } catch (PlayerNotFoundException e) {

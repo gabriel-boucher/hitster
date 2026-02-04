@@ -4,7 +4,7 @@ import domain.game.item.ItemStatus;
 
 public class CardBuilder {
     private CardId id = new CardId("default-id");
-    private ItemStatus status = ItemStatus.INACTIVE;
+    private ItemStatus status = ItemStatus.BOARD;
     private String song = "default-song";
     private String artist = "default-artist";
     private int date = 0;

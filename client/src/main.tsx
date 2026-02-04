@@ -11,6 +11,9 @@ import {GameStateProvider} from "./stateProvider/game/GameStateProvider.tsx";
 import {gameInitialState} from "./stateProvider/game/GameInitialState.ts";
 import {gameReducer} from "./stateProvider/game/GameReducer.ts";
 import {roomReducer} from "./stateProvider/room/RoomReducer.ts";
+import {MovementStateProvider} from "./stateProvider/movement/MovementStateProvider.tsx";
+import {movementInitialState} from "./stateProvider/movement/MovementInitialState.ts";
+import {movementReducer} from "./stateProvider/movement/MovementReducer.ts";
 
 createRoot(document.getElementById('root')!)
 .render(
@@ -18,7 +21,9 @@ createRoot(document.getElementById('root')!)
   <ConnectionStateProvider initialState={connectionInitialState} reducer={connectionReducer} >
     <RoomStateProvider initialState={roomInitialState} reducer={roomReducer} >
       <GameStateProvider initialState={gameInitialState} reducer={gameReducer} >
-          <App />
+          <MovementStateProvider initialState={movementInitialState} reducer={movementReducer}>
+            <App />
+          </MovementStateProvider>
       </GameStateProvider>
     </RoomStateProvider>
   </ConnectionStateProvider>

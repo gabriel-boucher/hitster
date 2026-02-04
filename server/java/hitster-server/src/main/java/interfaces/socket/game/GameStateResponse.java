@@ -1,6 +1,5 @@
 package interfaces.socket.game;
 
-import interfaces.dto.CardDto;
 import interfaces.dto.MoveableDto;
 import interfaces.dto.PlayerDto;
 
@@ -11,7 +10,8 @@ public record GameStateResponse(
         String status,
         List<PlayerDto> players,
         List<MoveableDto> currentDeck,
-        CardDto currentCard,
-        int currentPlayerIndex
+        String currentCardId,
+        String currentCardStatus,
+        String currentPlayerId
 ) {
 }

@@ -9,8 +9,7 @@ public class AddCurrentCardMapper {
     public AddCurrentCardData toDomain(AddCurrentCardRequest request) {
         return new AddCurrentCardData(
                 GameId.fromString(request.gameId()),
-                PlayerId.fromString(request.playerId()),
-                request.position()
+                PlayerId.fromString(request.playerId())
         );
     }
 }

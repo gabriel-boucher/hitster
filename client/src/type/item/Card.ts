@@ -3,6 +3,7 @@ import { ItemStatus } from "./ItemStatus.ts";
 export type CardId = string;
 
 export type Card = {
+  type: "card";
   id: CardId;
   status: ItemStatus;
   song: string;

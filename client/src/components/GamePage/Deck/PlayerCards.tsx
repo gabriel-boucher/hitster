@@ -1,8 +1,6 @@
 import styled from "styled-components";
-import { useStateProvider } from "../../../utils/StateProvider";
 import CardInDeck from "../../elements/Card/CardInDeck";
-import { isCard } from "@shared/utils";
-import { CardInterface } from "@shared/interfaces";
+import {useRoomStateProvider} from "../../../stateProvider/room/RoomStateProvider.tsx";
 
 interface CardProps {
   hoveredPlayerId: string;
@@ -10,18 +8,15 @@ interface CardProps {
 }
 
 export default function PlayerCards({ hoveredPlayerId, isClickedPlayer }: CardProps) {
-  const [{ items }] = useStateProvider();
+  const [{ players }] = useRoomStateProvider();
 
   return (
     <PlayerCardsContainer>
-      {items
-        .filter(
-          (item): item is CardInterface =>
-            isCard(item) && item.playerId === hoveredPlayerId
-        )
-        .map((card) => (
+      {
+        players.find((player) => player.id === hoveredPlayerId)?.deck.cards.map((card) =>(
           <CardInDeck key={card.id} card={card} isClickedPlayer={isClickedPlayer}/>
-        ))}
+        ))
+      }
     </PlayerCardsContainer>
   );
 }

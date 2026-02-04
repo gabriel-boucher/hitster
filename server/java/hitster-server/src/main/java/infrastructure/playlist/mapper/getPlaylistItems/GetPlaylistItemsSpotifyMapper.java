@@ -12,7 +12,7 @@ public class GetPlaylistItemsSpotifyMapper {
         return dto.items().stream()
                 .map(item -> new Card(
                         new CardId(item.track().id()),
-                        ItemStatus.INACTIVE,
+                        ItemStatus.UNUSED,
                         item.track().name(),
                         item.track().artists().getFirst().name(),
                         Integer.parseInt(item.track().album().releaseDate().substring(0, 4)),

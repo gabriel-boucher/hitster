@@ -1,33 +1,33 @@
 import styled from "styled-components";
-import { CardInterface } from "@shared/interfaces";
-import { useStateProvider } from "../../../utils/StateProvider";
+import {Card} from "../../../type/item/Card.ts";
+import {useGameStateProvider} from "../../../stateProvider/game/GameStateProvider.tsx";
 
 interface CardProps {
-  card: CardInterface;
+  card: Card;
   isClickedPlayer: boolean;
 }
 
 export default function CardInDeck({ card, isClickedPlayer }: CardProps) {
-  const [{ isDragging }] = useStateProvider();
+  const [{ currentCardId, isDragging }] = useGameStateProvider();
 
   const cardStyle = {
     backgroundImage:
-          card.active
+          card.id === currentCardId
               ? `url("src/assets/hitster_logo_square.webp")`
-              : `url(${card.albumCover})`
+              : `url(${card.albumUrl})`
   };
 
   return (
     <Container $isDragging={isDragging}>
-      <Card style={{...cardStyle}}>
-        {!card.active && (
+      <CardComponent style={{...cardStyle}}>
+        {card.id !== currentCardId && (
           <Details $isClickedPlayer={isClickedPlayer}>
             <div className="date">{card.date}</div>
             <div className="song">{card.song}</div>
             <div className="artist">{card.artist}</div>
           </Details>
         )}
-      </Card>
+      </CardComponent>
     </Container>
   );
 }
@@ -82,7 +82,7 @@ const Details = styled.div<{
     }
 `
 
-const Card = styled.div`
+const CardComponent = styled.div`
   aspect-ratio: 1/1;
   width: 80%;
 
@@ -119,7 +119,7 @@ const Container = styled.div<{
 
   &:hover {
     ${({$isDragging}) => !$isDragging && `
-      ${Card} {
+      ${CardComponent} {
         width: 89%;
       }
 

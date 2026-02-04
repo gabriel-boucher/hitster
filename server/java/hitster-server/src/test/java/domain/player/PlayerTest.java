@@ -66,16 +66,9 @@ class PlayerTest {
 
     @Test
     public void whenAddCurrentCardToDeckAndSetInactive_thenVerifyCallToPlayerDeck() {
-        player.addCurrentCardToDeckAndSetInactive(card);
+        player.addCurrentCardToDeckAndSetUsed(card);
 
-        verify(playerDeck).addCurrentCardAndSetInactive(card);
-    }
-
-    @Test
-    public void whenAddCardToDeck_thenVerifyCallToPlayerDeck() {
-        player.addCardToDeck(card);
-
-        verify(playerDeck).addCard(card);
+        verify(playerDeck).addCurrentCardAndSetUsed(card);
     }
 
     @Test

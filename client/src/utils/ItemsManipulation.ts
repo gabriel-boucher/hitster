@@ -1,21 +1,10 @@
-import { CardInterface, TokenInterface } from "@shared/interfaces";
 import { isCard, isToken } from "@shared/utils";
-
-export function getActiveItems(
-  items: (CardInterface | TokenInterface)[],
-  activePlayerId: string
-) {
-  const activeItems = items.filter((item) =>
-    isCard(item)
-      ? item.playerId === activePlayerId
-      : item.activePlayerId === activePlayerId
-  );
-
-  return activeItems;
-}
+import {Card} from "../type/item/Card.ts";
+import {Token} from "../type/item/Token.ts";
+import {PlayerId} from "../type/player/Player.ts";
 
 export function moveActiveCardToBoard(
-  items: (CardInterface | TokenInterface)[]
+  items: (Card | Token)[]
 ) {
   const newItems = items.map((item) =>
     isCard(item) && item.active
@@ -27,7 +16,7 @@ export function moveActiveCardToBoard(
 }
 
 export function moveActiveCardToStack(
-  items: (CardInterface | TokenInterface)[]
+  items: (Card | Token)[]
 ) {
   const newItems = items.map((item) =>
     isCard(item) && item.active
@@ -39,8 +28,8 @@ export function moveActiveCardToStack(
 }
 
 export function setActiveToken(
-  items: (CardInterface | TokenInterface)[],
-  clickToken: TokenInterface
+  items: (Card | Token)[],
+  clickToken: Token
 ) {
   const newItems = items.map((item) =>
     isToken(item) && item.id === clickToken.id
@@ -51,10 +40,10 @@ export function setActiveToken(
 }
 
 export function getPlayerToken(
-  items: (CardInterface | TokenInterface)[],
-  playerId: string
+  items: (Card | Token)[],
+  playerId: PlayerId
 ):
-  | [(CardInterface | TokenInterface)[], CardInterface | TokenInterface]
+  | [(Card | Token)[], Card | Token]
   | undefined {
   const tokenIndex = items.findLastIndex(
     (item) => isToken(item) && item.playerId === playerId && !item.active
@@ -68,8 +57,8 @@ export function getPlayerToken(
 }
 
 export function moveTokenToPlayer(
-  items: (CardInterface | TokenInterface)[],
-  playerId: string
+  items: (Card | Token)[],
+  playerId: PlayerId
 ) {
   const newItems = items.map((item) =>
     isToken(item) && item.playerId === playerId && !item.active
@@ -80,8 +69,8 @@ export function moveTokenToPlayer(
 }
 
 export function moveTokensWithWrongPositionToPlayers(
-  items: (CardInterface | TokenInterface)[],
-  active: CardInterface | TokenInterface
+  items: (Card | Token)[],
+  active: Card | Token
 ) {
   items.forEach((item) => {
     if (isToken(item) && item.id === active.id) {

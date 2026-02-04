@@ -4,7 +4,6 @@ import application.RoomAppService;
 import application.GameAppService;
 import application.SpotifyAppService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import domain.game.CardRepository;
 import domain.game.GameFactory;
 import domain.game.GameRepository;
 import domain.player.PlayerFactory;
@@ -19,13 +18,22 @@ import infrastructure.playlist.mapper.getPlaylistItems.GetPlaylistItemsSpotifyMa
 import infrastructure.playlist.mapper.searchPlaylists.SearchPlaylistsSpotifyMapper;
 import infrastructure.playlist.repository.SpotifyApiPlaylistRepository;
 import interfaces.mapper.*;
+import interfaces.socket.SocketEventBroadcaster;
 import interfaces.socket.connection.ConnectionResource;
+import interfaces.socket.game.addCurrentCard.AddCurrentCardHandler;
 import interfaces.socket.game.addCurrentCard.AddCurrentCardMapper;
+import interfaces.socket.game.addToken.AddTokenHandler;
 import interfaces.socket.game.addToken.AddTokenMapper;
+import interfaces.socket.game.nextTurn.NextTurnHandler;
 import interfaces.socket.game.nextTurn.NextTurnMapper;
+import interfaces.socket.game.removeCurrentCard.RemoveCurrentCardHandler;
 import interfaces.socket.game.removeCurrentCard.RemoveCurrentCardMapper;
+import interfaces.socket.game.removeToken.RemoveTokenHandler;
 import interfaces.socket.game.removeToken.RemoveTokenMapper;
-import interfaces.socket.game.reorderCurrentCard.ReorderCurrentCardMapper;
+import interfaces.socket.game.moveCurrentCard.MoveCurrentCardHandler;
+import interfaces.socket.game.moveCurrentCard.MoveCurrentCardMapper;
+import interfaces.socket.game.returnCurrentCard.ReturnCurrentCardHandler;
+import interfaces.socket.game.returnCurrentCard.ReturnCurrentCardMapper;
 import interfaces.socket.room.addPlaylist.AddPlaylistHandler;
 import interfaces.socket.room.changePlayerColor.ChangePlayerColorHandler;
 import interfaces.socket.room.changePlayerName.ChangePlayerNameHandler;
@@ -75,7 +83,8 @@ public class ApplicationContext {
         NextTurnMapper nextTurnMapper = new NextTurnMapper();
         AddCurrentCardMapper addCurrentCardMapper = new AddCurrentCardMapper();
         RemoveCurrentCardMapper removeCurrentCardMapper = new RemoveCurrentCardMapper();
-        ReorderCurrentCardMapper reorderCurrentCardMapper = new ReorderCurrentCardMapper();
+        ReturnCurrentCardMapper returnCurrentCardMapper = new ReturnCurrentCardMapper();
+        MoveCurrentCardMapper moveCurrentCardMapper = new MoveCurrentCardMapper();
         AddTokenMapper addTokenMapper = new AddTokenMapper();
         RemoveTokenMapper removeTokenMapper = new RemoveTokenMapper();
 
@@ -88,7 +97,7 @@ public class ApplicationContext {
         PlayerMapper playerMapper = new PlayerMapper(playerDeckMapper);
 
         RoomStateMapper roomStateMapper = new RoomStateMapper(playerMapper, playlistMapper);
-        GameStateMapper gameStateMapper = new GameStateMapper(playerMapper, currentDeckMapper, cardMapper);
+        GameStateMapper gameStateMapper = new GameStateMapper(playerMapper, currentDeckMapper);
 
         // SpotifyRepository mappers
         AccessTokenSpotifyMapper accessTokenSpotifyMapper = new AccessTokenSpotifyMapper();
@@ -108,18 +117,28 @@ public class ApplicationContext {
         GameAppService gameAppService = new GameAppService(gameRepository);
         SpotifyAppService spotifyAppService = new SpotifyAppService(roomRepository, playlistRepository);
 
-        CreateRoomHandler createRoomHandler = new CreateRoomHandler(roomAppService, roomStateMapper, gameStateMapper, createRoomMapper);
-        JoinRoomHandler joinRoomHandler = new JoinRoomHandler(roomAppService, roomStateMapper, gameStateMapper, joinRoomMapper);
-        ChangePlayerNameHandler changePlayerNameHandler = new ChangePlayerNameHandler(roomAppService, roomStateMapper, gameStateMapper, changePlayerNameMapper);
-        ChangePlayerColorHandler changePlayerColorHandler = new ChangePlayerColorHandler(roomAppService, roomStateMapper, gameStateMapper, changePlayerColorMapper);
-        RemovePlayerHandler removePlayerHandler = new RemovePlayerHandler(roomAppService, roomStateMapper, gameStateMapper, removePlayerMapper);
-        AddPlaylistHandler addPlaylistHandler = new AddPlaylistHandler(roomAppService, roomStateMapper, gameStateMapper, addPlaylistMapper);
-        RemovePlaylistHandler removePlaylistHandler = new RemovePlaylistHandler(roomAppService, roomStateMapper, gameStateMapper, removePlaylistMapper);
-        StartGameHandler startGameHandler = new StartGameHandler(roomAppService, roomStateMapper, gameStateMapper, startGameMapper);
+        SocketEventBroadcaster socketEventBroadcaster = new SocketEventBroadcaster(roomStateMapper, gameStateMapper);
+
+        CreateRoomHandler createRoomHandler = new CreateRoomHandler(roomAppService, createRoomMapper);
+        JoinRoomHandler joinRoomHandler = new JoinRoomHandler(roomAppService, joinRoomMapper, socketEventBroadcaster);
+        ChangePlayerNameHandler changePlayerNameHandler = new ChangePlayerNameHandler(roomAppService, changePlayerNameMapper, socketEventBroadcaster);
+        ChangePlayerColorHandler changePlayerColorHandler = new ChangePlayerColorHandler(roomAppService, changePlayerColorMapper, socketEventBroadcaster);
+        RemovePlayerHandler removePlayerHandler = new RemovePlayerHandler(roomAppService, removePlayerMapper, socketEventBroadcaster);
+        AddPlaylistHandler addPlaylistHandler = new AddPlaylistHandler(roomAppService, addPlaylistMapper, socketEventBroadcaster);
+        RemovePlaylistHandler removePlaylistHandler = new RemovePlaylistHandler(roomAppService, removePlaylistMapper, socketEventBroadcaster);
+        StartGameHandler startGameHandler = new StartGameHandler(roomAppService, startGameMapper, socketEventBroadcaster);
+
+        NextTurnHandler nextTurnHandler = new NextTurnHandler(gameAppService, nextTurnMapper, socketEventBroadcaster);
+        AddCurrentCardHandler addCurrentCardHandler = new AddCurrentCardHandler(gameAppService, addCurrentCardMapper, socketEventBroadcaster);
+        RemoveCurrentCardHandler removeCurrentCardHandler = new RemoveCurrentCardHandler(gameAppService, removeCurrentCardMapper, socketEventBroadcaster);
+        ReturnCurrentCardHandler returnCurrentCardHandler = new ReturnCurrentCardHandler(gameAppService, returnCurrentCardMapper, socketEventBroadcaster);
+        MoveCurrentCardHandler moveCurrentCardHandler = new MoveCurrentCardHandler(gameAppService, moveCurrentCardMapper, socketEventBroadcaster);
+        AddTokenHandler addTokenHandler = new AddTokenHandler(gameAppService, addTokenMapper, socketEventBroadcaster);
+        RemoveTokenHandler removeTokenHandler = new RemoveTokenHandler(gameAppService, removeTokenMapper, socketEventBroadcaster);
 
         connectionResource = new ConnectionResource();
         roomResource = new RoomResource(createRoomHandler, joinRoomHandler, changePlayerNameHandler, changePlayerColorHandler, removePlayerHandler, addPlaylistHandler, removePlaylistHandler, startGameHandler);
-        gameResource = new GameResource(gameAppService, nextTurnMapper, addCurrentCardMapper, removeCurrentCardMapper, reorderCurrentCardMapper, addTokenMapper, removeTokenMapper, gameStateMapper);
+        gameResource = new GameResource(nextTurnHandler, addCurrentCardHandler, removeCurrentCardHandler, returnCurrentCardHandler, moveCurrentCardHandler, addTokenHandler, removeTokenHandler);
         spotifyResource = new SpotifyResource(spotifyAppService, searchPlaylistMapper);
     }
 

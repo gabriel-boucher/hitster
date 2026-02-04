@@ -118,7 +118,7 @@ public class PlayerDeckTest {
                 .withCard(cardInDeck)
                 .build();
 
-        playerDeck.addCurrentCardAndSetInactive(currentCard);
+        playerDeck.addCurrentCardAndSetUsed(currentCard);
 
         assertEquals(currentCard, playerDeck.getCards().getFirst());
     }
@@ -138,7 +138,7 @@ public class PlayerDeckTest {
                 .withCard(cardInDeck)
                 .build();
 
-        playerDeck.addCurrentCardAndSetInactive(currentCard);
+        playerDeck.addCurrentCardAndSetUsed(currentCard);
 
         assertEquals(currentCard, playerDeck.getCards().getLast());
     }
@@ -158,19 +158,19 @@ public class PlayerDeckTest {
                 .withCard(cardInDeck)
                 .build();
 
-        playerDeck.addCurrentCardAndSetInactive(currentCard);
+        playerDeck.addCurrentCardAndSetUsed(currentCard);
 
         assertEquals(currentCard, playerDeck.getCards().getFirst());
     }
 
     @Test
-    public void whenAddCurrentCardAndSetInactive_thenCurrentCardIsSetToInactive() {
+    public void whenAddCurrentCardAndSetInactive_thenCurrentCardIsSetToUsed() {
         Card currentCard = cardBuilder
-                .withStatus(ItemStatus.ACTIVE)
+                .withStatus(ItemStatus.ACTIVE_IN_CURRENT_DECK)
                 .build();
 
-        playerDeck.addCurrentCardAndSetInactive(currentCard);
+        playerDeck.addCurrentCardAndSetUsed(currentCard);
 
-        assertEquals(ItemStatus.INACTIVE, currentCard.getStatus());
+        assertEquals(ItemStatus.BOARD, currentCard.getStatus());
     }
 }

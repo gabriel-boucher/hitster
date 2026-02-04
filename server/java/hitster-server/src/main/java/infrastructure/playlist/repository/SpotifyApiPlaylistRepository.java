@@ -20,7 +20,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SpotifyApiPlaylistRepository implements PlaylistRepository {
     private static final String SEARCH_BASE_URL = "https://api.spotify.com/v1/search";
@@ -58,7 +60,7 @@ public class SpotifyApiPlaylistRepository implements PlaylistRepository {
     @Override
     public List<Card> getCardsByPlaylistId(AccessToken accessToken, List<PlaylistId> playlistIds) {
         try {
-            List<Card> cards = new ArrayList<>();
+            Set<Card> cards = new HashSet<>();
 
             for (PlaylistId playlistId : playlistIds) {
                 int offset = 0;
@@ -80,7 +82,7 @@ public class SpotifyApiPlaylistRepository implements PlaylistRepository {
                 }
             }
 
-            return cards;
+            return cards.stream().toList();
         } catch (Exception e) {
             throw new SpotifyApiGetPlaylistItemsException(accessToken, playlistIds.getFirst());
         }

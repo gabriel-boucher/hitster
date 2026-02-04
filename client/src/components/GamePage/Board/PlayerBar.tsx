@@ -1,21 +1,22 @@
 import styled from "styled-components";
 import { useMemo } from "react";
 import PlayerInGame from "../../elements/Player/PlayerInGame";
-import { useStateProvider } from "../../../utils/StateProvider";
+import {useRoomStateProvider} from "../../../stateProvider/room/RoomStateProvider.tsx";
+import {PlayerId} from "../../../type/player/Player.ts";
 
 interface PlayerProps {
-  setHoveredPlayerId: (playerId: string) => void
+  setHoveredPlayerId: (playerId: PlayerId) => void
   setIsClickedPlayer: (isClicked: boolean) => void
 } 
 
 export default function PlayerBar({ setHoveredPlayerId, setIsClickedPlayer }: PlayerProps) {
-  const [{ players }] = useStateProvider();
+  const [{ players }] = useRoomStateProvider();
 
   return useMemo(
     () => (
       <Container>
         {Object.values(players).map((player) => (
-          <PlayerInGame key={player.socketId} player={player} setHoveredPlayerId={setHoveredPlayerId} setIsClickedPlayer={setIsClickedPlayer}/>
+          <PlayerInGame key={player.id} player={player} setHoveredPlayerId={setHoveredPlayerId} setIsClickedPlayer={setIsClickedPlayer}/>
         ))}
       </Container>
     ),

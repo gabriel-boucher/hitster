@@ -18,16 +18,20 @@ public class GameAppService {
         return execute(gameId, game -> game.nextTurn(playerId));
     }
 
-    public Game addCurrentCard(GameId gameId, PlayerId playerId, int position) {
-        return execute(gameId, game -> game.addCurrentCardToCurrentDeck(playerId, position));
+    public Game addCurrentCard(GameId gameId, PlayerId playerId) {
+        return execute(gameId, game -> game.addCurrentCardToCurrentDeck(playerId));
     }
 
     public Game removeCurrentCard(GameId gameId, PlayerId playerId) {
         return execute(gameId, game -> game.removeCurrentCardFromCurrentDeck(playerId));
     }
 
-    public Game reorderCurrentCard(GameId gameId, PlayerId playerId, int newPosition) {
-        return execute(gameId, game -> game.reorderCurrentCardInCurrentDeck(playerId, newPosition));
+    public Game returnCurrentCard(GameId gameId, PlayerId playerId) {
+        return execute(gameId, game -> game.returnCurrentCardToPile(playerId));
+    }
+
+    public Game moveCurrentCard(GameId gameId, PlayerId playerId, int position) {
+        return execute(gameId, game -> game.moveCurrentCardInCurrentDeck(playerId, position));
     }
 
     public Game addToken(GameId gameId, PlayerId playerId, TokenId tokenId, int position) {

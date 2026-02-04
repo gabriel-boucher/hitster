@@ -7,23 +7,22 @@ import java.util.List;
 
 public class Players {
     private final List<Player> players;
-    private int currentPlayerIndex;
+    private PlayerId currentPlayerId;
 
-    public Players(List<Player> players, int currentPlayerIndex) {
+    public Players(List<Player> players) {
         this.players = players;
-        this.currentPlayerIndex = currentPlayerIndex;
     }
 
     public List<Player> getPlayers() {
         return players;
     }
 
-    public int getCurrentPlayerIndex() {
-        return currentPlayerIndex;
+    public PlayerId getCurrentPlayerId() {
+        return currentPlayerId;
     }
 
     public Player getCurrentPlayer() {
-        return players.get(currentPlayerIndex);
+        return getPlayerById(currentPlayerId);
     }
 
     public Player getPlayerById(PlayerId playerId) {
@@ -37,11 +36,17 @@ public class Players {
         return getCurrentPlayer().getDeck().getCards();
     }
 
-    public void setCurrentPlayerIndex(int index) {
-        this.currentPlayerIndex = index;
+    public void setCurrentPlayerId(PlayerId currentPlayerId) {
+        this.currentPlayerId = currentPlayerId;
     }
 
     public void setNextPlayer() {
-        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).getId().equals(currentPlayerId)) {
+                int nextIndex = (i + 1) % players.size(); // wrap to 0 if last
+                setCurrentPlayerId(players.get(nextIndex).getId());
+                break;
+            }
+        }
     }
 }

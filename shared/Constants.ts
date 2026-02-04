@@ -9,6 +9,7 @@ export enum socketEvents {
   START_GAME = "start-game",
   NEXT_TURN = "next-turn",
   UPDATE_GAME_STATE = "update-game-state",
+
 }
 
 export enum gameStatus {

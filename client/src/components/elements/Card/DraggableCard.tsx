@@ -1,24 +1,17 @@
-import { useStateProvider } from "src/utils/StateProvider";
 import styled from "styled-components";
+import {useMovementStateProvider} from "../../../stateProvider/movement/MovementStateProvider.tsx";
 
-interface CardProps {
-  dragPosition: { x: number; y: number };
-  activeCardWidth: number;
-}
+export default function DraggableCard() {
+  const [{ isDragging, currentCardWidth, draggingPosition }] = useMovementStateProvider();
 
-export default function DraggableCard({
-  dragPosition,
-  activeCardWidth,
-}: CardProps) {
-  const [{ isDragging }] = useStateProvider();
   return (
     <>
       {isDragging && (
         <Card
           style={{
-            left: dragPosition.x - activeCardWidth / 2,
-            top: dragPosition.y - activeCardWidth / 2,
-            width: activeCardWidth,
+            left: draggingPosition.x - currentCardWidth / 2,
+            top: draggingPosition.y - currentCardWidth / 2,
+            width: currentCardWidth,
           }}
         ></Card>
       )}

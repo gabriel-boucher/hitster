@@ -14,7 +14,7 @@ public class GameFactory {
         return new Game(
                 GameId.fromString(room.getId().toString()),
                 GameStatus.PLAYING,
-                new Players(room.getPlayers(), 0),
+                new Players(room.getPlayers()),
                 new Pile(new ArrayList<>()),
                 new CurrentDeck(new ArrayList<>()),
                 new GameInitializer(),

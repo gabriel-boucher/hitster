@@ -26,14 +26,14 @@ public class GameInitializer {
 
     private void giveStartingCards(Pile pile, Player player) {
         Card card = pile.removeCurrentCard();
-        player.addCardToDeck(card);
+        player.addCurrentCardToDeckAndSetUsed(card);
     }
 
     private void giveStartingTokens(Player player) {
         for (int i = 0; i < 2; i++) {
             player.addTokenToDeck(new Token(
                     TokenId.create(),
-                    ItemStatus.INACTIVE,
+                    ItemStatus.UNUSED,
                     player.getId()
             ));
         }
@@ -42,7 +42,7 @@ public class GameInitializer {
     private void initializeCurrentPlayer(Players players) {
         int playerCount = players.getPlayers().size();
         int currentPlayerIndex = (int) (Math.random() * playerCount);
-        players.setCurrentPlayerIndex(currentPlayerIndex);
+        players.setCurrentPlayerId(players.getPlayers().get(currentPlayerIndex).getId());
     }
 
     private void initializeCurrentDeck(CurrentDeck currentDeck, Players players) {

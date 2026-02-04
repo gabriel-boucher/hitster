@@ -1,29 +1,24 @@
 import styled from "styled-components";
-import { CardInterface } from "@shared/interfaces";
 import { useMemo } from "react";
+import {Card} from "../../../type/item/Card.ts";
+import * as React from "react";
+import useMouseDownCard from "../../../hooks/socket/movement/useMouseDownCard.ts";
 
 interface CardProps {
   index: number;
-  card: CardInterface;
-  handleMouseDown: (
-    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
-    card: CardInterface
-  ) => void;
+  card: Card;
 }
 
-export default function CardInStack({
-  index,
-  card,
-  handleMouseDown,
-}: CardProps) {
+export default function CardInStack({ index, card }: CardProps) {
+  const mouseDownCard = useMouseDownCard();
 
   const handleMouseEvents = useMemo(() => ({
-    onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => handleMouseDown(e, card),
-    onTouchStart: (e: React.TouchEvent<HTMLDivElement>) => handleMouseDown(e, card),
-  }), [card, handleMouseDown]);
+    onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => mouseDownCard(e, card),
+    onTouchStart: (e: React.TouchEvent<HTMLDivElement>) => mouseDownCard(e, card),
+  }), [card, mouseDownCard]);
 
   return (
-    <Card
+    <CardComponent
       {...handleMouseEvents}
       style={{
         bottom: index * 2,
@@ -31,11 +26,11 @@ export default function CardInStack({
       }}
     >
       <div className="card-container"></div>
-    </Card>
+    </CardComponent>
   );
 }
 
-const Card = styled.div`
+const CardComponent = styled.div`
   height: 16vh;
   width: 16vh;
   position: absolute;

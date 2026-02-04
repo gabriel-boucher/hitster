@@ -7,6 +7,7 @@ public class CardMapper {
     public CardDto toDto(Card card) {
         return new CardDto(
                 card.getId().toString(),
+                "card",
                 card.getStatus().name(),
                 card.getSong(),
                 card.getArtist(),

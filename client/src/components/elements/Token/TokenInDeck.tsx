@@ -1,14 +1,21 @@
 import styled from "styled-components";
+import {ItemStatus} from "../../../type/item/ItemStatus.ts";
+import {Token} from "../../../type/item/Token.ts";
 
-export default function TokenInDeck() {
+export default function TokenInDeck({ token }: { token: Token }) {
+    const style = {
+        opacity: token.status === ItemStatus.MOVING_IN_CURRENT_DECK ? 0.3 : 1,
+        border: token.status === ItemStatus.MOVING_IN_CURRENT_DECK ? "2px solid white" : "none",
+    };
+
   return (
     <Container>
-      <Token />
+      <TokenComponent style={style}/>
     </Container>
   );
 }
 
-const Token = styled.div`
+const TokenComponent = styled.div`
     aspect-ratio: 1/1;
     height: 80%;
 

@@ -15,21 +15,22 @@ import infrastructure.playlist.exception.getPlaylistItems.SpotifyApiGetPlaylistI
 import interfaces.dto.responseDto.exceptionDto.BadRequestExceptionResponse;
 import interfaces.dto.responseDto.exceptionDto.NotFoundExceptionResponse;
 import interfaces.dto.responseDto.exceptionDto.UnauthorizedExceptionResponse;
-import interfaces.mapper.GameStateMapper;
-import interfaces.mapper.RoomStateMapper;
+import interfaces.socket.SocketEventBroadcaster;
 import interfaces.socket.SocketEventHandler;
-import interfaces.socket.room.RoomSocketEventHandler;
 import interfaces.socket.room.startGame.dto.StartGameData;
 import interfaces.socket.room.startGame.dto.StartGameRequest;
 
 import static interfaces.dto.responseDto.EventResponseStatus.*;
 
-public class StartGameHandler extends RoomSocketEventHandler implements SocketEventHandler<StartGameRequest> {
+public class StartGameHandler implements SocketEventHandler<StartGameRequest> {
+    private final RoomAppService roomAppService;
     private final StartGameMapper startGameMapper;
+    private final SocketEventBroadcaster socketEventBroadcaster;
 
-    public StartGameHandler(RoomAppService roomAppService, RoomStateMapper roomStateMapper, GameStateMapper gameStateMapper, StartGameMapper startGameMapper) {
-        super(roomAppService, roomStateMapper, gameStateMapper);
+    public StartGameHandler(RoomAppService roomAppService, StartGameMapper startGameMapper, SocketEventBroadcaster socketEventBroadcaster) {
+        this.roomAppService = roomAppService;
         this.startGameMapper = startGameMapper;
+        this.socketEventBroadcaster = socketEventBroadcaster;
     }
 
     @Override
@@ -39,7 +40,7 @@ public class StartGameHandler extends RoomSocketEventHandler implements SocketEv
             Game game = roomAppService.startGame(data.roomId(), data.playerId());
             client.joinRoom(game.getId().toString());
 
-            broadcastGameState(game, server);
+            socketEventBroadcaster.broadcastGameState(game, server);
         } catch (RoomNotFoundException e) {
             ackRequest.sendAckData(new NotFoundExceptionResponse(ROOM_NOT_FOUND, e.getMessage()));
         } catch (PlayerNotFoundException e) {

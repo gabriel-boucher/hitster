@@ -1,105 +1,76 @@
 package interfaces.socket.game;
 
-import application.GameAppService;
 import com.corundumstudio.socketio.SocketIOServer;
-import domain.game.Game;
 import interfaces.socket.SocketResource;
-import interfaces.socket.game.addCurrentCard.dto.AddCurrentCardData;
-import interfaces.socket.game.addCurrentCard.AddCurrentCardMapper;
+import interfaces.socket.game.addCurrentCard.AddCurrentCardHandler;
 import interfaces.socket.game.addCurrentCard.dto.AddCurrentCardRequest;
-import interfaces.socket.game.addToken.dto.AddTokenData;
-import interfaces.socket.game.addToken.AddTokenMapper;
+import interfaces.socket.game.addToken.AddTokenHandler;
 import interfaces.socket.game.addToken.dto.AddTokenRequest;
-import interfaces.socket.game.nextTurn.dto.NextTurnData;
-import interfaces.socket.game.nextTurn.NextTurnMapper;
+import interfaces.socket.game.nextTurn.NextTurnHandler;
 import interfaces.socket.game.nextTurn.dto.NextTurnRequest;
-import interfaces.socket.game.removeCurrentCard.dto.RemoveCurrentCardData;
-import interfaces.socket.game.removeCurrentCard.RemoveCurrentCardMapper;
+import interfaces.socket.game.removeCurrentCard.RemoveCurrentCardHandler;
 import interfaces.socket.game.removeCurrentCard.dto.RemoveCurrentCardRequest;
-import interfaces.socket.game.removeToken.dto.RemoveTokenData;
-import interfaces.socket.game.removeToken.RemoveTokenMapper;
+import interfaces.socket.game.removeToken.RemoveTokenHandler;
 import interfaces.socket.game.removeToken.dto.RemoveTokenRequest;
-import interfaces.socket.game.reorderCurrentCard.dto.ReorderCurrentCardData;
-import interfaces.socket.game.reorderCurrentCard.ReorderCurrentCardMapper;
-import interfaces.socket.game.reorderCurrentCard.dto.ReorderCurrentCardRequest;
-import interfaces.mapper.GameStateMapper;
+import interfaces.socket.game.moveCurrentCard.MoveCurrentCardHandler;
+import interfaces.socket.game.moveCurrentCard.dto.MoveCurrentCardRequest;
+import interfaces.socket.game.returnCurrentCard.ReturnCurrentCardHandler;
+import interfaces.socket.game.returnCurrentCard.dto.ReturnCurrentCardRequest;
 
 public class GameResource implements SocketResource {
-    private final GameAppService gameAppService;
-    private final NextTurnMapper nextTurnMapper;
-    private final AddCurrentCardMapper addCurrentCardMapper;
-    private final RemoveCurrentCardMapper removeCurrentCardMapper;
-    private final ReorderCurrentCardMapper reorderCurrentCardMapper;
-    private final AddTokenMapper addTokenMapper;
-    private final RemoveTokenMapper removeTokenMapper;
-    private final GameStateMapper gameStateMapper;
+    private final NextTurnHandler nextTurnHandler;
+    private final AddCurrentCardHandler addCurrentCardHandler;
+    private final RemoveCurrentCardHandler removeCurrentCardHandler;
+    private final ReturnCurrentCardHandler returnCurrentCardHandler;
+    private final MoveCurrentCardHandler moveCurrentCardHandler;
+    private final AddTokenHandler addTokenHandler;
+    private final RemoveTokenHandler removeTokenHandler;
 
     public GameResource(
-            GameAppService gameAppService,
-            NextTurnMapper nextTurnMapper,
-            AddCurrentCardMapper addCurrentCardMapper,
-            RemoveCurrentCardMapper removeCurrentCardMapper,
-            ReorderCurrentCardMapper reorderCurrentCardMapper,
-            AddTokenMapper addTokenMapper,
-            RemoveTokenMapper removeTokenMapper,
-            GameStateMapper gameStateMapper) {
-        this.gameAppService = gameAppService;
-        this.nextTurnMapper = nextTurnMapper;
-        this.addCurrentCardMapper = addCurrentCardMapper;
-        this.removeCurrentCardMapper = removeCurrentCardMapper;
-        this.reorderCurrentCardMapper = reorderCurrentCardMapper;
-        this.addTokenMapper = addTokenMapper;
-        this.removeTokenMapper = removeTokenMapper;
-        this.gameStateMapper = gameStateMapper;
+            NextTurnHandler nextTurnHandler,
+            AddCurrentCardHandler addCurrentCardHandler,
+            RemoveCurrentCardHandler removeCurrentCardHandler,
+            ReturnCurrentCardHandler returnCurrentCardHandler,
+            MoveCurrentCardHandler moveCurrentCardHandler,
+            AddTokenHandler addTokenHandler,
+            RemoveTokenHandler removeTokenHandler) {
+        this.nextTurnHandler = nextTurnHandler;
+        this.addCurrentCardHandler = addCurrentCardHandler;
+        this.removeCurrentCardHandler = removeCurrentCardHandler;
+        this.returnCurrentCardHandler = returnCurrentCardHandler;
+        this.moveCurrentCardHandler = moveCurrentCardHandler;
+        this.addTokenHandler = addTokenHandler;
+        this.removeTokenHandler = removeTokenHandler;
     }
 
     @Override
     public void setupEventListeners(SocketIOServer server) {
         server.addEventListener("next-turn", NextTurnRequest.class, (client, request, ackSender) -> {
-            NextTurnData data = nextTurnMapper.toDomain(request);
-            Game game = gameAppService.nextTurn(data.gameId(), data.playerId());
-
-            broadcastGameState(game, server);
+            nextTurnHandler.handleEvent(server, client, request, ackSender);
         });
 
         server.addEventListener("add-current-card", AddCurrentCardRequest.class, (client, request, ackSender) -> {
-            AddCurrentCardData data = addCurrentCardMapper.toDomain(request);
-            Game game = gameAppService.addCurrentCard(data.gameId(), data.playerId(), data.position());
-
-            broadcastGameState(game, server);
+            addCurrentCardHandler.handleEvent(server, client, request, ackSender);
         });
 
         server.addEventListener("remove-current-card", RemoveCurrentCardRequest.class, (client, request, ackSender) -> {
-            RemoveCurrentCardData data = removeCurrentCardMapper.toDomain(request);
-            Game game = gameAppService.removeCurrentCard(data.gameId(), data.playerId());
-
-            broadcastGameState(game, server);
+            removeCurrentCardHandler.handleEvent(server, client, request, ackSender);
         });
 
-        server.addEventListener("reorder-current-card", ReorderCurrentCardRequest.class, (client, request, ackSender) -> {
-            ReorderCurrentCardData data = reorderCurrentCardMapper.toDomain(request);
-            Game game = gameAppService.reorderCurrentCard(data.gameId(), data.playerId(), data.newPosition());
-
-            broadcastGameState(game, server);
+        server.addEventListener("return-current-card", ReturnCurrentCardRequest.class, (client, request, ackSender) -> {
+            returnCurrentCardHandler.handleEvent(server, client, request, ackSender);
         });
 
-        server.addEventListener("add-id", AddTokenRequest.class, (client, request, ackSender) -> {
-            AddTokenData data = addTokenMapper.toDomain(request);
-            Game game = gameAppService.addToken(data.gameId(), data.playerId(), data.tokenId(), data.position());
-
-            broadcastGameState(game, server);
+        server.addEventListener("move-current-card", MoveCurrentCardRequest.class, (client, request, ackSender) -> {
+            moveCurrentCardHandler.handleEvent(server, client, request, ackSender);
         });
 
-        server.addEventListener("remove-id", RemoveTokenRequest.class, (client, request, ackSender) -> {
-            RemoveTokenData data = removeTokenMapper.toDomain(request);
-            Game game = gameAppService.removeToken(data.gameId(), data.playerId(), data.tokenId());
-
-            broadcastGameState(game, server);
+        server.addEventListener("add-token", AddTokenRequest.class, (client, request, ackSender) -> {
+            addTokenHandler.handleEvent(server, client, request, ackSender);
         });
-    }
 
-    private void broadcastGameState(Game game, SocketIOServer socketIOServer) {
-        GameStateResponse response = gameStateMapper.toDto(game);
-        socketIOServer.getRoomOperations(game.getId().toString()).sendEvent("game-state", response);
+        server.addEventListener("remove-token", RemoveTokenRequest.class, (client, request, ackSender) -> {
+            removeTokenHandler.handleEvent(server, client, request, ackSender);
+        });
     }
 }

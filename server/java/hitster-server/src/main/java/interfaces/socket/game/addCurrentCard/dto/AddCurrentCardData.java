@@ -5,7 +5,6 @@ import domain.player.PlayerId;
 
 public record AddCurrentCardData(
         GameId gameId,
-        PlayerId playerId,
-        int position
+        PlayerId playerId
 ) {
 }

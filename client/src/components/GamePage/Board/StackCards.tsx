@@ -1,42 +1,56 @@
 import styled from "styled-components";
-import { useStateProvider } from "../../../utils/StateProvider";
 import CardInStack from "../../elements/Card/CardInStack";
-import { CardInterface } from "@shared/interfaces";
-import { isCard } from "@shared/utils";
 import { useMemo } from "react";
+import {useGameStateProvider} from "../../../stateProvider/game/GameStateProvider.tsx";
+import {Card} from "../../../type/item/Card.ts";
+import {ItemStatus} from "../../../type/item/ItemStatus.ts";
+import useMouseLeaveDeck from "../../../hooks/socket/movement/useMouseLeaveDeck.ts";
 
-interface CardProps {
-  handleMouseDown: (
-    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
-    card: CardInterface
-  ) => void;
-  handleMouseLeave: () => void;
-}
+export default function StackCards() {
+  const [{ items, currentCardId, currentCardStatus }] = useGameStateProvider();
 
-export default function StackCards({
-  handleMouseDown,
-  handleMouseLeave,
-}: CardProps) {
-  const [{ items }] = useStateProvider();
+  const mouseLeaveDeck = useMouseLeaveDeck();
 
   const handleMouseEvents = useMemo(() => ({
-    onMouseLeave: handleMouseLeave,
-    onTouchEnd: handleMouseLeave,
-  }), [handleMouseLeave]);
+    onMouseLeave: mouseLeaveDeck,
+    onTouchEnd: mouseLeaveDeck,
+  }), [mouseLeaveDeck]);
+
+  const cards: Card[] = Array.from({ length: 19 }, (_, i) => ({
+    type: "card",
+    id: `stack-card-${i}`,
+    status: ItemStatus.UNUSED,
+    song: "",
+    artist: "",
+    date: "",
+    albumUrl: "",
+  }));
 
   return (
     <Container>
       <Stack {...handleMouseEvents}>
-        {items
-          .filter((item): item is CardInterface => isCard(item) && item.playerId === null)
-          .map((card, index) => (
+        {cards.map((card, index) =>
+          <CardInStack
+            key={card.id}
+            index={index - items.length + 20}
+            card={card}
+          />
+        )}
+          {currentCardStatus === ItemStatus.UNUSED && (
             <CardInStack
-              key={card.id}
-              index={index - items.length + 20}
-              card={card}
-              handleMouseDown={handleMouseDown}
+              key={currentCardId}
+              index={19 - items.length + 20}
+              card={{
+                type: "card",
+                id: currentCardId,
+                status: ItemStatus.UNUSED,
+                song: "",
+                artist: "",
+                date: "",
+                albumUrl: "",
+              }}
             />
-          )).slice(-20)}
+          )}
       </Stack>
     </Container>
   );

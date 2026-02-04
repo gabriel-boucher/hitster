@@ -11,21 +11,22 @@ import domain.room.Room;
 import domain.room.exception.PlayerHostCannotBeRemovedException;
 import interfaces.dto.responseDto.exceptionDto.BadRequestExceptionResponse;
 import interfaces.dto.responseDto.exceptionDto.NotFoundExceptionResponse;
-import interfaces.mapper.GameStateMapper;
-import interfaces.mapper.RoomStateMapper;
+import interfaces.socket.SocketEventBroadcaster;
 import interfaces.socket.SocketEventHandler;
-import interfaces.socket.room.RoomSocketEventHandler;
 import interfaces.socket.room.removePlayer.dto.RemovePlayerData;
 import interfaces.socket.room.removePlayer.dto.RemovePlayerRequest;
 
 import static interfaces.dto.responseDto.EventResponseStatus.*;
 
-public class RemovePlayerHandler extends RoomSocketEventHandler implements SocketEventHandler<RemovePlayerRequest> {
+public class RemovePlayerHandler implements SocketEventHandler<RemovePlayerRequest> {
+    private final RoomAppService roomAppService;
     private final RemovePlayerMapper removePlayerMapper;
+    private final SocketEventBroadcaster socketEventBroadcaster;
 
-    public RemovePlayerHandler(RoomAppService roomAppService, RoomStateMapper roomStateMapper, GameStateMapper gameStateMapper, RemovePlayerMapper removePlayerMapper) {
-        super(roomAppService, roomStateMapper, gameStateMapper);
+    public RemovePlayerHandler(RoomAppService roomAppService, RemovePlayerMapper removePlayerMapper, SocketEventBroadcaster socketEventBroadcaster) {
+        this.roomAppService = roomAppService;
         this.removePlayerMapper = removePlayerMapper;
+        this.socketEventBroadcaster = socketEventBroadcaster;
     }
 
     @Override
@@ -34,7 +35,7 @@ public class RemovePlayerHandler extends RoomSocketEventHandler implements Socke
             RemovePlayerData data = removePlayerMapper.toDomain(request);
             Room room = roomAppService.removePlayer(data.roomId(), data.playerId(), data.playerToRemoveId());
 
-            broadcastRoomStateExceptPlayer(room, server, data.playerToRemoveId().toString());
+            socketEventBroadcaster.broadcastRoomStateExceptPlayer(room, server, data.playerToRemoveId().toString());
         } catch (RoomNotFoundException e) {
             ackRequest.sendAckData(new NotFoundExceptionResponse(ROOM_NOT_FOUND, e.getMessage()));
         } catch (PlayerNotFoundException e) {

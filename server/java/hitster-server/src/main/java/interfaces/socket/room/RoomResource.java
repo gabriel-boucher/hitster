@@ -1,8 +1,6 @@
 package interfaces.socket.room;
 
-import application.RoomAppService;
 import com.corundumstudio.socketio.SocketIOServer;
-import interfaces.mapper.GameStateMapper;
 import interfaces.socket.SocketResource;
 import interfaces.socket.room.addPlaylist.AddPlaylistHandler;
 import interfaces.socket.room.changePlayerColor.ChangePlayerColorHandler;
@@ -13,7 +11,6 @@ import interfaces.socket.room.removePlayer.RemovePlayerHandler;
 import interfaces.socket.room.removePlaylist.RemovePlaylistHandler;
 import interfaces.socket.room.startGame.StartGameHandler;
 import interfaces.socket.room.startGame.dto.StartGameRequest;
-import interfaces.mapper.RoomStateMapper;
 import interfaces.socket.room.changePlayerColor.dto.ChangePlayerColorRequest;
 import interfaces.socket.room.changePlayerName.dto.ChangePlayerNameRequest;
 import interfaces.socket.room.createRoom.dto.CreateRoomRequest;

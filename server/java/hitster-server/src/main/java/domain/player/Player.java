@@ -37,12 +37,8 @@ public class Player {
         return deck.getTokenById(tokenId);
     }
 
-    public void addCurrentCardToDeckAndSetInactive(Card currentCard) {
-        deck.addCurrentCardAndSetInactive(currentCard);
-    }
-
-    public void addCardToDeck(Card card) {
-        deck.addCard(card);
+    public void addCurrentCardToDeckAndSetUsed(Card currentCard) {
+        deck.addCurrentCardAndSetUsed(currentCard);
     }
 
     public void addTokenToDeck(Token token) {

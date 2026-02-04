@@ -16,10 +16,22 @@ export const gameReducer = (state: GameState, action: GameAction) => {
         items: action.items,
       };
     }
-    case gameReducerCases.SET_IS_DRAGGING: {
+    case gameReducerCases.SET_CURRENT_CARD_ID: {
       return {
         ...state,
-        isDragging: action.isDragging,
+        currentCardId: action.currentCardId,
+      };
+    }
+    case gameReducerCases.SET_CURRENT_CARD_STATUS: {
+      return {
+        ...state,
+        currentCardStatus: action.currentCardStatus,
+      };
+    }
+    case gameReducerCases.SET_CURRENT_PLAYER_ID: {
+      return {
+        ...state,
+        currentPlayerId: action.currentPlayerId,
       };
     }
     default:

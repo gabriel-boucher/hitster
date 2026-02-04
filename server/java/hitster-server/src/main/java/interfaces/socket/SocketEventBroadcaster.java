@@ -1,4 +1,4 @@
-package interfaces.socket.room;
+package interfaces.socket;
 
 import application.RoomAppService;
 import com.corundumstudio.socketio.SocketIOServer;
@@ -8,29 +8,28 @@ import interfaces.dto.responseDto.successDto.OkSuccessResponse;
 import interfaces.mapper.GameStateMapper;
 import interfaces.mapper.RoomStateMapper;
 import interfaces.socket.game.GameStateResponse;
+import interfaces.socket.room.RoomStateResponse;
 
 import java.util.ArrayList;
 
 import static interfaces.dto.responseDto.EventResponseStatus.GAME_STATE;
 import static interfaces.dto.responseDto.EventResponseStatus.ROOM_STATE;
 
-public abstract class RoomSocketEventHandler {
-    protected final RoomAppService roomAppService;
+public class SocketEventBroadcaster {
     private final RoomStateMapper roomStateMapper;
     private final GameStateMapper gameStateMapper;
 
-    public RoomSocketEventHandler(RoomAppService roomAppService, RoomStateMapper roomStateMapper, GameStateMapper gameStateMapper) {
-        this.roomAppService = roomAppService;
+    public SocketEventBroadcaster(RoomStateMapper roomStateMapper, GameStateMapper gameStateMapper) {
         this.roomStateMapper = roomStateMapper;
         this.gameStateMapper = gameStateMapper;
     }
 
-    protected void broadcastRoomState(Room room, SocketIOServer socketIOServer) {
+    public void broadcastRoomState(Room room, SocketIOServer socketIOServer) {
         RoomStateResponse response = roomStateMapper.toDto(room);
         socketIOServer.getRoomOperations(room.getId().toString()).sendEvent("room-state", new OkSuccessResponse<>(ROOM_STATE, response));
     }
 
-    protected void broadcastRoomStateExceptPlayer(Room room, SocketIOServer socketIOServer, String excludedPlayerId) {
+    public void broadcastRoomStateExceptPlayer(Room room, SocketIOServer socketIOServer, String excludedPlayerId) {
         RoomStateResponse response = roomStateMapper.toDto(room);
         socketIOServer.getRoomOperations(room.getId().toString())
                 .getClients()
@@ -44,8 +43,19 @@ public abstract class RoomSocketEventHandler {
                 });
     }
 
-    protected void broadcastGameState(Game game, SocketIOServer socketIOServer) {
+    public void broadcastGameState(Game game, SocketIOServer socketIOServer) {
         GameStateResponse response = gameStateMapper.toDto(game);
         socketIOServer.getRoomOperations(game.getId().toString()).sendEvent("game-state", new OkSuccessResponse<>(GAME_STATE, response));
+    }
+
+    public void broadcastGameStateExceptPlayer(Game game, SocketIOServer socketIOServer, String excludedPlayerId) {
+        GameStateResponse response = gameStateMapper.toDto(game);
+        socketIOServer.getRoomOperations(game.getId().toString())
+                .getClients()
+                .forEach(client -> {
+                    if (!client.getSessionId().toString().equals(excludedPlayerId)) {
+                        client.sendEvent("game-state", new OkSuccessResponse<>(GAME_STATE, response));
+                    }
+                });
     }
 }

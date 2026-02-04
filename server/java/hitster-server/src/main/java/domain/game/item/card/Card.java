@@ -47,4 +47,12 @@ public class Card implements Moveable {
     public void setStatus(ItemStatus status) {
         this.status = status;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof Card otherCard)) {
+            return false;
+        }
+        return this.id.equals(otherCard.id);
+    }
 }

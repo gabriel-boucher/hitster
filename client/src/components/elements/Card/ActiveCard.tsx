@@ -1,85 +1,72 @@
 import styled from "styled-components";
-import { CardInterface } from "@shared/interfaces";
 import { useEffect, useMemo, useRef } from "react";
-import { useStateProvider } from "../../../utils/StateProvider";
+import {Card} from "../../../type/item/Card.ts";
+import {useGameStateProvider} from "../../../stateProvider/game/GameStateProvider.tsx";
+import {useMovementStateProvider} from "../../../stateProvider/movement/MovementStateProvider.tsx";
+import {movementReducerCases} from "../../../stateProvider/movement/MovementReducerCases.ts";
+import * as React from "react";
+import useMouseDragOverDeck from "../../../hooks/socket/movement/useMouseDragOverDeck.ts";
+import useMouseOverDeck from "../../../hooks/socket/movement/useMouseOverDeck.ts";
+import useMouseDownCard from "../../../hooks/socket/movement/useMouseDownCard.ts";
 
-interface CardProps {
-  card: CardInterface;
-  setActiveCardWidth: (width: number) => void;
-  handleMouseDown: (
-    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
-    card: CardInterface
-  ) => void;
-  handleMouseDraggingOver: (
-    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
-    card: CardInterface
-  ) => void;
-  handleMouseOver: (
-    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
-    card: CardInterface
-  ) => void;
-}
-
-export default function ActiveCard({
-  card,
-  setActiveCardWidth,
-  handleMouseDraggingOver,
-  handleMouseOver,
-  handleMouseDown,
-}: CardProps) {
-  const [{ isDragging }] = useStateProvider();
+export default function ActiveCard({ card }: { card: Card }) {
+  const [{ currentCardId }] = useGameStateProvider();
+  const [{ isDragging }, dispatchMovementState] = useMovementStateProvider();
   const cardRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (cardRef.current) {
-      setActiveCardWidth(cardRef.current.offsetWidth * 0.8);
-    }
-  });
+    if (!cardRef.current) return;
+    dispatchMovementState({ type: movementReducerCases.SET_CURRENT_CARD_WIDTH, currentCardWidth: cardRef.current.offsetWidth * 0.8})
+  }, [dispatchMovementState]);
+
+  const mouseDragOverDeck = useMouseDragOverDeck()
+  const mouseOverDeck = useMouseOverDeck()
+  const mouseDownCard = useMouseDownCard()
 
   const handleMouseEvents = useMemo(
     () => ({
       onMouseOver: (e: React.MouseEvent<HTMLDivElement>) =>
         isDragging
-          ? handleMouseDraggingOver(e, card)
-          : handleMouseOver(e, card),
+          ? mouseDragOverDeck(e, card)
+          : mouseOverDeck(e, card),
       onMouseDown: (e: React.MouseEvent<HTMLDivElement>) =>
-        handleMouseDown(e, card),
+          mouseDownCard(e, card),
       onTouchMove: (e: React.TouchEvent<HTMLDivElement>) =>
         isDragging
-          ? handleMouseDraggingOver(e, card)
-          : handleMouseOver(e, card),
+          ? mouseDragOverDeck(e, card)
+          : mouseOverDeck(e, card),
       onTouchStart: (e: React.TouchEvent<HTMLDivElement>) =>
-        handleMouseDown(e, card),
+          mouseDownCard(e, card),
     }),
-    [card, isDragging, handleMouseOver, handleMouseDraggingOver, handleMouseDown]
+    [card, isDragging, mouseDragOverDeck, mouseOverDeck, mouseDownCard]
   );
 
   const style = {
-    backgroundImage: `url(${card.albumCover})`,
+    backgroundImage: `url(${card.albumUrl})`,
     border: "none",
   };
-  if (isDragging && card.active) {
+  if (isDragging && card.id === currentCardId) {
     style.backgroundImage = "none";
     style.border = "2px solid white";
-  } else if (card.active) {
+  } else if (card.id === currentCardId) {
     style.backgroundImage = `url("src/assets/hitster_logo_square.webp")`;
     style.border = "none";
   }
 
   return (
-    <Card {...handleMouseEvents} ref={cardRef}>
+    <ActiveCardComponent {...handleMouseEvents} ref={cardRef}>
       <div className="card-container" style={style}>
-        {/* {card.id !== activeCard.id && (  */}
+         {card.id !== currentCardId && (
           <div className="details">
             <div className="date">{card.date}</div>
           </div>
-        {/* )} */}
+         )}
       </div>
-    </Card>
+    </ActiveCardComponent>
   );
 }
 
-const Card = styled.div`
+const ActiveCardComponent = styled.div`
   height: 100%;
   min-width: 0;
   aspect-ratio: 1/1;

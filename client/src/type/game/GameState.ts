@@ -1,7 +1,8 @@
 import {RoomId} from "../room/RoomState.ts";
-import {Player} from "../player/Player.ts";
-import {Card} from "../item/Card.ts";
+import {Player, PlayerId} from "../player/Player.ts";
+import {Card, CardId} from "../item/Card.ts";
 import {Token} from "../item/Token.ts";
+import {ItemStatus} from "../item/ItemStatus.ts";
 
 export enum GameStatus {
   LOBBY = "LOBBY",
@@ -14,6 +15,7 @@ export type GameState = {
   status: GameStatus;
   players: Player[],
   currentDeck: (Card|Token)[],
-  currentCard: Card,
-  currentPlayerIndex: number;
+  currentCardId: CardId,
+  currentCardStatus: ItemStatus,
+  currentPlayerId: PlayerId;
 }

@@ -8,10 +8,7 @@ import domain.room.Room;
 import infrastructure.accessToken.exception.AccessTokenException;
 import interfaces.dto.responseDto.exceptionDto.UnauthorizedExceptionResponse;
 import interfaces.dto.responseDto.successDto.CreatedSuccessResponse;
-import interfaces.mapper.GameStateMapper;
-import interfaces.mapper.RoomStateMapper;
 import interfaces.socket.SocketEventHandler;
-import interfaces.socket.room.RoomSocketEventHandler;
 import interfaces.socket.room.createRoom.dto.CreateRoomData;
 import interfaces.socket.room.createRoom.dto.CreateRoomRequest;
 import interfaces.socket.room.createRoom.dto.CreateRoomResponse;
@@ -19,11 +16,12 @@ import interfaces.socket.room.createRoom.dto.CreateRoomResponse;
 import static interfaces.dto.responseDto.EventResponseStatus.ROOM_ID;
 import static interfaces.dto.responseDto.EventResponseStatus.UNAUTHORIZED_ACCESS_TOKEN;
 
-public class CreateRoomHandler extends RoomSocketEventHandler implements SocketEventHandler<CreateRoomRequest> {
+public class CreateRoomHandler implements SocketEventHandler<CreateRoomRequest> {
+    private final RoomAppService roomAppService;
     private final CreateRoomMapper createRoomMapper;
 
-    public CreateRoomHandler(RoomAppService roomAppService, RoomStateMapper roomStateMapper, GameStateMapper gameStateMapper, CreateRoomMapper createRoomMapper) {
-        super(roomAppService, roomStateMapper, gameStateMapper);
+    public CreateRoomHandler(RoomAppService roomAppService, CreateRoomMapper createRoomMapper) {
+        this.roomAppService = roomAppService;
         this.createRoomMapper = createRoomMapper;
     }
 

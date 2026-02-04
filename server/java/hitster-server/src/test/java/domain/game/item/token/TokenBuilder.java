@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public class TokenBuilder {
     private TokenId id = TokenId.create();
-    private ItemStatus status = ItemStatus.INACTIVE;
+    private ItemStatus status = ItemStatus.BOARD;
     private PlayerId ownerId = new PlayerId(UUID.randomUUID());
 
     public TokenBuilder withId(TokenId id) {

@@ -1,7 +1,9 @@
 import {gameReducerCases} from "./GameReducerCases.ts";
 import {GameStatus} from "../../type/game/GameState.ts";
 import {Token} from "../../type/item/Token.ts";
-import {Card} from "../../type/item/Card.ts";
+import {Card, CardId} from "../../type/item/Card.ts";
+import {PlayerId} from "../../type/player/Player.ts";
+import {ItemStatus} from "../../type/item/ItemStatus.ts";
 
 export interface SetGameStatusGameAction {
   type: gameReducerCases.SET_GAME_STATUS;
@@ -13,12 +15,24 @@ export interface SetItemsGameAction {
   items: (Card | Token)[];
 }
 
-export interface SetIsDraggingGameAction {
-  type: gameReducerCases.SET_IS_DRAGGING;
-  isDragging: boolean;
+export interface SetCurrentCardIdGameAction {
+  type: gameReducerCases.SET_CURRENT_CARD_ID;
+  currentCardId: CardId;
+}
+
+export interface SetCurrentCardStatusGameAction {
+  type: gameReducerCases.SET_CURRENT_CARD_STATUS;
+  currentCardStatus: ItemStatus;
+}
+
+export interface SetCurrentPlayerIdGameAction {
+  type: gameReducerCases.SET_CURRENT_PLAYER_ID;
+  currentPlayerId: PlayerId;
 }
 
 export type GameAction =
   | SetGameStatusGameAction
   | SetItemsGameAction
-  | SetIsDraggingGameAction
+  | SetCurrentCardIdGameAction
+  | SetCurrentCardStatusGameAction
+  | SetCurrentPlayerIdGameAction

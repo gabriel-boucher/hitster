@@ -40,16 +40,16 @@ public class PlayerDeck {
         tokens.add(token);
     }
 
-    public void addCurrentCardAndSetInactive(Card currentCard) {
+    public void addCurrentCardAndSetUsed(Card currentCard) {
         for (int i = 0; i < cards.size(); i++) {
             Card card = cards.get(i);
             if (currentCard.getDate() <= card.getDate()) {
                 cards.add(i, currentCard);
-                currentCard.setStatus(ItemStatus.INACTIVE);
+                currentCard.setStatus(ItemStatus.USED);
                 return;
             }
         }
         cards.add(currentCard);
-        currentCard.setStatus(ItemStatus.INACTIVE);
+        currentCard.setStatus(ItemStatus.USED);
     }
 }

@@ -1,11 +1,8 @@
 package domain.game.currentDeck;
 
+import domain.game.currentDeck.exception.*;
 import domain.game.item.ItemStatus;
 import domain.game.item.card.Card;
-import domain.game.currentDeck.exception.CardActiveException;
-import domain.game.currentDeck.exception.CardInactiveException;
-import domain.game.currentDeck.exception.TokenActiveException;
-import domain.game.currentDeck.exception.TokenInactiveException;
 import domain.game.item.Moveable;
 import domain.player.PlayerId;
 import domain.game.item.token.Token;
@@ -28,61 +25,75 @@ public class CurrentDeck {
         this.currentItems.addAll(currentItems);
     }
 
-    public void addCardAndSetActive(Card card, int position) {
-        if (card.getStatus() == ItemStatus.ACTIVE) {
-            throw new CardActiveException();
+    public void addCardToDeck(Card card) {
+        if (card.getStatus() != ItemStatus.MOVING_IN_CURRENT_DECK) {
+            throw new CardAlreadyInCurrentDeckException();
         }
+
+        for (Moveable item : currentItems) {
+            if (item == card) {
+                item.setStatus(ItemStatus.ACTIVE_IN_CURRENT_DECK);
+            }
+        }
+    }
+
+    public void removeCardFromDeck(Card card) {
+        if (card.getStatus() != ItemStatus.MOVING_IN_CURRENT_DECK) {
+            throw new CardNotInCurrentDeckException();
+        }
+
+        currentItems.remove(card);
+        card.setStatus(ItemStatus.BOARD);
+    }
+
+    public void returnCardToPile(Card card) {
+        if (card.getStatus() != ItemStatus.BOARD) {
+            throw new CardAlreadyInPileException();
+        }
+
+        card.setStatus(ItemStatus.UNUSED);
+    }
+
+    public void moveCardInDeck(Card card, int position) {
+        currentItems.remove(card);
 
         position = Math.clamp(position, 0, currentItems.size());
         int prevPosition = position - 1;
 
-        if (prevPosition >= 0 && currentItems.get(prevPosition) instanceof Token token) { // previous is a id
-            removeTokenAndSetInactive(token);
+        if (prevPosition >= 0 && currentItems.get(prevPosition) instanceof Token token) { // previous is a token
+            removeTokenFromDeck(token);
             position--;
         }
 
-        if (position < currentItems.size() && currentItems.get(position) instanceof Token token) { // current is a id
-            removeTokenAndSetInactive(token);
+        if (position < currentItems.size() && currentItems.get(position) instanceof Token token) { // current is a token
+            removeTokenFromDeck(token);
         }
+
         currentItems.add(position, card);
-        card.setStatus(ItemStatus.ACTIVE);
+        card.setStatus(ItemStatus.MOVING_IN_CURRENT_DECK);
     }
 
-    public void removeCardAndSetInactive(Card card) {
-        if (card.getStatus() == ItemStatus.INACTIVE) {
-            throw new CardInactiveException();
+    public void addTokenInDeck(Token token, int position) {
+        if (token.getStatus() == ItemStatus.ACTIVE_IN_CURRENT_DECK) {
+            throw new TokenAlreadyInCurrentDeckException(token.getId());
         }
-        currentItems.remove(card);
-        card.setStatus(ItemStatus.INACTIVE);
-    }
 
-    public void reorderCard(Card card, int newPosition) {
-        if (card.getStatus() == ItemStatus.INACTIVE) {
-            throw new CardInactiveException();
-        }
-        removeCardAndSetInactive(card);
-        addCardAndSetActive(card, newPosition);
-    }
-
-    public void addTokenAndSetActive(Token token, int position) {
-        if (token.getStatus() == ItemStatus.ACTIVE) {
-            throw new TokenActiveException(token.getId());
-        }
         position = Math.clamp(position, 0, currentItems.size());
         int prevPosition = position - 1;
-        if (!(prevPosition >= 0 && currentItems.get(prevPosition).getStatus() == ItemStatus.ACTIVE || // previous is a id or currentCard
-                position < currentItems.size() && currentItems.get(position).getStatus() == ItemStatus.ACTIVE)) { // current is a id or currentCard
+        if (!(prevPosition >= 0 && currentItems.get(prevPosition).getStatus() == ItemStatus.ACTIVE_IN_CURRENT_DECK || // previous is a token or currentCard
+                position < currentItems.size() && currentItems.get(position).getStatus() == ItemStatus.ACTIVE_IN_CURRENT_DECK)) { // current is a token or currentCard
             currentItems.add(position, token);
-            token.setStatus(ItemStatus.ACTIVE);
+            token.setStatus(ItemStatus.ACTIVE_IN_CURRENT_DECK);
         }
     }
 
-    public void removeTokenAndSetInactive(Token token) {
-        if (token.getStatus() == ItemStatus.INACTIVE) {
-            throw new TokenInactiveException(token.getId());
+    public void removeTokenFromDeck(Token token) {
+        if (token.getStatus() == ItemStatus.UNUSED) {
+            throw new TokenAlreadyInPlayerDeckException(token.getId());
         }
+
         currentItems.remove(token);
-        token.setStatus(ItemStatus.INACTIVE);
+        token.setStatus(ItemStatus.UNUSED);
     }
 
     public void setAllTokensToUsed() {
@@ -94,8 +105,8 @@ public class CurrentDeck {
     }
 
     public PlayerId getCurrentCardWinner(Card currentCard, PlayerId currentPlayerId) {
-        if (currentCard.getStatus() == ItemStatus.INACTIVE) {
-            throw new CardInactiveException();
+        if (currentCard.getStatus() != ItemStatus.ACTIVE_IN_CURRENT_DECK) {
+            throw new CardNotInCurrentDeckException();
         }
         int currentIndex = currentItems.indexOf(currentCard);
 

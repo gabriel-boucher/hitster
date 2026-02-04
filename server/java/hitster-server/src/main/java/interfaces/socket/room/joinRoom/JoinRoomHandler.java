@@ -10,21 +10,22 @@ import domain.room.Room;
 import domain.room.exception.PlayerAlreadyInRoomException;
 import interfaces.dto.responseDto.exceptionDto.BadRequestExceptionResponse;
 import interfaces.dto.responseDto.exceptionDto.NotFoundExceptionResponse;
-import interfaces.mapper.GameStateMapper;
-import interfaces.mapper.RoomStateMapper;
+import interfaces.socket.SocketEventBroadcaster;
 import interfaces.socket.SocketEventHandler;
-import interfaces.socket.room.RoomSocketEventHandler;
 import interfaces.socket.room.joinRoom.dto.JoinRoomData;
 import interfaces.socket.room.joinRoom.dto.JoinRoomRequest;
 
 import static interfaces.dto.responseDto.EventResponseStatus.*;
 
-public class JoinRoomHandler extends RoomSocketEventHandler implements SocketEventHandler<JoinRoomRequest> {
+public class JoinRoomHandler implements SocketEventHandler<JoinRoomRequest> {
+    private final RoomAppService roomAppService;
     private final JoinRoomMapper joinRoomMapper;
+    private final SocketEventBroadcaster socketEventBroadcaster;
 
-    public JoinRoomHandler(RoomAppService roomAppService, RoomStateMapper roomStateMapper, GameStateMapper gameStateMapper, JoinRoomMapper joinRoomMapper) {
-        super(roomAppService, roomStateMapper, gameStateMapper);
+    public JoinRoomHandler(RoomAppService roomAppService, JoinRoomMapper joinRoomMapper, SocketEventBroadcaster socketEventBroadcaster) {
+        this.roomAppService = roomAppService;
         this.joinRoomMapper = joinRoomMapper;
+        this.socketEventBroadcaster = socketEventBroadcaster;
     }
 
     @Override
@@ -35,7 +36,7 @@ public class JoinRoomHandler extends RoomSocketEventHandler implements SocketEve
             client.joinRoom(request.roomId());
             System.out.println("Join room : PlayerId = " + request.playerId() + " in RoomId = " + request.roomId());
 
-            broadcastRoomState(room, server);
+            socketEventBroadcaster.broadcastRoomState(room, server);
         } catch (RoomNotFoundException | IllegalArgumentException e) { // room not found | uuid mapper
             ackRequest.sendAckData(new NotFoundExceptionResponse(ROOM_NOT_FOUND, e.getMessage()));
         } catch (PlayerAlreadyInRoomException e) {

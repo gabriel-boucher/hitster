@@ -5,13 +5,15 @@ import {
   PINK_COLOR__HEX,
   WHITE_COLOR__HEX,
 } from "src/utils/constants";
-import { useStateProvider } from "src/utils/StateProvider";
 import styled from "styled-components";
 import {Player, PlayerColor} from "../../../type/player/Player.ts";
 import useChangePlayerColor from "../../../hooks/socket/room/useChangePlayerColor.ts";
+import {useConnectionStateProvider} from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
+import {useRoomStateProvider} from "../../../stateProvider/room/RoomStateProvider.tsx";
 
 export default function PlayerInLobby() {
-  const [{ socket, players }] = useStateProvider();
+  const [{ socket }] = useConnectionStateProvider();
+  const [{ players }] = useRoomStateProvider();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 

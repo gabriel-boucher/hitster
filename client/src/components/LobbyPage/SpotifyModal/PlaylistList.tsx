@@ -76,12 +76,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* background: #181818;
-  border-radius: 16px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-  color: white;
-  max-width: 500px; */
 `;
 
 const Header = styled.div`
@@ -101,7 +95,7 @@ const Title = styled.h2`
 const CloseButton = styled.button`
   background: transparent;
   border: none;
-  color: #aaa;
+  color: var(--primary-spotify-text-color);
   cursor: pointer;
   height: 1.5rem;
 `;
@@ -114,15 +108,15 @@ const SearchInput = styled.input`
   outline: none;
   font-size: 0.95rem;
   margin-bottom: 1rem;
-  background: #2a2a2a;
-  color: white;
+  background: var(--secondary-spotify-bg-color);
+  color: var(--primary-spotify-text-color);
 
   &::placeholder {
-    color: #888;
+    color: var(--secondary-spotify-text-color);
   }
 
   &:focus {
-    outline: 1px solid #1db954;
+    outline: 1px solid var(--button-spotify-bg-color);
   }
 `;
 
@@ -135,7 +129,7 @@ const List = styled.ul`
   overflow-y: auto;
 
   &::-webkit-scrollbar {
-    width: 0px;
+    width: 0;
   }
 `;
 
@@ -145,10 +139,10 @@ const Item = styled.li`
   align-items: center;
   gap: 0.8rem;
   padding: 0.6rem;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--secondary-spotify-bg-color);
 
   &:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--hover-spotify-bg-color);
     border-radius: 8px;
   }
 `;
@@ -175,7 +169,7 @@ const Name = styled.span`
 
 const TrackNumber = styled.span`
   font-size: 0.8rem;
-  color: #888;
+  color: var(--secondary-spotify-text-color);
 `;
 
 const ActionButton = styled.button`
@@ -186,7 +180,7 @@ const ActionButton = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: white;
+  color: var(--primary-spotify-text-color);
 
   &:hover {
     opacity: 0.9;
@@ -194,7 +188,7 @@ const ActionButton = styled.button`
 `;
 
 const AddButton = styled(ActionButton)`
-  background: #1db954;
+  background: var(--button-spotify-bg-color);
 `;
 
 const RemoveButton = styled(ActionButton)`
@@ -207,8 +201,8 @@ const spin = keyframes`
 `;
 
 const LoadingSpinner = styled.div`
-  border: 3px solid rgba(255, 255, 255, 0.2);
-  border-top: 3px solid #1db954;
+  border: 3px solid var(--secondary-spotify-text-color);
+  border-top: 3px solid var(--button-spotify-bg-color);
   border-radius: 50%;
   width: 28px;
   height: 28px;
@@ -258,27 +252,3 @@ const Minus = styled(IconBase)`
     transform: translate(-50%, -50%);
   }
 `;
-
-// const X = styled(IconBase)`
-//   height: 15px;
-//   width: 15px;
-
-//   &::before,
-//   &::after {
-//     content: "";
-//     position: absolute;
-//     width: 100%;
-//     height: 2px;
-//     top: 50%;
-//     left: 50%;
-//     background: currentColor;
-//   }
-
-//   &::before {
-//     transform: translate(-50%, -50%) rotate(45deg);
-//   }
-
-//   &::after {
-//     transform: translate(-50%, -50%) rotate(-45deg);
-//   }
-// `;

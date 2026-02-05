@@ -31,6 +31,6 @@ const VolumeIcon = styled.svg`
 
   &:hover path {
     cursor: pointer;
-    fill: var(--primary-color);
+    fill: var(--primary-bg-color);
   }
 `

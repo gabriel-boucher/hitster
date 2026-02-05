@@ -11,8 +11,8 @@ export const SpotifyModal = ({ isModalOpen, closeModal }: Props) => {
   if (!isModalOpen) return null;
 
   return (
-    <Overlay>
-      <ModalContainer>
+    <Overlay onClick={closeModal}>
+      <ModalContainer onClick={(e) => e.stopPropagation()}>
           <PlaylistList closeModal={closeModal} />
       </ModalContainer>
     </Overlay>
@@ -29,15 +29,15 @@ const Overlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 1;
 `;
 
 const ModalContainer = styled.div`
-  background: #181818;
+  background: var(--primary-spotify-bg-color);
   border-radius: 12px;
   padding: 1.5rem;
   width: 500px;
-  background: #181818;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-  color: white;
+  z-index: 2;
+  color: var(--primary-spotify-text-color);
 `;

@@ -113,7 +113,7 @@ const PlayerImg = styled.div<{ $playerColor: PlayerColor }>`
 const PlayerColorSelected = styled(PlayerImg)`
   width: 7vh;
   border: 2px solid black;
-  box-shadow: 0 0 0 2px var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-bg-color);
 
   &:hover ${PlusIcon} {
     display: flex;
@@ -127,7 +127,7 @@ const PlayerColorInMenu = styled(PlayerImg)`
 
   &:hover {
     transform: scale(1.1);
-    box-shadow: 0 0 0 2px var(--primary-color);
+    box-shadow: 0 0 0 2px var(--primary-bg-color);
   }
 `;
 

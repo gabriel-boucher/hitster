@@ -1,6 +1,13 @@
 :root {
-  --primary-color: #FF00E0;
+  --primary-bg-color: #FF00E0;
   --primary-text-color: white;
+
+  --primary-spotify-bg-color: #181818;
+  --secondary-spotify-bg-color: #2A2A2A;
+  --button-spotify-bg-color: #1db954;
+  --hover-spotify-bg-color: #282828;
+  --primary-spotify-text-color: white;
+  --secondary-spotify-text-color: #888;
 }
 
 body {

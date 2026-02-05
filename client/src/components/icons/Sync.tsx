@@ -24,11 +24,10 @@ export default function Sync({ handleSync }: SyncProps) {
 const SyncIcon = styled.svg`
   fill: var(--primary-text-color);
   height: 24px;
-  width: 24px;
   width: 4vw;
 
   &:hover {
-    fill: var(--primary-color);
+    fill: var(--primary-bg-color);
     cursor: pointer;
   }
 `;

@@ -30,33 +30,39 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 8rem;
-  margin-bottom: 2rem;
-  color: var(--primary-color);
-  text-shadow: 0 0 10px var(--primary-color), 0 0 25px var(--primary-color);
-  animation: pulse 2s infinite;
+    font-size: 8rem;
+    margin-bottom: 2rem;
+    color: var(--primary-bg-color);
+    text-shadow: 0 0 10px var(--primary-bg-color), 0 0 25px var(--primary-bg-color);
+    animation: pulse 2s infinite;
 
-  @keyframes pulse {
-    0% { text-shadow: 0 0 10px var(--primary-color); }
-    50% { text-shadow: 0 0 20px var(--primary-color); }
-    100% { text-shadow: 0 0 10px var(--primary-color); }
-  }
+    @keyframes pulse {
+        0% {
+            text-shadow: 0 0 10px var(--primary-bg-color);
+        }
+        50% {
+            text-shadow: 0 0 20px var(--primary-bg-color);
+        }
+        100% {
+            text-shadow: 0 0 10px var(--primary-bg-color);
+        }
+    }
 `;
 
 const CreateRoomButton = styled.button`
-  background-color: var(--primary-color);
-  border: none;
-  padding: 1rem 2.5rem;
-  font-size: 1.4rem;
-  font-weight: bold;
-  border-radius: 12px;
-  color: var(--primary-text-color);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-bottom: 5rem;
+    background-color: var(--primary-bg-color);
+    border: none;
+    padding: 1rem 2.5rem;
+    font-size: 1.4rem;
+    font-weight: bold;
+    border-radius: 12px;
+    color: var(--primary-text-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 5rem;
 
-  &:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px var(--primary-color);
-  }
+    &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px var(--primary-bg-color);
+    }
 `;

@@ -1,5 +1,4 @@
 import { JSX } from "react";
-import { PINK_COLOR__HEX, WHITE_COLOR__HEX } from "src/utils/constants";
 import styled from "styled-components";
 
 interface ButtonProps {
@@ -25,9 +24,9 @@ const Glow = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  border: 0.4vh solid ${WHITE_COLOR__HEX};
-  box-shadow: 0 0 0.2rem ${PINK_COLOR__HEX}, 0 0 0.5rem ${PINK_COLOR__HEX}, 0 0 1rem ${PINK_COLOR__HEX},
-    inset 0 0 0.2rem ${PINK_COLOR__HEX}, inset 0 0 0.5rem ${PINK_COLOR__HEX}, inset 0 0 1rem ${PINK_COLOR__HEX};
+  border: 0.4vh solid var(--primary-text-color);
+  box-shadow: 0 0 0.2rem var(--primary-color), 0 0 0.5rem var(--primary-color), 0 0 1rem var(--primary-color),
+    inset 0 0 0.2rem var(--primary-color), inset 0 0 0.5rem var(--primary-color), inset 0 0 1rem var(--primary-color);
 `;
 
 const ButtonContainer = styled.button`
@@ -43,8 +42,8 @@ const ButtonContainer = styled.button`
     height: 100%;
 
     ${Glow} {
-      box-shadow: 0 0 0.4rem ${PINK_COLOR__HEX}, 0 0 0.7rem ${PINK_COLOR__HEX}, 0 0 1.2rem ${PINK_COLOR__HEX},
-        inset 0 0 0.4rem ${PINK_COLOR__HEX}, inset 0 0 0.7rem ${PINK_COLOR__HEX}, inset 0 0 1.2rem ${PINK_COLOR__HEX};
+      box-shadow: 0 0 0.4rem var(--primary-color), 0 0 0.7rem var(--primary-color), 0 0 1.2rem var(--primary-color),
+        inset 0 0 0.4rem var(--primary-color), inset 0 0 0.7rem var(--primary-color), inset 0 0 1.2rem var(--primary-color);
     }
   }
 `;

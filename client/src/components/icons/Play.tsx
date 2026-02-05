@@ -1,4 +1,3 @@
-import { WHITE_COLOR__HEX } from "src/utils/constants";
 import styled from "styled-components";
 
 export default function Play() {
@@ -22,6 +21,6 @@ const PlayIcon = styled.svg`
   margin-left: 3px;
 
   path {
-    fill: ${WHITE_COLOR__HEX};
+    fill: var(--primary-text-color);
   }
 `

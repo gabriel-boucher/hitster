@@ -47,7 +47,7 @@ export default function ActiveCard({ card }: { card: Card }) {
   };
   if (isDragging && card.id === currentCardId) {
     style.backgroundImage = "none";
-    style.border = "2px solid white";
+    style.border = "2px solid var(--primary-text-color)";
   } else if (card.id === currentCardId) {
     style.backgroundImage = `url("src/assets/hitster_logo_square.webp")`;
     style.border = "none";

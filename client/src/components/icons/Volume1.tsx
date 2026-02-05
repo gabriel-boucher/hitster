@@ -1,4 +1,3 @@
-import { PINK_COLOR__HEX, WHITE_COLOR__HEX } from "src/utils/constants";
 import styled from "styled-components";
 
 export default function Volume1() {
@@ -26,7 +25,7 @@ const VolumeIcon = styled.svg`
   height: 30px;
 
   path {
-    fill: ${WHITE_COLOR__HEX};
+    fill: var(--primary-text-color);
   }
 
   &:hover {
@@ -35,6 +34,6 @@ const VolumeIcon = styled.svg`
 
   &:hover path {
     cursor: pointer;
-    fill: ${PINK_COLOR__HEX};
+    fill: var(--primary-color);
   }
 `

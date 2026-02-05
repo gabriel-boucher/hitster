@@ -3,7 +3,6 @@ import Button from "src/components/elements/Button";
 import Slider from "src/components/elements/Slider";
 import Pause from "src/components/icons/Pause";
 import Play from "src/components/icons/Play";
-import { WHITE_COLOR__HEX } from "src/utils/constants";
 import styled from "styled-components";
 
 export default function SongPlayer() {
@@ -44,7 +43,7 @@ const Playback = styled.div`
   justify-content: center;
   align-items: center;
   gap: 1rem;
-  color: ${WHITE_COLOR__HEX};
+  color: var(--primary-text-color);
   margin-bottom: 4px;
   -webkit-user-select: none; /* Safari */
   user-select: none; /* Standard syntax */

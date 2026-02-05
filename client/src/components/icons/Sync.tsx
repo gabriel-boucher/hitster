@@ -1,4 +1,3 @@
-import { PINK_COLOR__HEX, WHITE_COLOR__HEX } from "src/utils/constants";
 import styled from "styled-components";
 
 interface SyncProps {
@@ -23,13 +22,13 @@ export default function Sync({ handleSync }: SyncProps) {
 }
 
 const SyncIcon = styled.svg`
-  fill: ${WHITE_COLOR__HEX};
+  fill: var(--primary-text-color);
   height: 24px;
   width: 24px;
   width: 4vw;
 
   &:hover {
-    fill: ${PINK_COLOR__HEX};
+    fill: var(--primary-color);
     cursor: pointer;
   }
 `;

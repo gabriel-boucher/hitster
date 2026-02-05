@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import searchPlaylists from "src/api/searchPlaylists";
 import { useDebounce } from "src/hooks/useDebounce";
 import {Playlist} from "../../../type/spotify/Playlist.ts";
 import {useConnectionStateProvider} from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
+import {HTTP_SERVER_URL} from "../../../config/url.ts";
+import axios from "axios";
 
 interface UseSearchPlaylistsSearch {
   searchedPlaylists: Playlist[];
@@ -38,3 +39,18 @@ export default function useSearchPlaylists (): UseSearchPlaylistsSearch {
 
   return { searchedPlaylists, loading, query, setQuery };
 };
+
+async function searchPlaylists(roomId: string, playerId: string, query: string): Promise<Playlist[]> {
+  const response = await axios.get(
+      `${HTTP_SERVER_URL}/api/spotify/search-playlists`,
+      {
+        params: { query },
+        headers: {
+          "x-room-id": roomId,
+          "x-player-id": playerId,
+        },
+      }
+  );
+
+  return response.data.playlists;
+}

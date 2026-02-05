@@ -1,9 +1,9 @@
 import {io} from "socket.io-client";
-import {ConnectionType, getBaseUrl} from "../../utils/constants.ts";
 import {Dispatch} from "react";
 import {ConnectionAction} from "./ConnectionAction.ts";
+import {WS_SERVER_URL} from "../../config/url.ts";
 
-const socket = io(getBaseUrl(ConnectionType.WS_SERVER));
+const socket = io(WS_SERVER_URL);
 
 export const connectionInitialState = {
   socket,

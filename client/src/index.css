@@ -1,22 +1,20 @@
+:root {
+  --primary-color: #FF00E0;
+  --primary-text-color: white;
+}
+
 body {
   margin: 0;
   overflow: hidden;
   font-family: Arial, Helvetica, sans-serif;
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1;
-  /* background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #1a1a40); */
-  /* background: linear-gradient(-45deg, #ff6ec4, #7873f5, #2afadf, #4c83ff); */
   background: linear-gradient(-45deg, #0d0c1b, #1b0f3a, #1e1e4b, #200b1c);
-  /* background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #a18cd1, #fbc2eb);
-  background: linear-gradient(-45deg, #00c9ff, #92fe9d, #ff61d2, #fe9090);
-  background: linear-gradient(-45deg, #020024, #090979, #ff0055, #00f2ff);
-  background: linear-gradient(-45deg, #ff00cc, #333399, #00f0ff, #1a1a40); */
   background-size: 600% 600%;
   animation: gradientShift 30s ease infinite;
 }
 
 @keyframes gradientShift {
-  0% { background-position: 0% 50%; }
+  0% { background-position: 0 50%; }
   50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  100% { background-position: 0 50%; }
 }

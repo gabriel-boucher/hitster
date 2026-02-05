@@ -1,7 +1,6 @@
 import { ChangeEvent, useState } from "react";
 import styled from "styled-components";
 import Slider from "src/components/elements/Slider";
-import { PINK_COLOR__HEX } from "src/utils/constants";
 import Volume0 from "src/components/icons/Volume0";
 import Volume3 from "src/components/icons/Volume3";
 import Volume2 from "src/components/icons/Volume2";
@@ -87,11 +86,11 @@ const Player = styled.div<{ $sliderProgress: number }>`
   // Hover on volume icon to edit volume slider (prevents using a state variable)
   /* &:has(svg:hover) input[type="range"] {
     background: ${({ $sliderProgress }) =>
-      `linear-gradient(to top, ${PINK_COLOR__HEX} ${$sliderProgress}%, hsla(0, 0%, 100%, 20%) ${$sliderProgress}%)`};
+      `linear-gradient(to top, var(--primary-color) ${$sliderProgress}%, hsla(0, 0%, 100%, 20%) ${$sliderProgress}%)`};
   } */
   &:hover input[type="range"] {
     background: ${({ $sliderProgress }) =>
-      `linear-gradient(to top, ${PINK_COLOR__HEX} ${$sliderProgress}%, hsla(0, 0%, 100%, 20%) ${$sliderProgress}%)`};
+      `linear-gradient(to top, var(--primary-color) ${$sliderProgress}%, hsla(0, 0%, 100%, 20%) ${$sliderProgress}%)`};
   }
 `;
 

@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { useState } from "react";
-import { PINK_COLOR__HEX } from "src/utils/constants";
 import PlayerInLobby from "src/components/elements/Player/PlayerInLobby";
 import { SpotifyModal } from "../components/LobbyPage/SpotifyModal/SpotifyModal";
 import useChangePlayerName from "../hooks/socket/room/useChangePlayerName.ts";
@@ -102,28 +101,22 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--primary-text-color);
   font-family: "Poppins", sans-serif;
 `;
 
 const Logo = styled.h1`
   font-size: 8rem;
   margin-bottom: 2rem;
-  color: ${PINK_COLOR__HEX};
-  text-shadow: 0 0 10px ${PINK_COLOR__HEX}, 0 0 20px ${PINK_COLOR__HEX};
+  color: var(--primary-color);
+  text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color);
   animation: pulse 2s infinite;
 
-  @keyframes pulse {
-    0% {
-      text-shadow: 0 0 10px ${PINK_COLOR__HEX};
+    @keyframes pulse {
+        0% { text-shadow: 0 0 10px var(--primary-color); }
+        50% { text-shadow: 0 0 20px var(--primary-color); }
+        100% { text-shadow: 0 0 10px var(--primary-color); }
     }
-    50% {
-      text-shadow: 0 0 30px ${PINK_COLOR__HEX};
-    }
-    100% {
-      text-shadow: 0 0 10px ${PINK_COLOR__HEX};
-    }
-  }
 `;
 
 const Entries = styled.div`
@@ -148,7 +141,7 @@ const NameInput = styled.input`
   border-radius: 12px 0 0 12px;
   border: 2px solid #00f2ff;
   background-color: #101c3b;
-  color: white;
+  color: var(--primary-text-color);
   outline: none;
 
   &::placeholder {
@@ -165,7 +158,7 @@ const ChangeNameButton = styled.button`
   padding: 1rem 1.5rem;
   font-size: 1.5rem;
   font-weight: bold;
-  color: white;
+  color: var(--primary-text-color);
   border: 2px solid #00f2ff;
   border-left: none;
   border-radius: 0 12px 12px 0;
@@ -254,12 +247,12 @@ const PlayerList = styled(List)``;
 const PlaylistList = styled(List)``;
 
 const StartButton = styled.button`
-  background-color: ${PINK_COLOR__HEX};
+  background-color: var(--primary-color);
   padding: 1rem 2rem;
   border: none;
   border-radius: 12px;
   font-size: 1.2rem;
-  color: white;
+  color: var(--primary-text-color);
   font-weight: bold;
   cursor: pointer;
   transition: 0.3s;
@@ -267,17 +260,17 @@ const StartButton = styled.button`
 
   &:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 12px ${PINK_COLOR__HEX};
+    box-shadow: 0 0 12px var(--primary-color);
   }
 `;
 
 const PlaylistButton = styled.button`
-  background-color: ${PINK_COLOR__HEX};
+  background-color: var(--primary-color);
   padding: 1rem 2rem;
   border: none;
   border-radius: 12px;
   font-size: 1.2rem;
-  color: white;
+  color: var(--primary-text-color);
   font-weight: bold;
   cursor: pointer;
   transition: 0.3s;
@@ -285,7 +278,7 @@ const PlaylistButton = styled.button`
 
   &:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 12px ${PINK_COLOR__HEX};
+    box-shadow: 0 0 12px var(--primary-color);
   }
 `;
 

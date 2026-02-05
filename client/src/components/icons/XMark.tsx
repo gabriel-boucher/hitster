@@ -1,4 +1,3 @@
-import { WHITE_COLOR__HEX } from "src/utils/constants";
 import styled from "styled-components";
 
 export default function XMark() {
@@ -19,6 +18,6 @@ const XMarkIcon = styled.svg`
   height: 100%;
 
   path {
-    fill: ${WHITE_COLOR__HEX};
+    fill: var(--primary-text-color);
   }
 `

@@ -1,4 +1,3 @@
-import {PINK_COLOR__HEX, WHITE_COLOR__HEX} from "src/utils/constants";
 import styled from "styled-components";
 import {Player} from "../../../type/player/Player.ts";
 import {useConnectionStateProvider} from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
@@ -61,14 +60,14 @@ export default function PlayerInGame({
 const CardIcon = styled.div`
   aspect-ratio: 1/1;
   width: 0.75rem;
-  border: 1px solid ${WHITE_COLOR__HEX};
+  border: 1px solid var(--primary-text-color);
   border-radius: 20%;
 `;
 
 const TokenIcon = styled.div`
   aspect-ratio: 1/1;
   width: 0.75rem;
-  border: 1px solid ${WHITE_COLOR__HEX};
+  border: 1px solid var(--primary-text-color);
   border-radius: 50%;
 `;
 
@@ -96,7 +95,7 @@ const PlayerInfo = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5vh;
-  color: ${WHITE_COLOR__HEX};
+  color: var(--primary-text-color);
   line-height: 1.5rem;
 `;
 
@@ -111,25 +110,25 @@ const PlayerIcon = styled.div<{
   border-radius: 50%;
   border: 0.4vh solid
     ${({ $isActivePlayer }) =>
-      $isActivePlayer ? WHITE_COLOR__HEX : "transparent"};
+      $isActivePlayer ? "var(--primary-text-color)" : "transparent"};
   box-shadow: 0 0 0.2rem
       ${({ $isActivePlayer }) =>
-        $isActivePlayer ? PINK_COLOR__HEX : "transparent"},
+        $isActivePlayer ? "var(--primary-color)" : "transparent"},
     0 0 0.5rem
       ${({ $isActivePlayer }) =>
-        $isActivePlayer ? PINK_COLOR__HEX : "transparent"},
+        $isActivePlayer ? "var(--primary-color)" : "transparent"},
     0 0 1rem
       ${({ $isActivePlayer }) =>
-        $isActivePlayer ? PINK_COLOR__HEX : "transparent"},
+        $isActivePlayer ? "var(--primary-color)" : "transparent"},
     inset 0 0 0.2rem
       ${({ $isActivePlayer }) =>
-        $isActivePlayer ? PINK_COLOR__HEX : "transparent"},
+        $isActivePlayer ? "var(--primary-color)" : "transparent"},
     inset 0 0 0.5rem
       ${({ $isActivePlayer }) =>
-        $isActivePlayer ? PINK_COLOR__HEX : "transparent"},
+        $isActivePlayer ? "var(--primary-color)" : "transparent"},
     inset 0 0 1rem
       ${({ $isActivePlayer }) =>
-        $isActivePlayer ? PINK_COLOR__HEX : "transparent"};
+        $isActivePlayer ? "var(--primary-color)" : "transparent"};
 
   /* background-image: url(${({ $playerImage }) => $playerImage}); */
   background-color: ${({ $playerImage }) => $playerImage};
@@ -141,7 +140,7 @@ const PlayerIcon = styled.div<{
   cursor: pointer;
 
   &:hover {
-    border: 0.4vh solid white;
+    border: 0.4vh solid var(--primary-text-color);
   }
 `;
 

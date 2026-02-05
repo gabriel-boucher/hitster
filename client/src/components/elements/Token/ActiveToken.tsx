@@ -38,7 +38,7 @@ export default function ActiveToken({ token } : { token: Token }) {
 
   const style = {
     opacity: token.status === ItemStatus.ACTIVE_IN_CURRENT_DECK ? 1 : 0.3,
-    border: token.status === ItemStatus.ACTIVE_IN_CURRENT_DECK ? "none" : "2px solid white",
+    border: token.status === ItemStatus.ACTIVE_IN_CURRENT_DECK ? "none" : "2px solid var(--primary-text-color)",
   };
 
   return (

@@ -1,10 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Plus from "src/components/icons/Plus";
 import XMark from "src/components/icons/XMark";
-import {
-  PINK_COLOR__HEX,
-  WHITE_COLOR__HEX,
-} from "src/utils/constants";
 import styled from "styled-components";
 import {Player, PlayerColor} from "../../../type/player/Player.ts";
 import useChangePlayerColor from "../../../hooks/socket/room/useChangePlayerColor.ts";
@@ -117,7 +113,7 @@ const PlayerImg = styled.div<{ $playerColor: PlayerColor }>`
 const PlayerColorSelected = styled(PlayerImg)`
   width: 7vh;
   border: 2px solid black;
-  box-shadow: 0 0 0 2px ${PINK_COLOR__HEX};
+  box-shadow: 0 0 0 2px var(--primary-color);
 
   &:hover ${PlusIcon} {
     display: flex;
@@ -131,7 +127,7 @@ const PlayerColorInMenu = styled(PlayerImg)`
 
   &:hover {
     transform: scale(1.1);
-    box-shadow: 0 0 0 2px ${PINK_COLOR__HEX};
+    box-shadow: 0 0 0 2px var(--primary-color);
   }
 `;
 
@@ -158,7 +154,7 @@ const PlayerColorMenu = styled.div`
   grid-template-rows: repeat(2, 1fr);
   gap: 1vh;
   padding: 1.5vh;
-  background: ${WHITE_COLOR__HEX};
+  background: var(--primary-text-color);
   border-radius: 1rem;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
   z-index: 2;

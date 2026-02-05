@@ -1,10 +1,10 @@
 import {useCallback} from "react";
-import {ConnectionType, getBaseUrl} from "../../../utils/constants.ts";
 import {RoomSocketEvents} from "./roomSocketEvents.ts";
 import {EventResponse} from "../../../type/EventResponse.ts";
 import {CreateRoomResponse} from "../../../type/room/CreateRoomResponse.ts";
 import {useConnectionStateProvider} from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
 import {connectionReducerCases} from "../../../stateProvider/connection/ConnectionReducerCases.ts";
+import {CLIENT_URL} from "../../../config/url.ts";
 
 export default function useCreateRoom() {
   const [{ socket }, connectionDispatch] = useConnectionStateProvider();
@@ -18,7 +18,7 @@ export default function useCreateRoom() {
         connectionDispatch({type: connectionReducerCases.SET_ROOM_ID, roomId: roomId});
         onComplete?.(true);
       } else {
-        window.location.href = getBaseUrl(ConnectionType.CLIENT);
+        window.location.href = CLIENT_URL;
         onComplete?.(false);
       }
     }

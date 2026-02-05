@@ -1,5 +1,4 @@
 import { ChangeEvent } from "react";
-import { PINK_COLOR__HEX, WHITE_COLOR__HEX } from "src/utils/constants";
 import styled from "styled-components";
 
 interface SliderProps {
@@ -63,7 +62,7 @@ const SliderComponent = styled.input.attrs<{
     width: 15px;
     height: 15px;
     border-radius: 50%;
-    background: ${WHITE_COLOR__HEX};
+    background: var(--primary-text-color);
     border: none;
     opacity: 0;
   }
@@ -76,7 +75,7 @@ const SliderComponent = styled.input.attrs<{
     width: 15px;
     height: 15px;
     border-radius: 50%;
-    background: ${WHITE_COLOR__HEX};
+    background: var(--primary-text-color);
     border: none;
     opacity: 0;
   }
@@ -92,11 +91,11 @@ const HorizontalSlider = styled(SliderComponent)`
   width: 20vw;
 
   background: ${({ $sliderProgress, max }) =>
-    `linear-gradient(to right, ${WHITE_COLOR__HEX} ${($sliderProgress / max) * 100}%, hsla(0, 0%, 100%, 20%) ${($sliderProgress / max) * 100}%)`};
+    `linear-gradient(to right, var(--primary-text-color) ${($sliderProgress / max) * 100}%, hsla(0, 0%, 100%, 20%) ${($sliderProgress / max) * 100}%)`};
 
   &:hover {
     background: ${({ $sliderProgress, max }) =>
-      `linear-gradient(to right, ${PINK_COLOR__HEX} ${($sliderProgress / max) * 100}%, hsla(0, 0%, 100%, 20%) ${($sliderProgress / max) * 100}%)`};
+      `linear-gradient(to right, var(--primary-color) ${($sliderProgress / max) * 100}%, hsla(0, 0%, 100%, 20%) ${($sliderProgress / max) * 100}%)`};
   }
 `;
 
@@ -107,10 +106,10 @@ const VerticalSlider = styled(SliderComponent)`
   margin: 0;
 
   background: ${({ $sliderProgress, max }) =>
-    `linear-gradient(to top, ${WHITE_COLOR__HEX} ${($sliderProgress / max) * 100}%, hsla(0, 0%, 100%, 20%) ${($sliderProgress / max) * 100}%)`};
+    `linear-gradient(to top, var(--primary-text-color) ${($sliderProgress / max) * 100}%, hsla(0, 0%, 100%, 20%) ${($sliderProgress / max) * 100}%)`};
 
   &:hover {
     background: ${({ $sliderProgress, max }) =>
-      `linear-gradient(to top, ${PINK_COLOR__HEX} ${($sliderProgress / max) * 100}%, hsla(0, 0%, 100%, 20%) ${($sliderProgress / max) * 100}%)`};
+      `linear-gradient(to top, var(--primary-color) ${($sliderProgress / max) * 100}%, hsla(0, 0%, 100%, 20%) ${($sliderProgress / max) * 100}%)`};
   }
 `;

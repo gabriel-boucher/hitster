@@ -23,7 +23,7 @@ const Card = styled.div`
   aspect-ratio: 1/1;
   position: absolute;
 
-  border: 1px solid white;
+  border: 1px solid var(--primary-text-color);
   border-radius: 5%;
 
   background-image: url("src/assets/hitster_logo_square.webp");

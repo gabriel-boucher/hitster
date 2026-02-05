@@ -5,7 +5,7 @@ import {Token} from "../../../type/item/Token.ts";
 export default function TokenInDeck({ token }: { token: Token }) {
     const style = {
         opacity: token.status === ItemStatus.MOVING_IN_CURRENT_DECK ? 0.3 : 1,
-        border: token.status === ItemStatus.MOVING_IN_CURRENT_DECK ? "2px solid white" : "none",
+        border: token.status === ItemStatus.MOVING_IN_CURRENT_DECK ? "2px solid var(--primary-text-color)" : "none",
     };
 
   return (

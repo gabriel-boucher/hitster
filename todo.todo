@@ -19,7 +19,6 @@ HomePage/LobbyPage UI:
     ✔ Chose name from LobbyPage @started(25-07-15 21:06) @done(25-07-17 20:51) @lasted(1d23h45m17s)
     ✔ Select player picture @done(25-07-20 22:33)
     ☐ Find a list of user pictures
-    ☐ Enter to join
 
 Player UI:
     ✔ Hovering on a player shows his cards with dates, and clicking on a player shows his cards with song/artist (resets when stop hovering) @started(25-06-25 22:01) @done(25-06-25 23:23) @lasted(1h22m12s)
@@ -47,11 +46,10 @@ Card and token UI:
     ✔ Flickering bug when trying to place a token @done(25-07-08 23:29)
     ✔ Drag slows down after dragging a card over the deck for too long @done(25-07-07 21:48)
     ✔ Cards drag and drop limited by window size @started(25-07-08 23:34) @done(25-07-09 00:24) @lasted(50m19s)
-    ☐ Make PlayerCards and ActivePlayerItems the same thing
 
 Clean Code:
     ☐ Remove logic from HTML (use function)
-    ☐ Constants (colors, url)
+    ✔ Constants (colors, url)
     ☐ CSS is all over the place
     ☐ Have primary and secondary colors
 
@@ -62,7 +60,7 @@ Spotify API:
         ✔ Search playlists api @done(25-08-21 21:42)
         ☐ Selected playlists box
         ☐ See playlist details in modal (name, song, etc)
-        ☐ Close modal by clicking outside
+        ✔ Close modal by clicking outside
         ☐ Recent searches when nothing is searched
         ☐ ?Lots of songs with the same date
 

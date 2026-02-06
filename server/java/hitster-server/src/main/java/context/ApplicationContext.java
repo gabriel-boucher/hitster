@@ -18,6 +18,7 @@ import infrastructure.playlist.mapper.getPlaylistItems.GetPlaylistItemsSpotifyMa
 import infrastructure.playlist.mapper.searchPlaylists.SearchPlaylistsSpotifyMapper;
 import infrastructure.playlist.repository.SpotifyApiPlaylistRepository;
 import interfaces.mapper.*;
+import interfaces.rest.spotify.getAccessToken.GetAccessTokenMapper;
 import interfaces.socket.SocketEventBroadcaster;
 import interfaces.socket.connection.ConnectionResource;
 import interfaces.socket.game.addCurrentCard.AddCurrentCardHandler;
@@ -68,6 +69,7 @@ public class ApplicationContext {
         // SpotifyResource mappers
         PlaylistMapper playlistMapper = new PlaylistMapper();
         SearchPlaylistMapper searchPlaylistMapper = new SearchPlaylistMapper(playlistMapper);
+        GetAccessTokenMapper getAccessTokenMapper = new GetAccessTokenMapper();
 
         // RoomResource mappers
         CreateRoomMapper createRoomMapper = new CreateRoomMapper();
@@ -115,7 +117,7 @@ public class ApplicationContext {
 
         RoomAppService roomAppService = new RoomAppService(roomRepository, gameRepository, accessTokenRepository, playlistRepository, roomFactory, gameFactory, playerFactory);
         GameAppService gameAppService = new GameAppService(gameRepository);
-        SpotifyAppService spotifyAppService = new SpotifyAppService(roomRepository, playlistRepository);
+        SpotifyAppService spotifyAppService = new SpotifyAppService(roomRepository, playlistRepository, accessTokenRepository);
 
         SocketEventBroadcaster socketEventBroadcaster = new SocketEventBroadcaster(roomStateMapper, gameStateMapper);
 
@@ -139,7 +141,7 @@ public class ApplicationContext {
         connectionResource = new ConnectionResource();
         roomResource = new RoomResource(createRoomHandler, joinRoomHandler, changePlayerNameHandler, changePlayerColorHandler, removePlayerHandler, addPlaylistHandler, removePlaylistHandler, startGameHandler);
         gameResource = new GameResource(nextTurnHandler, addCurrentCardHandler, removeCurrentCardHandler, returnCurrentCardHandler, moveCurrentCardHandler, addTokenHandler, removeTokenHandler);
-        spotifyResource = new SpotifyResource(spotifyAppService, searchPlaylistMapper);
+        spotifyResource = new SpotifyResource(spotifyAppService, searchPlaylistMapper, getAccessTokenMapper);
     }
 
     public ConnectionResource getConnectionResource() {

@@ -2,11 +2,13 @@ import styled from "styled-components";
 import SongPlayer from "./SongPlayer";
 import VolumePlayer from "./VolumePlayer";
 import Sync from "src/components/icons/Sync";
+import {useSpotifyPlayer} from "../../../hooks/spotify/useSpotifyPlayer.ts";
 
 export default function SpotifyPlayer() {
-  const handleSync = () => {
-    
-  };
+
+  useSpotifyPlayer();
+
+  const handleSync = () => {};
 
   return (
       <MiniPlayer>

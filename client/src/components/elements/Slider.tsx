@@ -95,7 +95,7 @@ const HorizontalSlider = styled(SliderComponent)`
 
   &:hover {
     background: ${({ $sliderProgress, max }) =>
-      `linear-gradient(to right, var(--primary-color) ${($sliderProgress / max) * 100}%, hsla(0, 0%, 100%, 20%) ${($sliderProgress / max) * 100}%)`};
+      `linear-gradient(to right, var(--primary-bg-color) ${($sliderProgress / max) * 100}%, hsla(0, 0%, 100%, 20%) ${($sliderProgress / max) * 100}%)`};
   }
 `;
 

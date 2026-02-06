@@ -1,38 +1,49 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent } from "react";
 import Button from "src/components/elements/Button";
 import Slider from "src/components/elements/Slider";
 import Pause from "src/components/icons/Pause";
 import Play from "src/components/icons/Play";
 import styled from "styled-components";
+import { formatTime, secondsToMs, msToSeconds } from "src/utils/timeFormatter";
+import useTogglePlayerPlay from "../../../hooks/spotify/useTogglePlayerPlay.ts";
+import useSetPlayerTimePosition from "../../../hooks/spotify/useSetPlayerTimePosition.ts";
+import {useSpotifyStateProvider} from "../../../stateProvider/spotify/SpotifyStateProvider.tsx";
 
 export default function SongPlayer() {
-  const [playing, setPlaying] = useState(false);
-  const [songProgress, setSongProgress] = useState(50);
+    const [{ isPlaying, timePosition, duration }] = useSpotifyStateProvider();
 
-  const handlePlay = () => {
-    setPlaying(!playing);
+  const togglePlayerPlay = useTogglePlayerPlay();
+  const setPlayerTimePosition = useSetPlayerTimePosition();
+
+  const handlePlayerTime = (e: ChangeEvent<HTMLInputElement>) => {
+    const seconds = parseInt(e.target.value, 10);
+    setPlayerTimePosition(secondsToMs(seconds));
   };
 
-  const handleSongProgress = (e: ChangeEvent<HTMLInputElement>) => {
-    setSongProgress(parseInt(e.target.value));
-  };
+  const iconComponent = isPlaying ? Pause() : Play();
 
-  const iconComponent = playing
-    ? Pause()
-    : Play();
+  const currentPositionInSeconds = msToSeconds(timePosition);
+  const durationInSeconds = msToSeconds(duration);
 
   return (
     <Player>
-        <Button iconComponent={iconComponent} handleClick={handlePlay} />
-        <Playback>
-            <span className="time left">{songProgress}</span>
-            <Slider
-                sliderProgress={songProgress}
-                handleSliderProgress={handleSongProgress}
-                max={180}
-            />
-            <span className="time right">180</span>
-        </Playback>
+      <Button 
+        iconComponent={iconComponent} 
+        handleClick={togglePlayerPlay}
+      />
+      <Playback>
+        <span className="time left">
+          {formatTime(timePosition)}
+        </span>
+        <Slider
+          sliderProgress={currentPositionInSeconds}
+          handleSliderProgress={handlePlayerTime}
+          max={durationInSeconds}
+        />
+        <span className="time right">
+          {formatTime(duration)}
+        </span>
+      </Playback>
     </Player>
   );
 }

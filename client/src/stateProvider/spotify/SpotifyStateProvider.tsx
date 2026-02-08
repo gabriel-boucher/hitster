@@ -5,19 +5,19 @@ import {
     useContext,
     useReducer,
 } from "react";
-import {SpotifyState} from "./SpotifyState.ts";
-import {SpotifyAction} from "./SpotifyAction.ts";
-import {spotifyDefaultDispatch, spotifyInitialState} from "./SpotifyInitialState.ts";
+import {PlaybackState} from "./PlaybackState.ts";
+import {PlaybackAction} from "./PlaybackAction.ts";
+import {playbackDefaultDispatch, playbackInitialState} from "./PlaybackInitialState.ts";
 
-const SpotifyStateContext = createContext<[SpotifyState, Dispatch<SpotifyAction>]>([
-    spotifyInitialState,
-    spotifyDefaultDispatch,
+const SpotifyStateContext = createContext<[PlaybackState, Dispatch<PlaybackAction>]>([
+    playbackInitialState,
+    playbackDefaultDispatch,
 ]);
 
 interface SpotifyStateProviderProps {
     children: ReactNode;
-    initialState: SpotifyState;
-    reducer: (state: SpotifyState, action: SpotifyAction) => SpotifyState;
+    initialState: PlaybackState;
+    reducer: (state: PlaybackState, action: PlaybackAction) => PlaybackState;
 }
 
 export const SpotifyStateProvider = ({children, initialState, reducer}: SpotifyStateProviderProps) => (
@@ -26,6 +26,6 @@ export const SpotifyStateProvider = ({children, initialState, reducer}: SpotifyS
     </SpotifyStateContext.Provider>
 );
 
-export const useSpotifyStateProvider = (): [SpotifyState, Dispatch<SpotifyAction>] =>
+export const usePlaybackStateProvider = (): [PlaybackState, Dispatch<PlaybackAction>] =>
     useContext(SpotifyStateContext);
 

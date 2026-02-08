@@ -35,6 +35,7 @@ public class ApplicationServer {
         ConnectionResource connectionResource = applicationContext.getConnectionResource();
         RoomResource roomResource = applicationContext.getRoomRessource();
         GameResource gameResource = applicationContext.getGameRessource();
+        SpotifyResource spotifyResource = applicationContext.getSpotifyResource();
 
         Configuration config = new Configuration();
         config.setHostname(HOST);
@@ -42,6 +43,9 @@ public class ApplicationServer {
         config.setOrigin("*");
 
         socketIOServer = new SocketIOServer(config);
+
+        // Set the socket server on SpotifyResource for broadcasting
+        spotifyResource.setSocketIOServer(socketIOServer);
 
         connectionResource.setupEventListeners(socketIOServer);
         roomResource.setupEventListeners(socketIOServer);

@@ -1,34 +1,34 @@
-import { SpotifyState } from "./SpotifyState.ts";
-import { SpotifyAction } from "./SpotifyAction.ts";
-import { spotifyReducerCases } from "./SpotifyReducerCases.ts";
+import { PlaybackState } from "./PlaybackState.ts";
+import { PlaybackAction } from "./PlaybackAction.ts";
+import { playbackReducerCases } from "./PlaybackReducerCases.ts";
 
-export const spotifyReducer = (state: SpotifyState, action: SpotifyAction) => {
+export const playbackReducer = (state: PlaybackState, action: PlaybackAction) => {
     switch (action.type) {
-        case spotifyReducerCases.SET_SPOTIFY_PLAYER: {
+        case playbackReducerCases.SET_SPOTIFY_PLAYER: {
             return {
                 ...state,
                 spotifyPlayer: action.spotifyPlayer,
             };
         }
-        case spotifyReducerCases.SET_IS_PLAYING: {
+        case playbackReducerCases.SET_IS_PLAYING: {
             return {
                 ...state,
                 isPlaying: action.isPlaying,
             };
         }
-        case spotifyReducerCases.SET_TIME_POSITION: {
+        case playbackReducerCases.SET_TIME_POSITION: {
             return {
                 ...state,
                 timePosition: action.timePosition,
             };
         }
-        case spotifyReducerCases.SET_DURATION: {
+        case playbackReducerCases.SET_DURATION: {
             return {
                 ...state,
                 duration: action.duration,
             };
         }
-        case spotifyReducerCases.SET_VOLUME: {
+        case playbackReducerCases.SET_VOLUME: {
             return {
                 ...state,
                 volume: action.volume,

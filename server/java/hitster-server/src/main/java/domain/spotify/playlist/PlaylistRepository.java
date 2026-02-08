@@ -1,4 +1,4 @@
-package domain.spotify;
+package domain.spotify.playlist;
 
 import domain.game.item.card.Card;
 import domain.spotify.accessToken.AccessToken;

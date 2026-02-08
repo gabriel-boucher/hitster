@@ -1,27 +1,32 @@
 package interfaces.socket;
 
-import application.RoomAppService;
 import com.corundumstudio.socketio.SocketIOServer;
 import domain.game.Game;
 import domain.room.Room;
+import domain.spotify.playback.PlaybackState;
 import interfaces.dto.responseDto.successDto.OkSuccessResponse;
-import interfaces.mapper.GameStateMapper;
-import interfaces.mapper.RoomStateMapper;
+import interfaces.mapper.responseMapper.GameStateMapper;
+import interfaces.mapper.responseMapper.PlaybackStateMapper;
+import interfaces.mapper.responseMapper.RoomStateMapper;
 import interfaces.socket.game.GameStateResponse;
 import interfaces.socket.room.RoomStateResponse;
+import interfaces.socket.spotify.PlaybackStateResponse;
 
 import java.util.ArrayList;
 
 import static interfaces.dto.responseDto.EventResponseStatus.GAME_STATE;
+import static interfaces.dto.responseDto.EventResponseStatus.PLAYBACK_STATE;
 import static interfaces.dto.responseDto.EventResponseStatus.ROOM_STATE;
 
 public class SocketEventBroadcaster {
     private final RoomStateMapper roomStateMapper;
     private final GameStateMapper gameStateMapper;
+    private final PlaybackStateMapper playbackStateMapper;
 
-    public SocketEventBroadcaster(RoomStateMapper roomStateMapper, GameStateMapper gameStateMapper) {
+    public SocketEventBroadcaster(RoomStateMapper roomStateMapper, GameStateMapper gameStateMapper, PlaybackStateMapper playbackStateMapper) {
         this.roomStateMapper = roomStateMapper;
         this.gameStateMapper = gameStateMapper;
+        this.playbackStateMapper = playbackStateMapper;
     }
 
     public void broadcastRoomState(Room room, SocketIOServer socketIOServer) {
@@ -57,5 +62,10 @@ public class SocketEventBroadcaster {
                         client.sendEvent("game-state", new OkSuccessResponse<>(GAME_STATE, response));
                     }
                 });
+    }
+
+    public void broadCastPlaybackState(PlaybackState playbackState, String roomId, SocketIOServer socketIOServer) {
+        PlaybackStateResponse response = playbackStateMapper.toDto(playbackState);
+        socketIOServer.getRoomOperations(roomId).sendEvent("playback-state", new OkSuccessResponse<>(PLAYBACK_STATE, response));
     }
 }

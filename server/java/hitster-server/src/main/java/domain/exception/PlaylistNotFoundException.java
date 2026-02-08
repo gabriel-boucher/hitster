@@ -1,6 +1,6 @@
 package domain.exception;
 
-import domain.spotify.PlaylistId;
+import domain.spotify.playlist.PlaylistId;
 import interfaces.exception.NotFoundException;
 
 public class PlaylistNotFoundException extends NotFoundException {

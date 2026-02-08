@@ -1,8 +1,9 @@
-package interfaces.mapper;
+package interfaces.mapper.responseMapper;
 
 import domain.game.Game;
-import domain.game.item.Moveable;
 import domain.game.item.card.Card;
+import interfaces.mapper.CurrentDeckMapper;
+import interfaces.mapper.PlayerMapper;
 import interfaces.socket.game.GameStateResponse;
 
 public class GameStateMapper {

@@ -1,6 +1,6 @@
 import {SpotifyPlayer} from "../../type/spotify/SpotifyWebPlayback.ts";
 
-export interface SpotifyState {
+export interface PlaybackState {
     spotifyPlayer: SpotifyPlayer | null;
     isPlaying: boolean;
     timePosition: number;

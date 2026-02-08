@@ -1,7 +1,7 @@
 package infrastructure.playlist.mapper.searchPlaylists;
 
-import domain.spotify.Playlist;
-import domain.spotify.PlaylistId;
+import domain.spotify.playlist.Playlist;
+import domain.spotify.playlist.PlaylistId;
 import infrastructure.playlist.dto.searchPlaylists.SearchPlaylistsSpotifyDto;
 
 import java.util.List;

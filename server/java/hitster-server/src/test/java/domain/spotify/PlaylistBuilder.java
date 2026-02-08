@@ -1,5 +1,8 @@
 package domain.spotify;
 
+import domain.spotify.playlist.Playlist;
+import domain.spotify.playlist.PlaylistId;
+
 public class PlaylistBuilder {
     private PlaylistId id = new PlaylistId("default-playlist-id");
     private String name = "Default Playlist";

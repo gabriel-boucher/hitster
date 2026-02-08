@@ -6,8 +6,8 @@ import domain.game.GameValidator;
 import domain.player.Player;
 import domain.player.PlayerFactory;
 import domain.player.PlayerValidator;
-import domain.spotify.Playlist;
-import domain.spotify.PlaylistValidator;
+import domain.spotify.playlist.Playlist;
+import domain.spotify.playlist.PlaylistValidator;
 import domain.spotify.accessToken.AccessToken;
 import domain.spotify.accessToken.AccessTokenId;
 

@@ -7,10 +7,10 @@ import styled from "styled-components";
 import { formatTime, secondsToMs, msToSeconds } from "src/utils/timeFormatter";
 import useTogglePlayerPlay from "../../../hooks/spotify/useTogglePlayerPlay.ts";
 import useSetPlayerTimePosition from "../../../hooks/spotify/useSetPlayerTimePosition.ts";
-import {useSpotifyStateProvider} from "../../../stateProvider/spotify/SpotifyStateProvider.tsx";
+import {usePlaybackStateProvider} from "../../../stateProvider/spotify/SpotifyStateProvider.tsx";
 
 export default function SongPlayer() {
-    const [{ isPlaying, timePosition, duration }] = useSpotifyStateProvider();
+    const [{ isPlaying, timePosition, duration }] = usePlaybackStateProvider();
 
   const togglePlayerPlay = useTogglePlayerPlay();
   const setPlayerTimePosition = useSetPlayerTimePosition();

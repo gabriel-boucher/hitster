@@ -6,7 +6,7 @@ import domain.game.GameValidator;
 import domain.player.PlayerFactory;
 import domain.player.PlayerValidator;
 import domain.spotify.accessToken.AccessToken;
-import domain.spotify.PlaylistValidator;
+import domain.spotify.playlist.PlaylistValidator;
 
 import java.util.ArrayList;
 

@@ -2,7 +2,7 @@ package interfaces.socket.room.removePlaylist;
 
 import domain.player.PlayerId;
 import domain.room.RoomId;
-import domain.spotify.PlaylistId;
+import domain.spotify.playlist.PlaylistId;
 import interfaces.socket.room.removePlaylist.dto.RemovePlaylistData;
 import interfaces.socket.room.removePlaylist.dto.RemovePlaylistRequest;
 

@@ -6,10 +6,10 @@ import Volume3 from "src/components/icons/Volume3";
 import Volume2 from "src/components/icons/Volume2";
 import Volume1 from "src/components/icons/Volume1";
 import useSetPlayerVolume from "../../../hooks/spotify/useSetPlayerVolume.ts";
-import {useSpotifyStateProvider} from "../../../stateProvider/spotify/SpotifyStateProvider.tsx";
+import {usePlaybackStateProvider} from "../../../stateProvider/spotify/SpotifyStateProvider.tsx";
 
 export default function VolumePlayer() {
-  const [{ volume }] = useSpotifyStateProvider();
+  const [{ volume }] = usePlaybackStateProvider();
   const [savedVolume, setSavedVolume] = useState(volume);
 
   const setPlayerVolume = useSetPlayerVolume();

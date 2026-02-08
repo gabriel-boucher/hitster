@@ -3,9 +3,9 @@ package infrastructure.playlist.repository;
 import domain.game.item.ItemStatus;
 import domain.game.item.card.Card;
 import domain.game.item.card.CardId;
-import domain.spotify.Playlist;
-import domain.spotify.PlaylistId;
-import domain.spotify.PlaylistRepository;
+import domain.spotify.playlist.Playlist;
+import domain.spotify.playlist.PlaylistId;
+import domain.spotify.playlist.PlaylistRepository;
 import domain.spotify.accessToken.AccessToken;
 
 import java.util.ArrayList;

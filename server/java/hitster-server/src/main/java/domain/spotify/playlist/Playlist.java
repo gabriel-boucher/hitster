@@ -1,4 +1,4 @@
-package domain.spotify;
+package domain.spotify.playlist;
 
 public record Playlist(
         PlaylistId id,

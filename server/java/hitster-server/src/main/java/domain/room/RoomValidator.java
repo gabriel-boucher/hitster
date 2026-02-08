@@ -7,9 +7,9 @@ import domain.player.PlayerColor;
 import domain.player.PlayerId;
 import domain.player.PlayerValidator;
 import domain.room.exception.*;
-import domain.spotify.Playlist;
-import domain.spotify.PlaylistId;
-import domain.spotify.PlaylistValidator;
+import domain.spotify.playlist.Playlist;
+import domain.spotify.playlist.PlaylistId;
+import domain.spotify.playlist.PlaylistValidator;
 
 import java.util.List;
 
@@ -22,6 +22,10 @@ public class RoomValidator {
         this.playerValidator = playerValidator;
         this.playlistValidator = playlistValidator;
         this.gameValidator = gameValidator;
+    }
+
+    public void validatePlayerCanGetAccessToken(PlayerId playerId, List<Player> players) {
+        playerValidator.validatePlayerExist(playerId, players);
     }
 
     public void validatePlayerCanJoin(PlayerId playerId, List<Player> players, GameStatus gameStatus) {

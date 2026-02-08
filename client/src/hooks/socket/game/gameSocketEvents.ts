@@ -1,4 +1,5 @@
 export enum GameSocketEvents {
+  GAME_STATE = "game-state",
   NEXT_TURN = "next-turn",
   ADD_CURRENT_CARD = "add-current-card",
   REMOVE_CURRENT_CARD = "remove-current-card",

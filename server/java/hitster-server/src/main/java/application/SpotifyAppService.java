@@ -5,10 +5,12 @@ import domain.player.PlayerId;
 import domain.room.Room;
 import domain.room.RoomId;
 import domain.room.RoomRepository;
-import domain.spotify.Playlist;
-import domain.spotify.PlaylistRepository;
+import domain.spotify.playback.DeviceId;
+import domain.spotify.playback.PlaybackRepository;
+import domain.spotify.playback.PlaybackState;
+import domain.spotify.playlist.Playlist;
+import domain.spotify.playlist.PlaylistRepository;
 import domain.spotify.accessToken.AccessToken;
-import domain.spotify.accessToken.AccessTokenId;
 import domain.spotify.accessToken.AccessTokenRepository;
 
 import java.util.List;
@@ -16,12 +18,12 @@ import java.util.List;
 public class SpotifyAppService {
     private final RoomRepository roomRepository;
     private final PlaylistRepository playlistRepository;
-    private final AccessTokenRepository accessTokenRepository;
+    private final PlaybackRepository playbackRepository;
 
-    public SpotifyAppService(RoomRepository roomRepository, PlaylistRepository playlistRepository, AccessTokenRepository accessTokenRepository) {
+    public SpotifyAppService(RoomRepository roomRepository, PlaylistRepository playlistRepository, PlaybackRepository playbackRepository) {
         this.roomRepository = roomRepository;
         this.playlistRepository = playlistRepository;
-        this.accessTokenRepository = accessTokenRepository;
+        this.playbackRepository = playbackRepository;
     }
 
     public List<Playlist> searchPlaylists(RoomId roomId, PlayerId playerId, String query) {
@@ -39,8 +41,59 @@ public class SpotifyAppService {
         if (room == null) {
             throw new RoomNotFoundException(roomId);
         }
-        AccessToken accessToken = room.getAccessToken();
+        return room.getAccessToken(playerId);
+    }
 
-        return accessToken;
+    public PlaybackState play(RoomId roomId, PlayerId playerId, DeviceId deviceId) {
+        Room room = roomRepository.getRoomById(roomId);
+        if (room == null) {
+            throw new RoomNotFoundException(roomId);
+        }
+        AccessToken accessToken = room.getAccessToken(playerId);
+        playbackRepository.play(accessToken, deviceId);
+
+        return playbackRepository.getPlaybackState(accessToken, deviceId);
+    }
+
+    public PlaybackState pause(RoomId roomId, PlayerId playerId, DeviceId deviceId) {
+        Room room = roomRepository.getRoomById(roomId);
+        if (room == null) {
+            throw new RoomNotFoundException(roomId);
+        }
+        AccessToken accessToken = room.getAccessToken(playerId);
+        playbackRepository.pause(accessToken, deviceId);
+
+        return playbackRepository.getPlaybackState(accessToken, deviceId);
+    }
+
+    public PlaybackState setVolume(RoomId roomId, PlayerId playerId, DeviceId deviceId, int volumePercent) {
+        Room room = roomRepository.getRoomById(roomId);
+        if (room == null) {
+            throw new RoomNotFoundException(roomId);
+        }
+        AccessToken accessToken = room.getAccessToken(playerId);
+        playbackRepository.setVolume(accessToken, deviceId, volumePercent);
+
+        return playbackRepository.getPlaybackState(accessToken, deviceId);
+    }
+
+    public PlaybackState seekToPosition(RoomId roomId, PlayerId playerId, DeviceId deviceId, int positionMs) {
+        Room room = roomRepository.getRoomById(roomId);
+        if (room == null) {
+            throw new RoomNotFoundException(roomId);
+        }
+        AccessToken accessToken = room.getAccessToken(playerId);
+        playbackRepository.seekToPosition(accessToken, deviceId, positionMs);
+
+        return playbackRepository.getPlaybackState(accessToken, deviceId);
+    }
+
+    public PlaybackState getPlaybackState(RoomId roomId, PlayerId playerId, DeviceId deviceId) {
+        Room room = roomRepository.getRoomById(roomId);
+        if (room == null) {
+            throw new RoomNotFoundException(roomId);
+        }
+        AccessToken accessToken = room.getAccessToken(playerId);
+        return playbackRepository.getPlaybackState(accessToken, deviceId);
     }
 }

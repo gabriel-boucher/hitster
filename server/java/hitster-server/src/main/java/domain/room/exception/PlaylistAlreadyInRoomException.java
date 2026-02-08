@@ -1,6 +1,6 @@
 package domain.room.exception;
 
-import domain.spotify.PlaylistId;
+import domain.spotify.playlist.PlaylistId;
 import interfaces.exception.InvalidStateException;
 
 public class PlaylistAlreadyInRoomException extends InvalidStateException {

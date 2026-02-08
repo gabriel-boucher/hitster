@@ -1,6 +1,8 @@
-package interfaces.mapper;
+package interfaces.mapper.responseMapper;
 
 import domain.room.Room;
+import interfaces.mapper.PlayerMapper;
+import interfaces.mapper.PlaylistMapper;
 import interfaces.socket.room.RoomStateResponse;
 
 public class RoomStateMapper {

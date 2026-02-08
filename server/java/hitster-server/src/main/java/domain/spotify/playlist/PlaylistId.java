@@ -1,4 +1,4 @@
-package domain.spotify;
+package domain.spotify.playlist;
 
 public record PlaylistId(String id) {
     @Override

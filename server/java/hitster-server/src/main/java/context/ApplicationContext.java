@@ -10,14 +10,20 @@ import domain.player.PlayerFactory;
 import domain.room.RoomFactory;
 import domain.room.RoomRepository;
 import domain.spotify.accessToken.AccessTokenRepository;
-import domain.spotify.PlaylistRepository;
+import domain.spotify.playback.PlaybackRepository;
+import domain.spotify.playlist.PlaylistRepository;
 import infrastructure.*;
 import infrastructure.accessToken.mapper.AccessTokenSpotifyMapper;
 import infrastructure.accessToken.repository.SpotifyApiAccessTokenRepository;
+import infrastructure.playback.mapper.GetPlaybackStateSpotifyMapper;
+import infrastructure.playback.repository.SpotifyApiPlaybackRepository;
 import infrastructure.playlist.mapper.getPlaylistItems.GetPlaylistItemsSpotifyMapper;
 import infrastructure.playlist.mapper.searchPlaylists.SearchPlaylistsSpotifyMapper;
 import infrastructure.playlist.repository.SpotifyApiPlaylistRepository;
 import interfaces.mapper.*;
+import interfaces.mapper.responseMapper.GameStateMapper;
+import interfaces.mapper.responseMapper.PlaybackStateMapper;
+import interfaces.mapper.responseMapper.RoomStateMapper;
 import interfaces.rest.spotify.getAccessToken.GetAccessTokenMapper;
 import interfaces.socket.SocketEventBroadcaster;
 import interfaces.socket.connection.ConnectionResource;
@@ -55,6 +61,10 @@ import interfaces.socket.room.removePlaylist.RemovePlaylistMapper;
 import interfaces.socket.game.GameResource;
 import interfaces.rest.spotify.SpotifyResource;
 import interfaces.mapper.PlaylistMapper;
+import interfaces.rest.spotify.playback.pause.PauseMapper;
+import interfaces.rest.spotify.playback.play.PlayMapper;
+import interfaces.rest.spotify.playback.seekToPosition.SeekToPositionMapper;
+import interfaces.rest.spotify.playback.setVolume.SetVolumeMapper;
 import interfaces.rest.spotify.searchPlaylists.SearchPlaylistMapper;
 
 public class ApplicationContext {
@@ -70,6 +80,10 @@ public class ApplicationContext {
         PlaylistMapper playlistMapper = new PlaylistMapper();
         SearchPlaylistMapper searchPlaylistMapper = new SearchPlaylistMapper(playlistMapper);
         GetAccessTokenMapper getAccessTokenMapper = new GetAccessTokenMapper();
+        PlayMapper playMapper = new PlayMapper();
+        PauseMapper pauseMapper = new PauseMapper();
+        SetVolumeMapper setVolumeMapper = new SetVolumeMapper();
+        SeekToPositionMapper seekToPositionMapper = new SeekToPositionMapper();
 
         // RoomResource mappers
         CreateRoomMapper createRoomMapper = new CreateRoomMapper();
@@ -100,16 +114,19 @@ public class ApplicationContext {
 
         RoomStateMapper roomStateMapper = new RoomStateMapper(playerMapper, playlistMapper);
         GameStateMapper gameStateMapper = new GameStateMapper(playerMapper, currentDeckMapper);
+        PlaybackStateMapper playbackStateMapper = new PlaybackStateMapper();
 
         // SpotifyRepository mappers
         AccessTokenSpotifyMapper accessTokenSpotifyMapper = new AccessTokenSpotifyMapper();
         SearchPlaylistsSpotifyMapper searchPlaylistsSpotifyMapper = new SearchPlaylistsSpotifyMapper();
         GetPlaylistItemsSpotifyMapper getPlaylistItemsSpotifyMapper = new GetPlaylistItemsSpotifyMapper();
+        GetPlaybackStateSpotifyMapper getPlaybackStateSpotifyMapper = new GetPlaybackStateSpotifyMapper();
 
         GameRepository gameRepository = new InMemoryGameRepository();
         RoomRepository roomRepository = new InMemoryRoomRepository();
         AccessTokenRepository accessTokenRepository = new SpotifyApiAccessTokenRepository(accessTokenSpotifyMapper, objectMapper);
         PlaylistRepository playlistRepository = new SpotifyApiPlaylistRepository(searchPlaylistsSpotifyMapper, getPlaylistItemsSpotifyMapper, objectMapper);
+        PlaybackRepository playbackRepository = new SpotifyApiPlaybackRepository(getPlaybackStateSpotifyMapper, objectMapper);
 
         GameFactory gameFactory = new GameFactory();
         RoomFactory roomFactory = new RoomFactory();
@@ -117,9 +134,9 @@ public class ApplicationContext {
 
         RoomAppService roomAppService = new RoomAppService(roomRepository, gameRepository, accessTokenRepository, playlistRepository, roomFactory, gameFactory, playerFactory);
         GameAppService gameAppService = new GameAppService(gameRepository);
-        SpotifyAppService spotifyAppService = new SpotifyAppService(roomRepository, playlistRepository, accessTokenRepository);
+        SpotifyAppService spotifyAppService = new SpotifyAppService(roomRepository, playlistRepository, playbackRepository);
 
-        SocketEventBroadcaster socketEventBroadcaster = new SocketEventBroadcaster(roomStateMapper, gameStateMapper);
+        SocketEventBroadcaster socketEventBroadcaster = new SocketEventBroadcaster(roomStateMapper, gameStateMapper, playbackStateMapper);
 
         CreateRoomHandler createRoomHandler = new CreateRoomHandler(roomAppService, createRoomMapper);
         JoinRoomHandler joinRoomHandler = new JoinRoomHandler(roomAppService, joinRoomMapper, socketEventBroadcaster);
@@ -141,7 +158,7 @@ public class ApplicationContext {
         connectionResource = new ConnectionResource();
         roomResource = new RoomResource(createRoomHandler, joinRoomHandler, changePlayerNameHandler, changePlayerColorHandler, removePlayerHandler, addPlaylistHandler, removePlaylistHandler, startGameHandler);
         gameResource = new GameResource(nextTurnHandler, addCurrentCardHandler, removeCurrentCardHandler, returnCurrentCardHandler, moveCurrentCardHandler, addTokenHandler, removeTokenHandler);
-        spotifyResource = new SpotifyResource(spotifyAppService, searchPlaylistMapper, getAccessTokenMapper);
+        spotifyResource = new SpotifyResource(spotifyAppService, searchPlaylistMapper, getAccessTokenMapper, playMapper, pauseMapper, setVolumeMapper, seekToPositionMapper, socketEventBroadcaster);
     }
 
     public ConnectionResource getConnectionResource() {

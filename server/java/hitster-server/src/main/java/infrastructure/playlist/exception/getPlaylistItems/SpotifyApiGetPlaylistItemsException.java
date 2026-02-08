@@ -1,6 +1,6 @@
 package infrastructure.playlist.exception.getPlaylistItems;
 
-import domain.spotify.PlaylistId;
+import domain.spotify.playlist.PlaylistId;
 import domain.spotify.accessToken.AccessToken;
 import interfaces.exception.UnauthorizedException;
 

@@ -8,11 +8,10 @@ import domain.player.PlayerColor;
 import domain.player.PlayerFactory;
 import domain.player.PlayerId;
 import domain.spotify.accessToken.AccessToken;
-import domain.spotify.Playlist;
-import domain.spotify.PlaylistId;
+import domain.spotify.playlist.Playlist;
+import domain.spotify.playlist.PlaylistId;
 
 import java.util.List;
-import java.util.Random;
 
 public class Room {
     private final RoomId id;
@@ -41,6 +40,11 @@ public class Room {
     }
 
     public AccessToken getAccessToken() {
+        return accessToken;
+    }
+
+    public AccessToken getAccessToken(PlayerId playerId) {
+        validator.validatePlayerCanGetAccessToken(playerId, players);
         return accessToken;
     }
 

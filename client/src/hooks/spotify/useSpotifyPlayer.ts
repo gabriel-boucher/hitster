@@ -1,12 +1,12 @@
 import {useCallback, useEffect, useState} from 'react';
 import useGetAccessToken from '../http/spotify/useGetAccessToken';
-import type {SpotifyPlayer, WebPlaybackPlayer, WebPlaybackPlayerState} from 'src/type/spotify/SpotifyWebPlayback';
-import {useSpotifyStateProvider} from "../../stateProvider/spotify/SpotifyStateProvider.tsx";
-import {spotifyReducerCases} from "../../stateProvider/spotify/SpotifyReducerCases.ts";
+import type {WebPlaybackPlayer} from 'src/type/spotify/SpotifyWebPlayback';
+import {usePlaybackStateProvider} from "../../stateProvider/spotify/SpotifyStateProvider.tsx";
+import {playbackReducerCases} from "../../stateProvider/spotify/PlaybackReducerCases.ts";
 
 export function useSpotifyPlayer() {
   const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [{ spotifyPlayer, isPlaying }, dispatchSpotifyState] = useSpotifyStateProvider();
+  const [{ spotifyPlayer, isPlaying }, dispatchSpotifyState] = usePlaybackStateProvider();
 
   const getAccessToken = useGetAccessToken();
 
@@ -25,25 +25,9 @@ export function useSpotifyPlayer() {
     await transferPlaybackToDevice(device_id, accessToken);
   }, [accessToken]);
 
-  const handlePlayerStateChanged = useCallback((state: WebPlaybackPlayerState) => {
-    if (!state) return;
-
-    dispatchSpotifyState({ type: spotifyReducerCases.SET_IS_PLAYING, isPlaying: !state.paused });
-    dispatchSpotifyState({ type: spotifyReducerCases.SET_TIME_POSITION, timePosition: state.position });
-    dispatchSpotifyState({ type: spotifyReducerCases.SET_DURATION, duration: state.duration || 0 });
-    spotifyPlayer?.getVolume().then(volume => {
-        dispatchSpotifyState({ type: spotifyReducerCases.SET_VOLUME, volume });
-    });
-  }, [spotifyPlayer, dispatchSpotifyState]);
-
   useEffect(() => {
     if (!accessToken) return;
     if (spotifyPlayer) return;
-
-    const setupPlayerListeners = (spotifyPlayer: SpotifyPlayer) => {
-      spotifyPlayer.addListener('ready', handleReady);
-      spotifyPlayer.addListener('player_state_changed', handlePlayerStateChanged);
-    };
 
     const initializePlayer = () => {
       if (!window.Spotify) return;
@@ -56,11 +40,11 @@ export function useSpotifyPlayer() {
         volume: 0.5,
       });
 
-      setupPlayerListeners(newSpotifyPlayer);
+      newSpotifyPlayer.addListener('ready', handleReady);
 
       newSpotifyPlayer.connect();
 
-      dispatchSpotifyState({ type: spotifyReducerCases.SET_SPOTIFY_PLAYER, spotifyPlayer: newSpotifyPlayer });
+      dispatchSpotifyState({ type: playbackReducerCases.SET_SPOTIFY_PLAYER, spotifyPlayer: newSpotifyPlayer });
     };
 
     const loadSpotifySDK = () => {
@@ -78,7 +62,7 @@ export function useSpotifyPlayer() {
     };
 
     loadSpotifySDK();
-  }, [spotifyPlayer, accessToken, handleReady, handlePlayerStateChanged, dispatchSpotifyState]);
+  }, [spotifyPlayer, accessToken, handleReady, dispatchSpotifyState]);
 
   useEffect(() => {
     if (!spotifyPlayer || !isPlaying) return;
@@ -86,7 +70,7 @@ export function useSpotifyPlayer() {
     const intervalId = setInterval(async () => {
       const state = await spotifyPlayer.getCurrentState();
       if (state && !state.paused) {
-        dispatchSpotifyState({ type: spotifyReducerCases.SET_TIME_POSITION, timePosition: state.position });
+        dispatchSpotifyState({ type: playbackReducerCases.SET_TIME_POSITION, timePosition: state.position });
       }
     }, 100);
 

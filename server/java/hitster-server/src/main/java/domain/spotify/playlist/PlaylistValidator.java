@@ -1,4 +1,4 @@
-package domain.spotify;
+package domain.spotify.playlist;
 
 import domain.exception.PlaylistNotFoundException;
 import domain.room.exception.PlaylistAlreadyInRoomException;

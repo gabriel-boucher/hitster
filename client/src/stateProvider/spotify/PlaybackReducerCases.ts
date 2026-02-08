@@ -1,4 +1,4 @@
-export enum spotifyReducerCases {
+export enum playbackReducerCases {
     SET_SPOTIFY_PLAYER = "SET_SPOTIFY_PLAYER",
     SET_IS_PLAYING = "SET_IS_PLAYING",
     SET_TIME_POSITION = "SET_TIME_POSITION",

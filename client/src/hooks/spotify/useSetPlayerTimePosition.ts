@@ -1,14 +1,14 @@
-import {useSpotifyStateProvider} from "../../stateProvider/spotify/SpotifyStateProvider.tsx";
+import {usePlaybackStateProvider} from "../../stateProvider/spotify/SpotifyStateProvider.tsx";
 import {useCallback} from "react";
-import {spotifyReducerCases} from "../../stateProvider/spotify/SpotifyReducerCases.ts";
+import {playbackReducerCases} from "../../stateProvider/spotify/PlaybackReducerCases.ts";
 
 export default function useSetPlayerTimePosition() {
-    const [{ spotifyPlayer }, dispatchSpotifyState] = useSpotifyStateProvider();
+    const [{ spotifyPlayer }, dispatchSpotifyState] = usePlaybackStateProvider();
 
     return useCallback(async (timePosition: number) => {
         if (!spotifyPlayer) return;
 
-        dispatchSpotifyState({ type: spotifyReducerCases.SET_TIME_POSITION, timePosition });
+        dispatchSpotifyState({ type: playbackReducerCases.SET_TIME_POSITION, timePosition });
         await spotifyPlayer.seek(timePosition);
     }, [spotifyPlayer, dispatchSpotifyState]);
 }

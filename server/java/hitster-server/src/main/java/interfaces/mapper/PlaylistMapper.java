@@ -1,7 +1,7 @@
 package interfaces.mapper;
 
-import domain.spotify.Playlist;
-import domain.spotify.PlaylistId;
+import domain.spotify.playlist.Playlist;
+import domain.spotify.playlist.PlaylistId;
 import interfaces.dto.PlaylistDto;
 
 public class PlaylistMapper {

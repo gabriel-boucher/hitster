@@ -15,8 +15,8 @@ import {MovementStateProvider} from "./stateProvider/movement/MovementStateProvi
 import {movementInitialState} from "./stateProvider/movement/MovementInitialState.ts";
 import {movementReducer} from "./stateProvider/movement/MovementReducer.ts";
 import {SpotifyStateProvider} from "./stateProvider/spotify/SpotifyStateProvider.tsx";
-import {spotifyInitialState} from "./stateProvider/spotify/SpotifyInitialState.ts";
-import {spotifyReducer} from "./stateProvider/spotify/SpotifyReducer.ts";
+import {playbackInitialState} from "./stateProvider/spotify/PlaybackInitialState.ts";
+import {playbackReducer} from "./stateProvider/spotify/PlaybackReducer.ts";
 
 createRoot(document.getElementById('root')!)
 .render(
@@ -25,7 +25,7 @@ createRoot(document.getElementById('root')!)
     <RoomStateProvider initialState={roomInitialState} reducer={roomReducer} >
       <GameStateProvider initialState={gameInitialState} reducer={gameReducer} >
           <MovementStateProvider initialState={movementInitialState} reducer={movementReducer}>
-              <SpotifyStateProvider initialState={spotifyInitialState} reducer={spotifyReducer}>
+              <SpotifyStateProvider initialState={playbackInitialState} reducer={playbackReducer}>
                   <App />
               </SpotifyStateProvider>
           </MovementStateProvider>

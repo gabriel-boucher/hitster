@@ -8,6 +8,7 @@ import useGameState from "./hooks/socket/game/useGameState.ts";
 import {GameStatus} from "./type/game/GameState.ts";
 import {useConnectionStateProvider} from "./stateProvider/connection/ConnectionStateProvider.tsx";
 import {useGameStateProvider} from "./stateProvider/game/GameStateProvider.tsx";
+import usePlaybackState from "./hooks/spotify/usePlaybackState.ts";
 
 export default function RootRouter() {
   const [{ roomId }] = useConnectionStateProvider();
@@ -16,6 +17,7 @@ export default function RootRouter() {
 
   useRoomState();
   useGameState();
+  usePlaybackState();
 
   if (loading) return <LoadingPage />;
   if (gameStatus === GameStatus.PLAYING) return <GamePage />;

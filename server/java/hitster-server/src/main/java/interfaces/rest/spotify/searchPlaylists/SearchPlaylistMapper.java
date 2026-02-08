@@ -2,7 +2,7 @@ package interfaces.rest.spotify.searchPlaylists;
 
 import domain.player.PlayerId;
 import domain.room.RoomId;
-import domain.spotify.Playlist;
+import domain.spotify.playlist.Playlist;
 import interfaces.mapper.PlaylistMapper;
 
 import java.util.List;

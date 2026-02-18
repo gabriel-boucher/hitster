@@ -16,6 +16,12 @@ export const roomReducer = (state: RoomState, action: RoomAction) => {
         playlists: action.playlists,
       };
     }
+    case roomReducerCases.SET_MUSIC_PLAYER_TYPE: {
+      return {
+        ...state,
+        musicPlayerType: action.musicPlayerType,
+      };
+    }
     default:
       return state;
   }

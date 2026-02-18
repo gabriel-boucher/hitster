@@ -7,9 +7,9 @@ import domain.player.PlayerColor;
 import domain.player.PlayerId;
 import domain.player.PlayerValidator;
 import domain.room.exception.*;
-import domain.spotify.Playlist;
-import domain.spotify.PlaylistId;
-import domain.spotify.PlaylistValidator;
+import domain.music.Playlist;
+import domain.music.PlaylistId;
+import domain.music.PlaylistValidator;
 
 import java.util.List;
 
@@ -27,6 +27,12 @@ public class RoomValidator {
     public void validatePlayerCanJoin(PlayerId playerId, List<Player> players, GameStatus gameStatus) {
         playerValidator.validatePlayerNotExist(playerId, players);
         gameValidator.validateGameStatus(gameStatus, GameStatus.LOBBY);
+    }
+
+    public void validatePlayerCanChangeAuthType(PlayerId playerId, List<Player> players, GameStatus gameStatus) {
+        playerValidator.validatePlayerExist(playerId, players);
+        gameValidator.validateGameStatus(gameStatus, GameStatus.LOBBY);
+
     }
 
     public Player validatePlayerCanChangeName(PlayerId playerId, String newName, List<Player> players, GameStatus gameStatus) {
@@ -85,10 +91,6 @@ public class RoomValidator {
         playerValidator.validatePlayerExist(playerId, players);
         playlistValidator.validatePlaylistExist(playlistId, playlists);
         gameValidator.validateGameStatus(gameStatus, GameStatus.LOBBY);
-    }
-
-    public void validatePlayerCanSearchPlaylists(PlayerId playerId, List<Player> players) {
-        playerValidator.validatePlayerExist(playerId, players);
     }
 
     public void validatePlayerCanStartGame(PlayerId playerId, List<Player> players, List<Playlist> playlists, GameStatus gameStatus) {

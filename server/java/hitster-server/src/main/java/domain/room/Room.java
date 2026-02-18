@@ -3,32 +3,31 @@ package domain.room;
 import domain.game.Game;
 import domain.game.GameFactory;
 import domain.game.GameStatus;
+import domain.music.MusicPlayerType;
 import domain.player.Player;
 import domain.player.PlayerColor;
 import domain.player.PlayerFactory;
 import domain.player.PlayerId;
-import domain.spotify.accessToken.AccessToken;
-import domain.spotify.Playlist;
-import domain.spotify.PlaylistId;
+import domain.music.Playlist;
+import domain.music.PlaylistId;
 
 import java.util.List;
-import java.util.Random;
 
 public class Room {
     private final RoomId id;
-    private final AccessToken accessToken;
     private final GameStatus gameStatus;
+    private MusicPlayerType musicPlayerType;
     private final List<Player> players;
     private final List<Playlist> playlists;
     private final GameFactory gameFactory;
     private final PlayerFactory playerFactory;
     private final RoomValidator validator;
 
-    public Room(RoomId id, AccessToken accessToken, GameStatus gameStatus, List<Player> players,
+    public Room(RoomId id, GameStatus gameStatus, List<Player> players,
                 List<Playlist> playlists, GameFactory gameFactory, PlayerFactory playerFactory, RoomValidator validator) {
         this.id = id;
-        this.accessToken = accessToken;
         this.gameStatus = gameStatus;
+        this.musicPlayerType = MusicPlayerType.IN_MEMORY;
         this.players = players;
         this.playlists = playlists;
         this.gameFactory = gameFactory;
@@ -40,8 +39,8 @@ public class Room {
         return id;
     }
 
-    public AccessToken getAccessToken() {
-        return accessToken;
+    public MusicPlayerType getMusicPlayerType() {
+        return musicPlayerType;
     }
 
     public List<Player> getPlayers() {
@@ -56,6 +55,12 @@ public class Room {
         validator.validatePlayerCanJoin(playerId, players, gameStatus);
         Player player = playerFactory.create(playerId, players);
         players.add(player);
+    }
+
+    public void changeMusicPlayerType(PlayerId playerId, MusicPlayerType musicPlayerType) {
+        validator.validatePlayerCanChangeAuthType(playerId, players, gameStatus);
+        this.musicPlayerType = musicPlayerType;
+        playlists.clear();
     }
 
     public void changePlayerName(PlayerId playerId, String newName) {
@@ -81,10 +86,6 @@ public class Room {
     public void removePlaylist(PlayerId playerId, PlaylistId playlistId) {
         validator.validatePlaylistCanBeRemoved(playerId, playlistId, players, playlists, gameStatus);
         playlists.removeIf(playlist -> playlist.id().equals(playlistId));
-    }
-
-    public void searchPlaylists(PlayerId playerId) {
-        validator.validatePlayerCanSearchPlaylists(playerId, players);
     }
 
     public Game startGame(PlayerId playerId) {

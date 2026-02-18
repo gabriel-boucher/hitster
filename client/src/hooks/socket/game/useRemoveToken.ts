@@ -7,6 +7,8 @@ export default function useRemoveToken() {
     const [{ socket, roomId, playerId }] = useConnectionStateProvider();
 
     return useCallback((tokenId: TokenId) => {
+        if (!socket) return;
+
         socket.emit(GameSocketEvents.REMOVE_TOKEN, {
             gameId: roomId,
             playerId,

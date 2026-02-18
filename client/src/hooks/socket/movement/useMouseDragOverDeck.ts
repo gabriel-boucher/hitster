@@ -12,7 +12,7 @@ import useMoveCurrentCard from "../game/useMoveCurrentCard.ts";
 import useThrottle from "../../useThrottle.ts";
 
 export default function useMouseDragOverDeck() {
-    const [{ socket, roomId, playerId }] = useConnectionStateProvider();
+    const [{ playerId }] = useConnectionStateProvider();
     const [{ items, currentPlayerId, currentCardId, currentCardStatus }, dispatchGameState] = useGameStateProvider();
     const [{ isDragging }] = useMovementStateProvider();
 
@@ -36,12 +36,10 @@ export default function useMouseDragOverDeck() {
         moveCurrentCard(newIndex);
     },
     [
-        socket,
         isDragging,
         playerId,
         currentCardId,
         currentCardStatus,
-        roomId,
         currentPlayerId,
         items,
         dispatchGameState,

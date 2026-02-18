@@ -27,6 +27,6 @@ public class PlayerFactory {
                 return color;
             }
         }
-        throw new NotImplementedException("PlayerFactory.getAvailableColor"); // or throw an exception if no colors are available
+        throw new NotImplementedException("PlayerFactory.getAvailableColor"); // if no colors are available (too many players)
     }
 }

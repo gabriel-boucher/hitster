@@ -1,7 +1,7 @@
 package interfaces.mapper;
 
 import domain.room.Room;
-import interfaces.socket.room.RoomStateResponse;
+import interfaces.rest.room.RoomStateResponse;
 
 public class RoomStateMapper {
     private final PlayerMapper playerMapper;
@@ -16,7 +16,8 @@ public class RoomStateMapper {
         return new RoomStateResponse(
                 room.getId().toString(),
                 room.getPlayers().stream().map(playerMapper::toDto).toList(),
-                room.getPlaylists().stream().map(playlistMapper::toDto).toList()
+                room.getPlaylists().stream().map(playlistMapper::toDto).toList(),
+                room.getMusicPlayerType().toString()
         );
     }
 }

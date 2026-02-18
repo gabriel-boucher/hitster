@@ -6,17 +6,17 @@ import domain.game.GameValidator;
 import domain.player.Player;
 import domain.player.PlayerFactory;
 import domain.player.PlayerValidator;
-import domain.spotify.Playlist;
-import domain.spotify.PlaylistValidator;
-import domain.spotify.accessToken.AccessToken;
-import domain.spotify.accessToken.AccessTokenId;
+import domain.music.Playlist;
+import domain.music.PlaylistValidator;
+import infrastructure.musicAuth.spotify.apiToken.SpotifyAccessToken;
+import infrastructure.musicAuth.spotify.apiToken.SpotifyAccessTokenId;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RoomBuilder {
     private RoomId roomId = RoomId.create();
-    private AccessToken accessToken = new AccessToken(new AccessTokenId("testToken"), 3600, new AccessTokenId("testRefreshToken"));
+    private SpotifyAccessToken spotifyAccessToken = new SpotifyAccessToken(new SpotifyAccessTokenId("testToken"), 3600, new SpotifyAccessTokenId("testRefreshToken"));
     private GameStatus gameStatus = GameStatus.LOBBY;
     private List<Player> players = new ArrayList<>();
     private List<Playlist> playlists = new ArrayList<>();
@@ -29,8 +29,8 @@ public class RoomBuilder {
         return this;
     }
 
-    public RoomBuilder withAccessToken(AccessToken accessToken) {
-        this.accessToken = accessToken;
+    public RoomBuilder withAccessToken(SpotifyAccessToken spotifyAccessToken) {
+        this.spotifyAccessToken = spotifyAccessToken;
         return this;
     }
 
@@ -65,6 +65,6 @@ public class RoomBuilder {
     }
 
     public Room build() {
-        return new Room(roomId, accessToken, gameStatus, players, playlists, gameFactory, playerFactory, roomValidator);
+        return new Room(roomId, spotifyAccessToken, gameStatus, players, playlists, gameFactory, playerFactory, roomValidator);
     }
 }

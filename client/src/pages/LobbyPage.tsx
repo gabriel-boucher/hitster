@@ -1,23 +1,33 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PlayerInLobby from "src/components/elements/Player/PlayerInLobby";
-import { SpotifyModal } from "../components/LobbyPage/SpotifyModal/SpotifyModal";
-import useChangePlayerName from "../hooks/socket/room/useChangePlayerName.ts";
-import useRemovePlayer from "../hooks/socket/room/useRemovePlayer.ts";
-import useStartGame from "../hooks/socket/room/useStartGame.ts";
-import useRemovePlaylist from "../hooks/socket/room/useRemovePlaylist.ts";
+import { SearchPlaylistsModal } from "../components/LobbyPage/SearchPlaylistsModal/SearchPlaylistsModal.tsx";
+import useChangePlayerName from "../hooks/http/room/useChangePlayerName.ts";
+import useRemovePlayer from "../hooks/http/room/useRemovePlayer.ts";
+import useStartGame from "../hooks/http/room/useStartGame.ts";
+import useRemovePlaylist from "../hooks/http/music/useRemovePlaylist.ts";
 import {useConnectionStateProvider} from "../stateProvider/connection/ConnectionStateProvider.tsx";
 import {useRoomStateProvider} from "../stateProvider/room/RoomStateProvider.tsx";
+import {Playlist} from "../type/music/Playlist.ts";
 
 interface Props {
-  setLoading: (loading: boolean) => void;
+  setPageLoading: (loading: boolean) => void;
 }
 
-export default function LobbyPage({ setLoading }: Props) {
+export default function LobbyPage({ setPageLoading }: Props) {
   const [{ playerId }] = useConnectionStateProvider();
   const [{ players, playlists }] = useRoomStateProvider();
-  const [userName, setUserName] = useState(players.find((p) => p.id === playerId)?.name || "");
+  const [userName, setUserName] = useState("");
+  const [searchedQuery, setSearchedQuery] = useState("");
+  const [searchedPlaylists, setSearchedPlaylists] = useState<Playlist[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const currentPlayer = players.find((p) => p.id === playerId);
+    if (currentPlayer?.name) {
+      setUserName(currentPlayer.name);
+    }
+  }, [players, playerId]);
 
   const changePlayerName = useChangePlayerName();
   const removePlayer = useRemovePlayer();
@@ -80,12 +90,16 @@ export default function LobbyPage({ setLoading }: Props) {
 
       <ButtonsContainer>
         {players.length > 0 && players[0].id === playerId && (
-          <StartButton onClick={() => startGame(setLoading)}>Start Game</StartButton>
+          <StartButton onClick={() => startGame(setPageLoading)}>Start Game</StartButton>
         )}
         <PlaylistButton onClick={() => setIsModalOpen(true)}>
           Choose playlist
         </PlaylistButton>
-        <SpotifyModal
+        <SearchPlaylistsModal
+          searchedQuery={searchedQuery}
+          setSearchedQuery={setSearchedQuery}
+          searchedPlaylists={searchedPlaylists}
+          setSearchedPlaylists={setSearchedPlaylists}
           isModalOpen={isModalOpen}
           closeModal={() => setIsModalOpen(false)}
         />

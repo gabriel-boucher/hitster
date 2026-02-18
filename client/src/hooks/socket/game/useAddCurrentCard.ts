@@ -6,6 +6,8 @@ export default function useAddCurrentCard() {
     const [{ socket, roomId, playerId }] = useConnectionStateProvider();
 
     return useCallback(() => {
+        if (!socket) return;
+
         socket.emit(GameSocketEvents.ADD_CURRENT_CARD, {
             gameId: roomId,
             playerId,

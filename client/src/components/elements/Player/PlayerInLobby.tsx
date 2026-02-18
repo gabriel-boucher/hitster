@@ -3,7 +3,7 @@ import Plus from "src/components/icons/Plus";
 import XMark from "src/components/icons/XMark";
 import styled from "styled-components";
 import {Player, PlayerColor} from "../../../type/player/Player.ts";
-import useChangePlayerColor from "../../../hooks/socket/room/useChangePlayerColor.ts";
+import useChangePlayerColor from "../../../hooks/http/room/useChangePlayerColor.ts";
 import {useConnectionStateProvider} from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
 import {useRoomStateProvider} from "../../../stateProvider/room/RoomStateProvider.tsx";
 

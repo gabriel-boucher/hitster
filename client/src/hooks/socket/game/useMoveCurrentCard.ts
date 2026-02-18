@@ -6,6 +6,8 @@ export default function useMoveCurrentCard() {
     const [{ socket, roomId, playerId }] = useConnectionStateProvider();
 
     return useCallback((position: number) => {
+        if (!socket) return;
+
         socket.emit(GameSocketEvents.MOVE_CURRENT_CARD, {
             gameId: roomId,
             playerId,

@@ -8,14 +8,9 @@ import domain.game.item.card.Card;
 import domain.player.PlayerColor;
 import domain.player.PlayerFactory;
 import domain.player.PlayerId;
-import domain.room.Room;
-import domain.room.RoomFactory;
-import domain.room.RoomId;
-import domain.room.RoomRepository;
-import domain.spotify.*;
-import domain.spotify.accessToken.AccessCode;
-import domain.spotify.accessToken.AccessToken;
-import domain.spotify.accessToken.AccessTokenRepository;
+import domain.room.*;
+import domain.music.*;
+import infrastructure.music.MusicRepositoryFactory;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -23,25 +18,24 @@ import java.util.function.Consumer;
 public class RoomAppService {
     private final RoomRepository roomRepository;
     private final GameRepository gameRepository;
-    private final AccessTokenRepository accessTokenRepository;
-    private final PlaylistRepository playlistRepository;
     private final RoomFactory roomFactory;
     private final GameFactory gameFactory;
     private final PlayerFactory playerFactory;
+    private final MusicRepositoryFactory musicRepositoryFactory;
+    private final RoomValidator roomValidator;
 
-    public RoomAppService(RoomRepository roomRepository, GameRepository gameRepository, AccessTokenRepository accessTokenRepository, PlaylistRepository playlistRepository, RoomFactory roomFactory, GameFactory gameFactory, PlayerFactory playerFactory) {
+    public RoomAppService(RoomRepository roomRepository, GameRepository gameRepository, RoomFactory roomFactory, GameFactory gameFactory, PlayerFactory playerFactory, MusicRepositoryFactory musicRepositoryFactory, RoomValidator roomValidator) {
         this.roomRepository = roomRepository;
         this.gameRepository = gameRepository;
-        this.accessTokenRepository = accessTokenRepository;
-        this.playlistRepository = playlistRepository;
         this.roomFactory = roomFactory;
         this.gameFactory = gameFactory;
         this.playerFactory = playerFactory;
+        this.musicRepositoryFactory = musicRepositoryFactory;
+        this.roomValidator = roomValidator;
     }
 
-    public Room createRoom(AccessCode accessCode) {
-        AccessToken accessToken = accessTokenRepository.getAccessTokenByAccessCode(accessCode);
-        Room room = roomFactory.create(accessToken, gameFactory, playerFactory);
+    public Room createRoom() {
+        Room room = roomFactory.create(gameFactory, playerFactory, roomValidator);
         roomRepository.saveRoom(room);
         return room;
     }
@@ -79,7 +73,8 @@ public class RoomAppService {
         Game game = room.startGame(playerId);
         roomRepository.saveRoom(room);
 
-        List<Card> pile = playlistRepository.getCardsByPlaylistId(room.getAccessToken(), room.getPlaylists().stream().map(Playlist::id).toList());
+        MusicRepository musicRepository = musicRepositoryFactory.getMusicRepository(room);
+        List<Card> pile = musicRepository.getCardsByPlaylistId(room.getId(), room.getPlaylists().stream().map(Playlist::id).toList());
         game.startGame(pile);
         gameRepository.saveGame(game);
         return game;

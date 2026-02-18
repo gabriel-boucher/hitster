@@ -1,6 +1,5 @@
 import {useEffect} from "react";
 import {EventResponse} from "../../../type/EventResponse.ts";
-import {RoomSocketEvents} from "../room/roomSocketEvents.ts";
 import {GameState} from "../../../type/game/GameState.ts";
 import {useRoomStateProvider} from "../../../stateProvider/room/RoomStateProvider.tsx";
 import {useGameStateProvider} from "../../../stateProvider/game/GameStateProvider.tsx";
@@ -8,19 +7,17 @@ import {useConnectionStateProvider} from "../../../stateProvider/connection/Conn
 import {roomReducerCases} from "../../../stateProvider/room/RoomReducerCases.ts";
 import {gameReducerCases} from "../../../stateProvider/game/GameReducerCases.ts";
 import {connectionReducerCases} from "../../../stateProvider/connection/ConnectionReducerCases.ts";
+import {StateChangedSocketEvents} from "../stateChangedSocketEvents.ts";
 
 export default function useGameState() {
   const [{ socket }, connectionDispatch] = useConnectionStateProvider();
-  const [{ }, roomDispatch] = useRoomStateProvider();
-  const [{ }, gameDispatch] = useGameStateProvider();
+  const [, roomDispatch] = useRoomStateProvider();
+  const [, gameDispatch] = useGameStateProvider();
 
   useEffect(() => {
-    if (!socket) {
-      return;
-    }
+    if (!socket) return;
 
     const handleGameState = (response: EventResponse<GameState>) => {
-      console.log(response.data)
       const gameState = response.data;
 
       if (response.success && gameState) {
@@ -34,10 +31,10 @@ export default function useGameState() {
       }
     };
 
-    socket.on(RoomSocketEvents.GAME_STATE, handleGameState);
+    socket.on(StateChangedSocketEvents.GAME_STATE_CHANGED, handleGameState);
 
     return () => {
-      socket.off(RoomSocketEvents.GAME_STATE, handleGameState);
+      socket.off(StateChangedSocketEvents.GAME_STATE_CHANGED, handleGameState);
     }
   }, [socket, connectionDispatch, roomDispatch, gameDispatch]);
 }

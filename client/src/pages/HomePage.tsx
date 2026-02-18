@@ -1,20 +1,13 @@
 import styled from "styled-components";
-import {SPOTIFY_AUTH_URL} from "../config/spotifyAuth.ts";
+import useCreateRoom from "../hooks/http/room/useCreateRoom.ts";
 
-interface Props {
-  setLoading: (loading: boolean) => void;
-}
-
-export default function HomePage({ setLoading }: Props) {
-  const authorization = () => {
-    setLoading(true);
-    window.location.href = SPOTIFY_AUTH_URL;
-  }
+export default function HomePage() {
+  const createRoom = useCreateRoom();
 
   return (
     <Container>
       <Title>HITSTER</Title>
-      <CreateRoomButton onClick={authorization}>Create Room</CreateRoomButton>
+      <CreateRoomButton onClick={createRoom}>Create Room</CreateRoomButton>
     </Container>
   );
 }

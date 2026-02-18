@@ -1,7 +1,7 @@
 package domain.game;
 
 import domain.game.item.card.Card;
-import domain.spotify.PlaylistId;
+import domain.music.PlaylistId;
 
 import java.util.List;
 

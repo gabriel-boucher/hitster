@@ -10,9 +10,10 @@ import useAddToken from "../game/useAddToken.ts";
 import useRemoveToken from "../game/useRemoveToken.ts";
 import {Player} from "../../../type/player/Player.ts";
 import * as React from "react";
+import {RoomAction} from "../../../stateProvider/room/RoomAction.ts";
 
 export default function useMouseClickToken() {
-    const [{ socket, roomId, playerId }] = useConnectionStateProvider();
+    const [{ playerId }] = useConnectionStateProvider();
     const [{ players }, dispatchRoomState] = useRoomStateProvider();
     const [{ items, currentPlayerId }, dispatchGameState] = useGameStateProvider();
 
@@ -41,10 +42,10 @@ export default function useMouseClickToken() {
             removeToken(newClickToken.id);
         }
     },
-    [socket, roomId, players, items, dispatchGameState, dispatchRoomState, playerId, currentPlayerId]);
+    [players, items, playerId, currentPlayerId, addToken, removeToken, dispatchGameState, dispatchRoomState]);
 }
 
-function dispatchTokenState(players: Player[], playerId: string, clickToken: Token, newClickToken: Token, dispatchRoomState: React.Dispatch<any>) {
+function dispatchTokenState(players: Player[], playerId: string, clickToken: Token, newClickToken: Token, dispatchRoomState: React.Dispatch<RoomAction>) {
     const newPlayers = players.map((player) =>
         player.id === playerId ?
             {

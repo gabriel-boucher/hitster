@@ -26,5 +26,5 @@ export default function useMouseDrag() {
             dispatchMovementState({ type: movementReducerCases.SET_DRAGGING_POSITION, draggingPosition: { x: clampedX, y: clampedY } });
         });
     },
-    [isDragging, currentCardWidth, dispatchMovementState, playerId, currentPlayerId]);
+    [isDragging, currentCardWidth, playerId, currentPlayerId, dispatchMovementState]);
 }

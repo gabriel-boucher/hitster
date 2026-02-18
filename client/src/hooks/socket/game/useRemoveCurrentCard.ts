@@ -6,6 +6,8 @@ export default function useRemoveCurrentCard() {
     const [{ socket, roomId, playerId }] = useConnectionStateProvider();
 
     return useCallback(() => {
+        if (!socket) return;
+
         socket.emit(GameSocketEvents.REMOVE_CURRENT_CARD, {
             gameId: roomId,
             playerId,

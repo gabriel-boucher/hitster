@@ -6,6 +6,8 @@ export default function useReturnCurrentCard() {
     const [{ socket, roomId, playerId }] = useConnectionStateProvider();
 
     return useCallback(() => {
+        if (!socket) return;
+
         socket.emit(GameSocketEvents.RETURN_CURRENT_CARD, {
             gameId: roomId,
             playerId,

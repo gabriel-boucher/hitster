@@ -7,7 +7,7 @@ import {useMovementStateProvider} from "../../../stateProvider/movement/Movement
 import useRemoveCurrentCard from "../game/useRemoveCurrentCard.ts";
 
 export default function useMouseDragLeaveDeck() {
-    const [{ socket, roomId, playerId }] = useConnectionStateProvider();
+    const [{ playerId }] = useConnectionStateProvider();
     const [{ items, currentPlayerId, currentCardId }, dispatchGameState] = useGameStateProvider();
     const [{ isDragging }] = useMovementStateProvider();
 
@@ -24,12 +24,10 @@ export default function useMouseDragLeaveDeck() {
         removeCurrentCard();
     }, [
         isDragging,
-        socket,
         items,
         currentPlayerId,
         currentCardId,
         playerId,
-        roomId,
         dispatchGameState,
         removeCurrentCard
     ]);

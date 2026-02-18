@@ -1,9 +1,11 @@
 import context.ApplicationContext;
 import interfaces.filter.CORSFilter;
+import interfaces.rest.auth.AuthResource;
+import interfaces.rest.music.MusicResource;
+import interfaces.rest.room.RoomResource;
+import interfaces.socket.SocketIOServerHolder;
 import interfaces.socket.connection.ConnectionResource;
 import interfaces.socket.game.GameResource;
-import interfaces.rest.spotify.SpotifyResource;
-import interfaces.socket.room.RoomResource;
 import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOServer;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -20,10 +22,14 @@ public class ApplicationServer {
     private final static ApplicationContext applicationContext = new ApplicationContext();
 
     public static void startHttpServer() {
-        SpotifyResource spotifyResource = applicationContext.getSpotifyResource();
+        AuthResource authResource = applicationContext.getAuthResource();
+        MusicResource musicResource = applicationContext.getSpotifyResource();
+        RoomResource roomResource = applicationContext.getRoomRessource();
 
         final ResourceConfig rc = new ResourceConfig()
-                .register(spotifyResource)
+                .register(authResource)
+                .register(musicResource)
+                .register(roomResource)
                 .register(CORSFilter.class);
 
         String baseUrl = "http://" + HOST + ":" + HTTP_SERVER_PORT;
@@ -33,8 +39,8 @@ public class ApplicationServer {
     
     public static void startWebSocketServer() {
         ConnectionResource connectionResource = applicationContext.getConnectionResource();
-        RoomResource roomResource = applicationContext.getRoomRessource();
         GameResource gameResource = applicationContext.getGameRessource();
+        SocketIOServerHolder socketIOServerHolder = applicationContext.getSocketIOServerHolder();
 
         Configuration config = new Configuration();
         config.setHostname(HOST);
@@ -42,9 +48,9 @@ public class ApplicationServer {
         config.setOrigin("*");
 
         socketIOServer = new SocketIOServer(config);
+        socketIOServerHolder.setSocketIOServer(socketIOServer);
 
         connectionResource.setupEventListeners(socketIOServer);
-        roomResource.setupEventListeners(socketIOServer);
         gameResource.setupEventListeners(socketIOServer);
 
         socketIOServer.start();

@@ -10,9 +10,9 @@ import * as React from "react";
 import useMoveCurrentCard from "../game/useMoveCurrentCard.ts";
 
 export default function useMouseDownCard() {
-    const [{ socket, roomId, playerId }] = useConnectionStateProvider();
+    const [{ playerId }] = useConnectionStateProvider();
     const [{ items, currentPlayerId, currentCardId, currentCardStatus }, dispatchGameState] = useGameStateProvider();
-    const [{  }, dispatchMovementState] = useMovementStateProvider();
+    const [, dispatchMovementState] = useMovementStateProvider();
 
     const moveCurrentCard = useMoveCurrentCard();
 
@@ -43,5 +43,5 @@ export default function useMouseDownCard() {
             moveCurrentCard(newIndex);
         }
     },
-    [socket, roomId, playerId, items, currentPlayerId, currentCardId, currentCardStatus, dispatchGameState, dispatchMovementState, moveCurrentCard]);
+    [playerId, items, currentPlayerId, currentCardId, currentCardStatus, dispatchGameState, dispatchMovementState, moveCurrentCard]);
 }

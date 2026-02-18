@@ -7,6 +7,8 @@ export default function useAddToken() {
     const [{ socket, roomId, playerId }] = useConnectionStateProvider();
 
     return useCallback((tokenId: TokenId, position: number) => {
+        if (!socket) return;
+
         socket.emit(GameSocketEvents.ADD_TOKEN, {
             gameId: roomId,
             playerId,

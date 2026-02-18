@@ -9,6 +9,8 @@ export default function useNextTurn() {
     const [{ currentCardStatus }] = useGameStateProvider();
 
     return useCallback(() => {
+        if (!socket) return;
+
         if (currentCardStatus == ItemStatus.ACTIVE_IN_CURRENT_DECK) {
             socket.emit(GameSocketEvents.NEXT_TURN, {
                 gameId: roomId,

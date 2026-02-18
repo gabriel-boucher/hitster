@@ -66,7 +66,7 @@ const Player = styled.div<{ $sliderProgress: number }>`
   cursor: pointer;
 
   input[type="range"] {
-    height: 0px;
+    height: 0;
     transition: height 0.2s ease;
   }
 
@@ -86,11 +86,11 @@ const Player = styled.div<{ $sliderProgress: number }>`
   // Hover on volume icon to edit volume slider (prevents using a state variable)
   /* &:has(svg:hover) input[type="range"] {
     background: ${({ $sliderProgress }) =>
-      `linear-gradient(to top, var(--primary-color) ${$sliderProgress}%, hsla(0, 0%, 100%, 20%) ${$sliderProgress}%)`};
+      `linear-gradient(to top, var(--primary-bg-color) ${$sliderProgress}%, hsla(0, 0%, 100%, 20%) ${$sliderProgress}%)`};
   } */
   &:hover input[type="range"] {
     background: ${({ $sliderProgress }) =>
-      `linear-gradient(to top, var(--primary-color) ${$sliderProgress}%, hsla(0, 0%, 100%, 20%) ${$sliderProgress}%)`};
+      `linear-gradient(to top, var(--primary-bg-color) ${$sliderProgress}%, hsla(0, 0%, 100%, 20%) ${$sliderProgress}%)`};
   }
 `;
 

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { PlaylistList } from "./PlaylistList.tsx";
 import SearchPlaylistsHeader from "./SearchPlaylistsHeader.tsx";
 import {Dispatch, SetStateAction, useState} from "react";
-import {Playlist} from "../../../type/music/Playlist.ts";
+import {Playlist} from "../../../../type/music/Playlist.ts";
 import SearchPlaylistsInput from "./SearchPlaylistsInput.tsx";
 import SearchPlaylistsAuth from "./SearchPlaylistsAuth.tsx";
 

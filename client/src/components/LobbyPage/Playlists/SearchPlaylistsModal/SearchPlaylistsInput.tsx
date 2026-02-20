@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import {Dispatch, SetStateAction, useEffect, useRef} from "react";
-import {Playlist} from "../../../type/music/Playlist.ts";
-import useSearchPlaylists from "../../../hooks/http/music/useSearchPlaylists.ts";
-import {useRoomStateProvider} from "../../../stateProvider/room/RoomStateProvider.tsx";
+import {Playlist} from "../../../../type/music/Playlist.ts";
+import useSearchPlaylists from "../../../../hooks/http/music/useSearchPlaylists.ts";
+import {useRoomStateProvider} from "../../../../stateProvider/room/RoomStateProvider.tsx";
 
 interface Props {
     searchedQuery: string;

@@ -10,10 +10,10 @@ import {PlayerId} from "../../../type/player/Player.ts";
 export default function useStartGame() {
   const [{ roomId, playerId }] = useConnectionStateProvider();
 
-  return useCallback(async (setLoading: (loading: boolean) => void) => {
-    setLoading(true);
+  return useCallback(async (setPageLoading: (loading: boolean) => void) => {
+    setPageLoading(true);
     const response = await startGame(roomId, playerId);
-    setLoading(false);
+    setPageLoading(false);
     if (response.success) return;
     alert(response.message);
   }, [roomId, playerId]);

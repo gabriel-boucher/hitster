@@ -21,19 +21,19 @@ export default function Volume1() {
 }
 
 const VolumeIcon = styled.svg`
-  width: 30px;
-  height: 30px;
+    width: 30px;
+    height: 30px;
 
-  path {
-    fill: var(--primary-text-color);
-  }
+    path {
+        fill: var(--primary-text-color);
+    }
 
-  &:hover {
-    cursor: pointer;
-  }
+    &:hover {
+        cursor: pointer;
+    }
 
-  &:hover path {
-    cursor: pointer;
-    fill: var(--primary-bg-color);
-  }
+    &:hover path {
+        cursor: pointer;
+        fill: var(--primary-color);
+    }
 `

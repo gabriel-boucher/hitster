@@ -1,6 +1,4 @@
 :root {
-  --primary-bg-color: #FF00E0;
-  --primary-text-color: white;
 
   --primary-spotify-bg-color: #181818;
   --secondary-spotify-bg-color: #2A2A2A;
@@ -8,10 +6,55 @@
   --hover-spotify-bg-color: #282828;
   --primary-spotify-text-color: white;
   --secondary-spotify-text-color: #888;
+
+  /* Lobby - accent (pink/magenta) variations */
+  --primary-color: #FF00E0;
+  --lobby-accent-dark: #9900b3;
+  --lobby-accent-soft: rgba(255, 0, 224, 0.3);
+  --lobby-accent-softer: rgba(255, 0, 224, 0.2);
+  --lobby-accent-subtle: rgba(255, 0, 224, 0.1);
+
+  /* Lobby - white overlays */
+  --lobby-white-3: rgba(255, 255, 255, 0.03);
+  --lobby-white-6: rgba(255, 255, 255, 0.06);
+  --lobby-white-10: rgba(255, 255, 255, 0.1);
+  --lobby-white-20: rgba(255, 255, 255, 0.2);
+  --lobby-white-30: rgba(255, 255, 255, 0.3);
+  --lobby-white-40: rgba(255, 255, 255, 0.4);
+  --lobby-white-50: rgba(255, 255, 255, 0.5);
+  --lobby-white-60: rgba(255, 255, 255, 0.6);
+  --primary-text-color: white;
+
+  /* Lobby - black overlays */
+  --lobby-black-30: rgba(0, 0, 0, 0.3);
+  --lobby-black-50: rgba(0, 0, 0, 0.5);
+
+  /* Lobby - gold (host badge) */
+  --lobby-gold: #FFD700;
+  --lobby-gold-bg: rgba(255, 215, 0, 0.1);
+  --lobby-gold-border: rgba(255, 215, 0, 0.3);
+
+  /* Lobby - danger (remove button) */
+  --lobby-danger: #ff6b6b;
+  --lobby-danger-bg: rgba(255, 0, 0, 0.2);
+  --lobby-danger-border: rgba(255, 0, 0, 0.4);
+
+  /* Lobby - dark surfaces */
+  --lobby-surface-dark: #1a1a2e;
+  --lobby-surface-gradient-start: #1e1e3a;
+  --lobby-surface-gradient-end: #2a1e4a;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+#root {
+  height: 100%;
 }
 
 body {
-  margin: 0;
   overflow: hidden;
   font-family: Arial, Helvetica, sans-serif;
   line-height: 1;

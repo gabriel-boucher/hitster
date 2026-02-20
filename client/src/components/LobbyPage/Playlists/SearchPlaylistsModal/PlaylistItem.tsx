@@ -1,7 +1,7 @@
-import RemovePlaylistButton from "../icons/RemovePlaylistButton.tsx";
-import AddPlaylistButton from "../icons/AddPlaylistButton.tsx";
+import RemovePlaylistButton from "./elements/RemovePlaylistButton.tsx";
+import AddPlaylistButton from "./elements/AddPlaylistButton.tsx";
 import styled from "styled-components";
-import {Playlist} from "../../../type/music/Playlist.ts";
+import {Playlist} from "../../../../type/music/Playlist.ts";
 
 interface Props {
     playlist: Playlist;

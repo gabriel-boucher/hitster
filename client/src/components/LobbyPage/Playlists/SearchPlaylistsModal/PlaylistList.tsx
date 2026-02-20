@@ -1,8 +1,8 @@
 import styled, {keyframes} from "styled-components";
-import useRemovePlaylist from "../../../hooks/http/music/useRemovePlaylist.ts";
-import useAddPlaylist from "../../../hooks/http/music/useAddPlaylist.ts";
-import {useRoomStateProvider} from "../../../stateProvider/room/RoomStateProvider.tsx";
-import {Playlist} from "../../../type/music/Playlist.ts";
+import useRemovePlaylist from "../../../../hooks/http/music/useRemovePlaylist.ts";
+import useAddPlaylist from "../../../../hooks/http/music/useAddPlaylist.ts";
+import {useRoomStateProvider} from "../../../../stateProvider/room/RoomStateProvider.tsx";
+import {Playlist} from "../../../../type/music/Playlist.ts";
 import PlaylistItem from "./PlaylistItem.tsx";
 
 interface Props {

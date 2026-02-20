@@ -111,24 +111,24 @@ const PlayerImg = styled.div<{ $playerColor: PlayerColor }>`
 `;
 
 const PlayerColorSelected = styled(PlayerImg)`
-  width: 7vh;
-  border: 2px solid black;
-  box-shadow: 0 0 0 2px var(--primary-bg-color);
+    width: 7vh;
+    border: 2px solid black;
+    box-shadow: 0 0 0 2px var(--primary-color);
 
-  &:hover ${PlusIcon} {
-    display: flex;
-  }
+    &:hover ${PlusIcon} {
+        display: flex;
+    }
 `;
 
 const PlayerColorInMenu = styled(PlayerImg)`
-  width: 5vh;
-  border: 1px solid black;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+    width: 5vh;
+    border: 1px solid black;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 
-  &:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 0 2px var(--primary-bg-color);
-  }
+    &:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 2px var(--primary-color);
+    }
 `;
 
 const PlayerColorInMenuTaken = styled(PlayerImg)`

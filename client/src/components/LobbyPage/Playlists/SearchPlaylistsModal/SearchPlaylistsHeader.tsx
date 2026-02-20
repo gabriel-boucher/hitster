@@ -1,4 +1,4 @@
-import XMark from "../../icons/XMark.tsx";
+import XMark from "../../../icons/XMark.tsx";
 import styled from "styled-components";
 
 interface Props {

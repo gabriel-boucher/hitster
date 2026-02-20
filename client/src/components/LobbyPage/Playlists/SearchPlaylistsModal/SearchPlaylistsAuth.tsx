@@ -1,8 +1,8 @@
-import {MusicPlayerType} from "../../../type/music/MusicPlayerType.ts";
+import {MusicPlayerType} from "../../../../type/music/MusicPlayerType.ts";
 import styled from "styled-components";
-import {useRoomStateProvider} from "../../../stateProvider/room/RoomStateProvider.tsx";
-import useInMemoryAuth from "../../../hooks/http/auth/useInMemoryAuth.ts";
-import useSpotifyAuth from "../../../hooks/http/auth/useSpotifyAuth.ts";
+import {useRoomStateProvider} from "../../../../stateProvider/room/RoomStateProvider.tsx";
+import useInMemoryAuth from "../../../../hooks/http/auth/useInMemoryAuth.ts";
+import useSpotifyAuth from "../../../../hooks/http/auth/useSpotifyAuth.ts";
 
 export default function SearchPlaylistsAuth() {
     const [{ musicPlayerType }] = useRoomStateProvider();

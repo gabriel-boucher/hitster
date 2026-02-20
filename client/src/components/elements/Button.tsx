@@ -25,8 +25,8 @@ const Glow = styled.div`
     align-items: center;
     border-radius: 50%;
     border: 0.4vh solid var(--primary-text-color);
-    box-shadow: 0 0 0.2rem var(--primary-bg-color), 0 0 0.5rem var(--primary-bg-color), 0 0 1rem var(--primary-bg-color),
-    inset 0 0 0.2rem var(--primary-bg-color), inset 0 0 0.5rem var(--primary-bg-color), inset 0 0 1rem var(--primary-bg-color);
+    box-shadow: 0 0 0.2rem var(--primary-color), 0 0 0.5rem var(--primary-color), 0 0 1rem var(--primary-color),
+    inset 0 0 0.2rem var(--primary-color), inset 0 0 0.5rem var(--primary-color), inset 0 0 1rem var(--primary-color);
 `;
 
 const ButtonContainer = styled.button`
@@ -42,8 +42,8 @@ const ButtonContainer = styled.button`
         height: 100%;
 
         ${Glow} {
-            box-shadow: 0 0 0.4rem var(--primary-bg-color), 0 0 0.7rem var(--primary-bg-color), 0 0 1.2rem var(--primary-bg-color),
-            inset 0 0 0.4rem var(--primary-bg-color), inset 0 0 0.7rem var(--primary-bg-color), inset 0 0 1.2rem var(--primary-bg-color);
+            box-shadow: 0 0 0.4rem var(--primary-color), 0 0 0.7rem var(--primary-color), 0 0 1.2rem var(--primary-color),
+            inset 0 0 0.4rem var(--primary-color), inset 0 0 0.7rem var(--primary-color), inset 0 0 1.2rem var(--primary-color);
         }
     }
 `;

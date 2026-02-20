@@ -22,12 +22,12 @@ export default function Sync({ handleSync }: SyncProps) {
 }
 
 const SyncIcon = styled.svg`
-  fill: var(--primary-text-color);
-  height: 24px;
-  width: 4vw;
+    fill: var(--primary-text-color);
+    height: 24px;
+    width: 4vw;
 
-  &:hover {
-    fill: var(--primary-bg-color);
-    cursor: pointer;
-  }
+    &:hover {
+        fill: var(--primary-color);
+        cursor: pointer;
+    }
 `;

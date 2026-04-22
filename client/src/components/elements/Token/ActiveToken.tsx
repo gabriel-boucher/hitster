@@ -4,9 +4,9 @@ import {Token} from "../../../type/item/Token.ts";
 import {ItemStatus} from "../../../type/item/ItemStatus.ts";
 import {useRoomStateProvider} from "../../../stateProvider/room/RoomStateProvider.tsx";
 import {useMovementStateProvider} from "../../../stateProvider/movement/MovementStateProvider.tsx";
-import useMouseDragOverDeck from "../../../hooks/socket/movement/useMouseDragOverDeck.ts";
-import useMouseOverDeck from "../../../hooks/socket/movement/useMouseOverDeck.ts";
-import useMouseClickToken from "../../../hooks/socket/movement/useMouseClickToken.ts";
+import useMouseDragOverDeck from "../../../hooks/movement/useMouseDragOverDeck.ts";
+import useMouseOverDeck from "../../../hooks/movement/useMouseOverDeck.ts";
+import useMouseClickToken from "../../../hooks/movement/useMouseClickToken.ts";
 import * as React from "react";
 
 export default function ActiveToken({ token } : { token: Token }) {

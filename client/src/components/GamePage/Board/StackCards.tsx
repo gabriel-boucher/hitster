@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import {useGameStateProvider} from "../../../stateProvider/game/GameStateProvider.tsx";
 import {Card} from "../../../type/item/Card.ts";
 import {ItemStatus} from "../../../type/item/ItemStatus.ts";
-import useMouseLeaveDeck from "../../../hooks/socket/movement/useMouseLeaveDeck.ts";
+import useMouseLeaveDeck from "../../../hooks/movement/useMouseLeaveDeck.ts";
 
 export default function StackCards() {
   const [{ items, currentCardId, currentCardStatus }] = useGameStateProvider();

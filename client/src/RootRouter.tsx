@@ -2,20 +2,22 @@ import HomePage from "./pages/HomePage";
 import LobbyPage from "./pages/LobbyPage.tsx";
 import GamePage from "./pages/GamePage";
 import LoadingPage from "./pages/LoadingPage.tsx";
-import useRoomState from "./hooks/http/room/useRoomState.ts";
-import useGameState from "./hooks/socket/game/useGameState.ts";
+import useRoomState from "./hooks/socket/useRoomState.ts";
+import useGameState from "./hooks/socket/useGameState.ts";
 import {GameStatus} from "./type/game/GameState.ts";
 import {useConnectionStateProvider} from "./stateProvider/connection/ConnectionStateProvider.tsx";
 import {useGameStateProvider} from "./stateProvider/game/GameStateProvider.tsx";
 import {useState} from "react";
-import useJoinRoom from "./hooks/socket/connection/useJoinRoom.ts";
+import useJoinRoom from "./hooks/http/room/useJoinRoom.ts";
+import useConnect from "./hooks/socket/connection/useConnect.ts";
 
 export default function RootRouter() {
   const [{ roomId }] = useConnectionStateProvider();
   const [{ gameStatus }] = useGameStateProvider();
   const [pageLoading, setPageLoading] = useState(false);
 
-  useJoinRoom()
+  useConnect();
+  useJoinRoom();
   useRoomState();
   useGameState();
 

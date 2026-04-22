@@ -6,8 +6,8 @@ import domain.room.Room;
 import interfaces.dto.responseDto.successDto.OkSuccessResponse;
 import interfaces.mapper.GameStateMapper;
 import interfaces.mapper.RoomStateMapper;
-import interfaces.socket.game.GameStateResponse;
-import interfaces.rest.room.RoomStateResponse;
+import interfaces.http.game.GameStateResponse;
+import interfaces.http.room.RoomStateResponse;
 
 import java.util.ArrayList;
 

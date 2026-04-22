@@ -5,9 +5,9 @@ import {useGameStateProvider} from "../../../stateProvider/game/GameStateProvide
 import {useMovementStateProvider} from "../../../stateProvider/movement/MovementStateProvider.tsx";
 import {movementReducerCases} from "../../../stateProvider/movement/MovementReducerCases.ts";
 import * as React from "react";
-import useMouseDragOverDeck from "../../../hooks/socket/movement/useMouseDragOverDeck.ts";
-import useMouseOverDeck from "../../../hooks/socket/movement/useMouseOverDeck.ts";
-import useMouseDownCard from "../../../hooks/socket/movement/useMouseDownCard.ts";
+import useMouseDragOverDeck from "../../../hooks/movement/useMouseDragOverDeck.ts";
+import useMouseOverDeck from "../../../hooks/movement/useMouseOverDeck.ts";
+import useMouseDownCard from "../../../hooks/movement/useMouseDownCard.ts";
 
 export default function ActiveCard({ card }: { card: Card }) {
   const [{ currentCardId }] = useGameStateProvider();

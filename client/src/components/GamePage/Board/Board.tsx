@@ -8,7 +8,7 @@ import {useConnectionStateProvider} from "../../../stateProvider/connection/Conn
 import {useGameStateProvider} from "../../../stateProvider/game/GameStateProvider.tsx";
 import {PlayerId} from "../../../type/player/Player.ts";
 import ActivePlayerItems from "../ActiveItems/ActivePlayerItems.tsx";
-import useNextTurn from "../../../hooks/socket/game/useNextTurn.ts";
+import useNextTurn from "../../../hooks/http/game/useNextTurn.ts";
 
 interface Props {
   setHoveredPlayerId: (playerId: PlayerId) => void;

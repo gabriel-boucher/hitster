@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useMemo } from "react";
 import {Card} from "../../../type/item/Card.ts";
 import * as React from "react";
-import useMouseDownCard from "../../../hooks/socket/movement/useMouseDownCard.ts";
+import useMouseDownCard from "../../../hooks/movement/useMouseDownCard.ts";
 
 interface CardProps {
   index: number;

@@ -27,49 +27,49 @@ import infrastructure.musicAuth.spotify.apiToken.InMemorySpotifyAccessTokenRepos
 import infrastructure.musicAuth.spotify.apiToken.SpotifyAccessTokenRepository;
 import infrastructure.room.InMemoryRoomRepository;
 import interfaces.mapper.*;
-import interfaces.rest.auth.AuthResource;
-import interfaces.rest.auth.inMemoryAuth.AuthInMemoryHandler;
-import interfaces.rest.auth.spotifyAuth.AuthSpotifyHandler;
-import interfaces.rest.music.MusicResource;
-import interfaces.rest.auth.inMemoryAuth.AuthInMemoryMapper;
-import interfaces.rest.auth.spotifyAuth.AuthSpotifyMapper;
-import interfaces.rest.music.searchPlaylists.SearchPlaylistsHandler;
+import interfaces.http.auth.AuthResource;
+import interfaces.http.auth.inMemoryAuth.AuthInMemoryHandler;
+import interfaces.http.auth.spotifyAuth.AuthSpotifyHandler;
+import interfaces.http.music.MusicResource;
+import interfaces.http.auth.inMemoryAuth.AuthInMemoryMapper;
+import interfaces.http.auth.spotifyAuth.AuthSpotifyMapper;
+import interfaces.http.music.searchPlaylists.SearchPlaylistsHandler;
 import interfaces.socket.SocketEventBroadcaster;
 import interfaces.socket.SocketIOServerHolder;
 import interfaces.socket.connection.ConnectionResource;
-import interfaces.socket.game.addCurrentCard.AddCurrentCardHandler;
-import interfaces.socket.game.addCurrentCard.AddCurrentCardMapper;
-import interfaces.socket.game.addToken.AddTokenHandler;
-import interfaces.socket.game.addToken.AddTokenMapper;
-import interfaces.socket.game.nextTurn.NextTurnHandler;
-import interfaces.socket.game.nextTurn.NextTurnMapper;
-import interfaces.socket.game.removeCurrentCard.RemoveCurrentCardHandler;
-import interfaces.socket.game.removeCurrentCard.RemoveCurrentCardMapper;
-import interfaces.socket.game.removeToken.RemoveTokenHandler;
-import interfaces.socket.game.removeToken.RemoveTokenMapper;
-import interfaces.socket.game.moveCurrentCard.MoveCurrentCardHandler;
-import interfaces.socket.game.moveCurrentCard.MoveCurrentCardMapper;
-import interfaces.socket.game.returnCurrentCard.ReturnCurrentCardHandler;
-import interfaces.socket.game.returnCurrentCard.ReturnCurrentCardMapper;
-import interfaces.rest.music.addPlaylist.AddPlaylistHandler;
-import interfaces.rest.room.changePlayerColor.ChangePlayerColorHandler;
-import interfaces.rest.room.changePlayerName.ChangePlayerNameHandler;
-import interfaces.rest.room.createRoom.CreateRoomHandler;
-import interfaces.socket.connection.joinRoom.JoinRoomHandler;
-import interfaces.rest.room.removePlayer.RemovePlayerHandler;
-import interfaces.rest.music.removePlaylist.RemovePlaylistHandler;
-import interfaces.rest.room.startGame.StartGameHandler;
-import interfaces.rest.room.startGame.StartGameMapper;
-import interfaces.rest.room.RoomResource;
-import interfaces.rest.music.addPlaylist.AddPlaylistMapper;
-import interfaces.rest.room.changePlayerColor.ChangePlayerColorMapper;
-import interfaces.rest.room.changePlayerName.ChangePlayerNameMapper;
-import interfaces.socket.connection.joinRoom.JoinRoomMapper;
-import interfaces.rest.room.removePlayer.RemovePlayerMapper;
-import interfaces.rest.music.removePlaylist.RemovePlaylistMapper;
-import interfaces.socket.game.GameResource;
+import interfaces.http.game.addCurrentCard.AddCurrentCardHandler;
+import interfaces.http.game.addCurrentCard.AddCurrentCardMapper;
+import interfaces.http.game.addToken.AddTokenHandler;
+import interfaces.http.game.addToken.AddTokenMapper;
+import interfaces.http.game.nextTurn.NextTurnHandler;
+import interfaces.http.game.nextTurn.NextTurnMapper;
+import interfaces.http.game.removeCurrentCard.RemoveCurrentCardHandler;
+import interfaces.http.game.removeCurrentCard.RemoveCurrentCardMapper;
+import interfaces.http.game.removeToken.RemoveTokenHandler;
+import interfaces.http.game.removeToken.RemoveTokenMapper;
+import interfaces.http.game.moveCurrentCard.MoveCurrentCardHandler;
+import interfaces.http.game.moveCurrentCard.MoveCurrentCardMapper;
+import interfaces.http.game.returnCurrentCard.ReturnCurrentCardHandler;
+import interfaces.http.game.returnCurrentCard.ReturnCurrentCardMapper;
+import interfaces.http.music.addPlaylist.AddPlaylistHandler;
+import interfaces.http.room.changePlayerColor.ChangePlayerColorHandler;
+import interfaces.http.room.changePlayerName.ChangePlayerNameHandler;
+import interfaces.http.room.createRoom.CreateRoomHandler;
+import interfaces.http.room.joinRoom.JoinRoomHandler;
+import interfaces.http.room.removePlayer.RemovePlayerHandler;
+import interfaces.http.music.removePlaylist.RemovePlaylistHandler;
+import interfaces.http.room.startGame.StartGameHandler;
+import interfaces.http.room.startGame.StartGameMapper;
+import interfaces.http.room.RoomResource;
+import interfaces.http.music.addPlaylist.AddPlaylistMapper;
+import interfaces.http.room.changePlayerColor.ChangePlayerColorMapper;
+import interfaces.http.room.changePlayerName.ChangePlayerNameMapper;
+import interfaces.http.room.joinRoom.JoinRoomMapper;
+import interfaces.http.room.removePlayer.RemovePlayerMapper;
+import interfaces.http.music.removePlaylist.RemovePlaylistMapper;
+import interfaces.http.game.GameResource;
 import interfaces.mapper.PlaylistMapper;
-import interfaces.rest.music.searchPlaylists.SearchPlaylistsMapper;
+import interfaces.http.music.searchPlaylists.SearchPlaylistsMapper;
 
 public class ApplicationContext {
     private final ConnectionResource connectionResource;
@@ -159,7 +159,7 @@ public class ApplicationContext {
         SearchPlaylistsHandler searchPlaylistsHandler = new SearchPlaylistsHandler(musicAppService, searchPlaylistsMapper);
 
         CreateRoomHandler createRoomHandler = new CreateRoomHandler(roomAppService);
-        JoinRoomHandler joinRoomHandler = new JoinRoomHandler(roomAppService, joinRoomMapper, socketEventBroadcaster);
+        JoinRoomHandler joinRoomHandler = new JoinRoomHandler(roomAppService, joinRoomMapper, socketEventBroadcaster, socketIOServerHolder);
         ChangePlayerNameHandler changePlayerNameHandler = new ChangePlayerNameHandler(roomAppService, changePlayerNameMapper, socketEventBroadcaster, socketIOServerHolder);
         ChangePlayerColorHandler changePlayerColorHandler = new ChangePlayerColorHandler(roomAppService, changePlayerColorMapper, socketEventBroadcaster, socketIOServerHolder);
         RemovePlayerHandler removePlayerHandler = new RemovePlayerHandler(roomAppService, removePlayerMapper, socketEventBroadcaster, socketIOServerHolder);
@@ -167,17 +167,17 @@ public class ApplicationContext {
         RemovePlaylistHandler removePlaylistHandler = new RemovePlaylistHandler(roomAppService, removePlaylistMapper, socketEventBroadcaster, socketIOServerHolder);
         StartGameHandler startGameHandler = new StartGameHandler(roomAppService, startGameMapper, socketEventBroadcaster, socketIOServerHolder);
 
-        NextTurnHandler nextTurnHandler = new NextTurnHandler(gameAppService, nextTurnMapper, socketEventBroadcaster);
-        AddCurrentCardHandler addCurrentCardHandler = new AddCurrentCardHandler(gameAppService, addCurrentCardMapper, socketEventBroadcaster);
-        RemoveCurrentCardHandler removeCurrentCardHandler = new RemoveCurrentCardHandler(gameAppService, removeCurrentCardMapper, socketEventBroadcaster);
-        ReturnCurrentCardHandler returnCurrentCardHandler = new ReturnCurrentCardHandler(gameAppService, returnCurrentCardMapper, socketEventBroadcaster);
-        MoveCurrentCardHandler moveCurrentCardHandler = new MoveCurrentCardHandler(gameAppService, moveCurrentCardMapper, socketEventBroadcaster);
-        AddTokenHandler addTokenHandler = new AddTokenHandler(gameAppService, addTokenMapper, socketEventBroadcaster);
-        RemoveTokenHandler removeTokenHandler = new RemoveTokenHandler(gameAppService, removeTokenMapper, socketEventBroadcaster);
+        NextTurnHandler nextTurnHandler = new NextTurnHandler(gameAppService, nextTurnMapper, socketEventBroadcaster, socketIOServerHolder);
+        AddCurrentCardHandler addCurrentCardHandler = new AddCurrentCardHandler(gameAppService, addCurrentCardMapper, socketEventBroadcaster, socketIOServerHolder);
+        RemoveCurrentCardHandler removeCurrentCardHandler = new RemoveCurrentCardHandler(gameAppService, removeCurrentCardMapper, socketEventBroadcaster, socketIOServerHolder);
+        ReturnCurrentCardHandler returnCurrentCardHandler = new ReturnCurrentCardHandler(gameAppService, returnCurrentCardMapper, socketEventBroadcaster, socketIOServerHolder);
+        MoveCurrentCardHandler moveCurrentCardHandler = new MoveCurrentCardHandler(gameAppService, moveCurrentCardMapper, socketEventBroadcaster, socketIOServerHolder);
+        AddTokenHandler addTokenHandler = new AddTokenHandler(gameAppService, addTokenMapper, socketEventBroadcaster, socketIOServerHolder);
+        RemoveTokenHandler removeTokenHandler = new RemoveTokenHandler(gameAppService, removeTokenMapper, socketEventBroadcaster, socketIOServerHolder);
 
-        connectionResource = new ConnectionResource(joinRoomHandler);
+        connectionResource = new ConnectionResource();
         authResource = new AuthResource(authInMemoryHandler, authSpotifyHandler);
-        roomResource = new RoomResource(createRoomHandler, changePlayerNameHandler, changePlayerColorHandler, removePlayerHandler, startGameHandler);
+        roomResource = new RoomResource(createRoomHandler, joinRoomHandler, changePlayerNameHandler, changePlayerColorHandler, removePlayerHandler, startGameHandler);
         gameResource = new GameResource(nextTurnHandler, addCurrentCardHandler, removeCurrentCardHandler, returnCurrentCardHandler, moveCurrentCardHandler, addTokenHandler, removeTokenHandler);
         musicResource = new MusicResource(searchPlaylistsHandler, addPlaylistHandler, removePlaylistHandler);
     }
@@ -206,3 +206,4 @@ public class ApplicationContext {
         return socketIOServerHolder;
     }
 }
+

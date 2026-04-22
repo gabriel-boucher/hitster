@@ -4,8 +4,8 @@ import ActiveCard from "src/components/elements/Card/ActiveCard";
 import ActiveToken from "src/components/elements/Token/ActiveToken";
 import {useGameStateProvider} from "../../../stateProvider/game/GameStateProvider.tsx";
 import {useConnectionStateProvider} from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
-import useMouseLeaveDeck from "../../../hooks/socket/movement/useMouseLeaveDeck.ts";
-import useMouseDragLeaveDeck from "../../../hooks/socket/movement/useMouseDragLeaveDeck.ts";
+import useMouseLeaveDeck from "../../../hooks/movement/useMouseLeaveDeck.ts";
+import useMouseDragLeaveDeck from "../../../hooks/movement/useMouseDragLeaveDeck.ts";
 
 export default function ActivePlayerItems() {
   const [{ playerId }] = useConnectionStateProvider();

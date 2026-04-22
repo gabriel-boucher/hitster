@@ -6,8 +6,8 @@ import DraggingOverlay from "src/components/GamePage/DraggingOverlay/DraggingOve
 import Board from "src/components/GamePage/Board/Board";
 import {useConnectionStateProvider} from "../stateProvider/connection/ConnectionStateProvider.tsx";
 import {useMovementStateProvider} from "../stateProvider/movement/MovementStateProvider.tsx";
-import useMouseDrag from "../hooks/socket/movement/useMouseDrag.ts";
-import useMouseUpCard from "../hooks/socket/movement/useMouseUpCard.ts";
+import useMouseDrag from "../hooks/movement/useMouseDrag.ts";
+import useMouseUpCard from "../hooks/movement/useMouseUpCard.ts";
 
 export default function GamePage() {
   const [{ playerId }] = useConnectionStateProvider();

@@ -1,11 +1,11 @@
 import context.ApplicationContext;
 import interfaces.filter.CORSFilter;
-import interfaces.rest.auth.AuthResource;
-import interfaces.rest.music.MusicResource;
-import interfaces.rest.room.RoomResource;
+import interfaces.http.auth.AuthResource;
+import interfaces.http.music.MusicResource;
+import interfaces.http.room.RoomResource;
 import interfaces.socket.SocketIOServerHolder;
 import interfaces.socket.connection.ConnectionResource;
-import interfaces.socket.game.GameResource;
+import interfaces.http.game.GameResource;
 import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOServer;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -25,11 +25,13 @@ public class ApplicationServer {
         AuthResource authResource = applicationContext.getAuthResource();
         MusicResource musicResource = applicationContext.getSpotifyResource();
         RoomResource roomResource = applicationContext.getRoomRessource();
+        GameResource gameResource = applicationContext.getGameRessource();
 
         final ResourceConfig rc = new ResourceConfig()
                 .register(authResource)
                 .register(musicResource)
                 .register(roomResource)
+                .register(gameResource)
                 .register(CORSFilter.class);
 
         String baseUrl = "http://" + HOST + ":" + HTTP_SERVER_PORT;
@@ -39,7 +41,6 @@ public class ApplicationServer {
     
     public static void startWebSocketServer() {
         ConnectionResource connectionResource = applicationContext.getConnectionResource();
-        GameResource gameResource = applicationContext.getGameRessource();
         SocketIOServerHolder socketIOServerHolder = applicationContext.getSocketIOServerHolder();
 
         Configuration config = new Configuration();
@@ -51,7 +52,6 @@ public class ApplicationServer {
         socketIOServerHolder.setSocketIOServer(socketIOServer);
 
         connectionResource.setupEventListeners(socketIOServer);
-        gameResource.setupEventListeners(socketIOServer);
 
         socketIOServer.start();
         System.out.println("Socket.IO server started at ws://" + HOST + ":" + WS_SERVER_PORT);
@@ -93,3 +93,4 @@ public class ApplicationServer {
         }
     }
 }
+

@@ -1,7 +1,7 @@
 package interfaces.http.room.changePlayerColor.dto;
 
 public record ChangePlayerColorRequest(
-        String roomId,
+        String gameId,
         String playerId,
         String newColor
 ) {

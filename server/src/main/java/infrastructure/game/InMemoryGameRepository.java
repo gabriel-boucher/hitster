@@ -5,6 +5,7 @@ import domain.game.GameId;
 import domain.game.GameRepository;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 public class InMemoryGameRepository implements GameRepository {
     private final HashMap<GameId, Game> gameStates;
@@ -14,8 +15,8 @@ public class InMemoryGameRepository implements GameRepository {
     }
 
     @Override
-    public Game getGameId(GameId gameId) {
-        return gameStates.get(gameId);
+    public Optional<Game> getGameById(GameId gameId) {
+        return Optional.ofNullable(gameStates.get(gameId));
     }
 
     @Override

@@ -1,10 +1,10 @@
 package interfaces.http.music.searchPlaylists;
 
+import domain.game.GameId;
 import domain.player.PlayerId;
-import domain.room.RoomId;
 
 public record SearchPlaylistsData(
-        RoomId roomId,
+        GameId gameId,
         PlayerId playerId,
         String query
 ) {

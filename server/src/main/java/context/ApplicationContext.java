@@ -5,6 +5,8 @@ import application.RoomAppService;
 import application.GameAppService;
 import application.MusicAppService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import domain.connection.ConnectionRepository;
+import domain.connection.ConnectionServer;
 import domain.game.GameFactory;
 import domain.game.GameRepository;
 import domain.game.GameValidator;
@@ -15,6 +17,7 @@ import domain.player.PlayerValidator;
 import domain.room.RoomFactory;
 import domain.room.RoomRepository;
 import domain.room.RoomValidator;
+import infrastructure.connection.InMemoryConnectionRepository;
 import infrastructure.game.InMemoryGameRepository;
 import infrastructure.music.MusicRepositoryFactory;
 import infrastructure.music.repository.InMemoryMusicRepository;
@@ -34,8 +37,6 @@ import interfaces.http.music.MusicResource;
 import interfaces.http.auth.inMemoryAuth.AuthInMemoryMapper;
 import interfaces.http.auth.spotifyAuth.AuthSpotifyMapper;
 import interfaces.http.music.searchPlaylists.SearchPlaylistsHandler;
-import interfaces.socket.SocketEventBroadcaster;
-import interfaces.socket.SocketIOServerHolder;
 import interfaces.socket.connection.ConnectionResource;
 import interfaces.http.game.addCurrentCard.AddCurrentCardHandler;
 import interfaces.http.game.addCurrentCard.AddCurrentCardMapper;
@@ -77,9 +78,8 @@ public class ApplicationContext {
     private final RoomResource roomResource;
     private final GameResource gameResource;
     private final MusicResource musicResource;
-    private final SocketIOServerHolder socketIOServerHolder;
 
-    public ApplicationContext() {
+    public ApplicationContext(ConnectionServer connectionServer) {
         ObjectMapper objectMapper = new ObjectMapper();
 
         // MusicResource mappers
@@ -125,6 +125,7 @@ public class ApplicationContext {
         // Repositories
         GameRepository gameRepository = new InMemoryGameRepository();
         RoomRepository roomRepository = new InMemoryRoomRepository();
+        ConnectionRepository connectionRepository = new InMemoryConnectionRepository();
         SpotifyAccessTokenRepository spotifyAccessTokenRepository = new InMemorySpotifyAccessTokenRepository();
         SpotifyAuthRepository spotifyAuthRepository = new SpotifyAuthRepository(spotifyAccessTokenRepository, spotifyAccessTokenMapper, objectMapper);
 
@@ -145,35 +146,35 @@ public class ApplicationContext {
         MusicRepositoryFactory musicRepositoryFactory = new MusicRepositoryFactory(inMemoryMusicRepository, spotifyMusicRepository);
 
         // AppServices
-        AuthAppService authAppService = new AuthAppService(roomRepository, spotifyAuthRepository);
-        RoomAppService roomAppService = new RoomAppService(roomRepository, gameRepository, roomFactory, gameFactory, playerFactory, musicRepositoryFactory, roomValidator);
-        GameAppService gameAppService = new GameAppService(gameRepository);
+        connectionServer.setup(roomStateMapper, gameStateMapper);
+
+        AuthAppService authAppService = new AuthAppService(roomRepository, spotifyAuthRepository, connectionServer);
+        RoomAppService roomAppService = new RoomAppService(roomRepository, gameRepository, connectionRepository, connectionServer, roomFactory, gameFactory, playerFactory, musicRepositoryFactory, roomValidator);
+        GameAppService gameAppService = new GameAppService(gameRepository, connectionServer);
         MusicAppService musicAppService = new MusicAppService(roomRepository, musicRepositoryFactory, musicPlayerValidator);
 
-        SocketEventBroadcaster socketEventBroadcaster = new SocketEventBroadcaster(roomStateMapper, gameStateMapper);
-        socketIOServerHolder = new SocketIOServerHolder();
 
-        AuthInMemoryHandler authInMemoryHandler = new AuthInMemoryHandler(authAppService, authInMemoryMapper, socketEventBroadcaster, socketIOServerHolder);
-        AuthSpotifyHandler authSpotifyHandler = new AuthSpotifyHandler(authAppService, authSpotifyMapper, socketEventBroadcaster, socketIOServerHolder);
+        AuthInMemoryHandler authInMemoryHandler = new AuthInMemoryHandler(authAppService, authInMemoryMapper);
+        AuthSpotifyHandler authSpotifyHandler = new AuthSpotifyHandler(authAppService, authSpotifyMapper);
 
         SearchPlaylistsHandler searchPlaylistsHandler = new SearchPlaylistsHandler(musicAppService, searchPlaylistsMapper);
 
         CreateRoomHandler createRoomHandler = new CreateRoomHandler(roomAppService);
-        JoinRoomHandler joinRoomHandler = new JoinRoomHandler(roomAppService, joinRoomMapper, socketEventBroadcaster, socketIOServerHolder);
-        ChangePlayerNameHandler changePlayerNameHandler = new ChangePlayerNameHandler(roomAppService, changePlayerNameMapper, socketEventBroadcaster, socketIOServerHolder);
-        ChangePlayerColorHandler changePlayerColorHandler = new ChangePlayerColorHandler(roomAppService, changePlayerColorMapper, socketEventBroadcaster, socketIOServerHolder);
-        RemovePlayerHandler removePlayerHandler = new RemovePlayerHandler(roomAppService, removePlayerMapper, socketEventBroadcaster, socketIOServerHolder);
-        AddPlaylistHandler addPlaylistHandler = new AddPlaylistHandler(roomAppService, addPlaylistMapper, socketEventBroadcaster, socketIOServerHolder);
-        RemovePlaylistHandler removePlaylistHandler = new RemovePlaylistHandler(roomAppService, removePlaylistMapper, socketEventBroadcaster, socketIOServerHolder);
-        StartGameHandler startGameHandler = new StartGameHandler(roomAppService, startGameMapper, socketEventBroadcaster, socketIOServerHolder);
+        JoinRoomHandler joinRoomHandler = new JoinRoomHandler(roomAppService, joinRoomMapper);
+        ChangePlayerNameHandler changePlayerNameHandler = new ChangePlayerNameHandler(roomAppService, changePlayerNameMapper);
+        ChangePlayerColorHandler changePlayerColorHandler = new ChangePlayerColorHandler(roomAppService, changePlayerColorMapper);
+        RemovePlayerHandler removePlayerHandler = new RemovePlayerHandler(roomAppService, removePlayerMapper);
+        AddPlaylistHandler addPlaylistHandler = new AddPlaylistHandler(roomAppService, addPlaylistMapper);
+        RemovePlaylistHandler removePlaylistHandler = new RemovePlaylistHandler(roomAppService, removePlaylistMapper);
+        StartGameHandler startGameHandler = new StartGameHandler(roomAppService, startGameMapper);
 
-        NextTurnHandler nextTurnHandler = new NextTurnHandler(gameAppService, nextTurnMapper, socketEventBroadcaster, socketIOServerHolder);
-        AddCurrentCardHandler addCurrentCardHandler = new AddCurrentCardHandler(gameAppService, addCurrentCardMapper, socketEventBroadcaster, socketIOServerHolder);
-        RemoveCurrentCardHandler removeCurrentCardHandler = new RemoveCurrentCardHandler(gameAppService, removeCurrentCardMapper, socketEventBroadcaster, socketIOServerHolder);
-        ReturnCurrentCardHandler returnCurrentCardHandler = new ReturnCurrentCardHandler(gameAppService, returnCurrentCardMapper, socketEventBroadcaster, socketIOServerHolder);
-        MoveCurrentCardHandler moveCurrentCardHandler = new MoveCurrentCardHandler(gameAppService, moveCurrentCardMapper, socketEventBroadcaster, socketIOServerHolder);
-        AddTokenHandler addTokenHandler = new AddTokenHandler(gameAppService, addTokenMapper, socketEventBroadcaster, socketIOServerHolder);
-        RemoveTokenHandler removeTokenHandler = new RemoveTokenHandler(gameAppService, removeTokenMapper, socketEventBroadcaster, socketIOServerHolder);
+        NextTurnHandler nextTurnHandler = new NextTurnHandler(gameAppService, nextTurnMapper);
+        AddCurrentCardHandler addCurrentCardHandler = new AddCurrentCardHandler(gameAppService, addCurrentCardMapper);
+        RemoveCurrentCardHandler removeCurrentCardHandler = new RemoveCurrentCardHandler(gameAppService, removeCurrentCardMapper);
+        ReturnCurrentCardHandler returnCurrentCardHandler = new ReturnCurrentCardHandler(gameAppService, returnCurrentCardMapper);
+        MoveCurrentCardHandler moveCurrentCardHandler = new MoveCurrentCardHandler(gameAppService, moveCurrentCardMapper);
+        AddTokenHandler addTokenHandler = new AddTokenHandler(gameAppService, addTokenMapper);
+        RemoveTokenHandler removeTokenHandler = new RemoveTokenHandler(gameAppService, removeTokenMapper);
 
         connectionResource = new ConnectionResource();
         authResource = new AuthResource(authInMemoryHandler, authSpotifyHandler);
@@ -201,9 +202,6 @@ public class ApplicationContext {
     public MusicResource getSpotifyResource() {
         return musicResource;
     }
-
-    public SocketIOServerHolder getSocketIOServerHolder() {
-        return socketIOServerHolder;
-    }
 }
+
 

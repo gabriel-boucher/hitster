@@ -6,7 +6,7 @@ import interfaces.dto.PlaylistDto;
 import java.util.List;
 
 public record RoomStateResponse(
-        String roomId,
+        String gameId,
         List<PlayerDto> players,
         List<PlaylistDto> playlists,
         String musicPlayerType

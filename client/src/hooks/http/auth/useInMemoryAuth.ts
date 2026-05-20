@@ -11,11 +11,11 @@ export default function useInMemoryAuth() {
     }, [roomId, playerId]);
 }
 
-async function inMemoryAuth(roomId: string, playerId: string): Promise<void> {
+async function inMemoryAuth(gameId: string, playerId: string): Promise<void> {
     await axios.post(
         `${HTTP_SERVER_URL}/api/auth/in-memory`,
         {
-            roomId,
+            gameId,
             playerId,
         }
     );

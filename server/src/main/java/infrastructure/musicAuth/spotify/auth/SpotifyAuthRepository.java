@@ -1,7 +1,7 @@
 package infrastructure.musicAuth.spotify.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import domain.room.RoomId;
+import domain.game.GameId;
 import infrastructure.musicAuth.spotify.apiToken.SpotifyAccessCode;
 import infrastructure.musicAuth.spotify.apiToken.SpotifyAccessToken;
 import infrastructure.musicAuth.spotify.apiToken.SpotifyAccessTokenId;
@@ -34,8 +34,8 @@ public class SpotifyAuthRepository {
         this.objectMapper = objectMapper;
     }
 
-    public void setSpotifyApiTokenByAccessCode(RoomId roomId, SpotifyAccessCode spotifyAccessCode) {
-        if (spotifyAccessTokenRepository.getSpotifyApiTokenByRoomId(roomId) != null) {
+    public void setSpotifyApiTokenByAccessCode(GameId gameId, SpotifyAccessCode spotifyAccessCode) {
+        if (spotifyAccessTokenRepository.getSpotifyApiTokenByGameId(gameId) != null) {
             return;
         }
         try {
@@ -46,13 +46,13 @@ public class SpotifyAuthRepository {
             SpotifyAccessTokenDto dto = objectMapper.readValue(response.body(), SpotifyAccessTokenDto.class);
             SpotifyAccessToken spotifyAccessToken = mapper.toDomain(dto);
 
-            spotifyAccessTokenRepository.saveSpotifyApiToken(roomId, spotifyAccessToken);
+            spotifyAccessTokenRepository.saveSpotifyApiToken(gameId, spotifyAccessToken);
         } catch (Exception e) {
             throw new SpotifyAccessTokenException(spotifyAccessCode);
         }
     }
 
-    public SpotifyAccessToken setSpotifyApiTokenByRefreshId(RoomId roomId, SpotifyAccessTokenId refreshId) {
+    public SpotifyAccessToken setSpotifyApiTokenByRefreshId(GameId gameId, SpotifyAccessTokenId refreshId) {
         try {
             String body = buildRefreshRequestBody(refreshId);
             HttpRequest request = buildTokenRequest(body);

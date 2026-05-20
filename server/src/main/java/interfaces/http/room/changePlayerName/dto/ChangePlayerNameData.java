@@ -1,10 +1,10 @@
 package interfaces.http.room.changePlayerName.dto;
 
+import domain.game.GameId;
 import domain.player.PlayerId;
-import domain.room.RoomId;
 
 public record ChangePlayerNameData(
-        RoomId roomId,
+        GameId gameId,
         PlayerId playerId,
         String newName
 ) {

@@ -1,6 +1,7 @@
 import {movementReducerCases} from "./MovementReducerCases.ts";
 import {MovementAction} from "./MovementAction.ts";
 import {MovementState} from "./MovementState.ts";
+import {movementInitialState} from "./MovementInitialState.ts";
 
 export const movementReducer = (state: MovementState, action: MovementAction) => {
     switch (action.type) {
@@ -21,6 +22,9 @@ export const movementReducer = (state: MovementState, action: MovementAction) =>
                 ...state,
                 draggingPosition: action.draggingPosition,
             };
+        }
+        case movementReducerCases.RESET: {
+            return movementInitialState;
         }
         default:
             return state;

@@ -1,15 +1,15 @@
 package interfaces.http.room.changePlayerColor;
 
+import domain.game.GameId;
 import domain.player.PlayerColor;
 import domain.player.PlayerId;
-import domain.room.RoomId;
 import interfaces.http.room.changePlayerColor.dto.ChangePlayerColorData;
 import interfaces.http.room.changePlayerColor.dto.ChangePlayerColorRequest;
 
 public class ChangePlayerColorMapper {
     public ChangePlayerColorData toDomain(ChangePlayerColorRequest request) {
         return new ChangePlayerColorData(
-                RoomId.fromString(request.roomId()),
+                GameId.fromString(request.gameId()),
                 PlayerId.fromString(request.playerId()),
                 mapToPlayerColor(request.newColor())
         );

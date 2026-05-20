@@ -4,10 +4,12 @@ import {
   ReactNode,
   useContext,
   useReducer,
+  useCallback,
 } from "react";
 import {GameState} from "./GameState.ts";
 import {GameAction} from "./GameAction.ts";
 import {gameDefaultDispatch, gameInitialState} from "./GameInitialState.ts";
+import {gameReducerCases} from "./GameReducerCases.ts";
 
 const GameStateContext = createContext<[GameState, Dispatch<GameAction>]>([
   gameInitialState,
@@ -29,3 +31,9 @@ export const GameStateProvider = ({children, initialState, reducer}: GameStatePr
 export const useGameStateProvider = (): [GameState, Dispatch<GameAction>] =>
   useContext(GameStateContext);
 
+export const useResetGameState = () => {
+  const [, dispatch] = useGameStateProvider();
+  return useCallback(() => {
+    dispatch({ type: gameReducerCases.RESET });
+  }, [dispatch]);
+};

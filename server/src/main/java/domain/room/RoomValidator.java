@@ -24,15 +24,13 @@ public class RoomValidator {
         this.gameValidator = gameValidator;
     }
 
-    public void validatePlayerCanJoin(PlayerId playerId, List<Player> players, GameStatus gameStatus) {
+    public void validatePlayerCanJoin(PlayerId playerId, List<Player> players) {
         playerValidator.validatePlayerNotExist(playerId, players);
-        gameValidator.validateGameStatus(gameStatus, GameStatus.LOBBY);
     }
 
     public void validatePlayerCanChangeAuthType(PlayerId playerId, List<Player> players, GameStatus gameStatus) {
         playerValidator.validatePlayerExist(playerId, players);
         gameValidator.validateGameStatus(gameStatus, GameStatus.LOBBY);
-
     }
 
     public Player validatePlayerCanChangeName(PlayerId playerId, String newName, List<Player> players, GameStatus gameStatus) {

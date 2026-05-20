@@ -1,8 +1,8 @@
 package infrastructure.musicAuth.spotify.apiToken;
 
-import domain.room.RoomId;
+import domain.game.GameId;
 
 public interface SpotifyAccessTokenRepository {
-    SpotifyAccessToken getSpotifyApiTokenByRoomId(RoomId roomId);
-    void saveSpotifyApiToken(RoomId roomId, SpotifyAccessToken spotifyAccessToken);
+    SpotifyAccessToken getSpotifyApiTokenByGameId(GameId gameId);
+    void saveSpotifyApiToken(GameId gameId, SpotifyAccessToken spotifyAccessToken);
 }

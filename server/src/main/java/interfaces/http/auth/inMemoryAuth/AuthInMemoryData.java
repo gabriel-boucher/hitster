@@ -1,10 +1,10 @@
 package interfaces.http.auth.inMemoryAuth;
 
+import domain.game.GameId;
 import domain.player.PlayerId;
-import domain.room.RoomId;
 
 public record AuthInMemoryData(
-        RoomId roomId,
+        GameId gameId,
         PlayerId playerId
 ) {
 }

@@ -1,7 +1,7 @@
 package interfaces.http.music.searchPlaylists;
 
 public record SearchPlaylistsRequest(
-        String roomId,
+        String gameId,
         String playerId,
         String query
 ) {

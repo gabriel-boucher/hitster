@@ -25,11 +25,11 @@ public class MusicResource {
     @Path("search-playlists")
     @Produces(MediaType.APPLICATION_JSON)
     public EventResponse searchPlaylists(
-            @HeaderParam("x-room-id") String roomId,
+            @HeaderParam("x-game-id") String gameId,
             @HeaderParam("x-player-id") String playerId,
             @QueryParam("query") String query) {
-        System.out.println("Searching playlists with query: " + query + " for roomId: " + roomId + " and playerId: " + playerId);
-        SearchPlaylistsRequest searchPlaylistsRequest = new SearchPlaylistsRequest(roomId, playerId, query);
+        System.out.println("Searching playlists with query: " + query + " for gameId: " + gameId + " and playerId: " + playerId);
+        SearchPlaylistsRequest searchPlaylistsRequest = new SearchPlaylistsRequest(gameId, playerId, query);
 
         return searchPlaylistsHandler.handleEvent(searchPlaylistsRequest);
     }
@@ -39,7 +39,7 @@ public class MusicResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public EventResponse addPlaylist(AddPlaylistRequest addPlaylistRequest) {
-        System.out.println("Add playlist for roomId: " + addPlaylistRequest.roomId() + " by playerId: " + addPlaylistRequest.playerId());
+        System.out.println("Add playlist for gameId: " + addPlaylistRequest.gameId() + " by playerId: " + addPlaylistRequest.playerId());
 
         return addPlaylistHandler.handleEvent(addPlaylistRequest);
     }
@@ -49,12 +49,12 @@ public class MusicResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public EventResponse removePlaylist(
-            @HeaderParam("x-room-id") String roomId,
+            @HeaderParam("x-game-id") String gameId,
             @HeaderParam("x-player-id") String playerId,
             @PathParam("playlistId") String playlistId
     ) {
-        System.out.println("Remove playlistId: " + playlistId + " for roomId: " + roomId + " by playerId: " + playerId);
-        RemovePlaylistRequest removePlaylistRequest = new RemovePlaylistRequest(roomId, playerId, playlistId);
+        System.out.println("Remove playlistId: " + playlistId + " for gameId: " + gameId + " by playerId: " + playerId);
+        RemovePlaylistRequest removePlaylistRequest = new RemovePlaylistRequest(gameId, playerId, playlistId);
 
         return removePlaylistHandler.handleEvent(removePlaylistRequest);
     }

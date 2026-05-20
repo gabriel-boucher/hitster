@@ -4,12 +4,14 @@ import {connectionReducerCases} from "../../../stateProvider/connection/Connecti
 import {WS_SERVER_URL} from "../../../config/url.ts";
 import {ConnectionSocketEvents} from "./connectionSocketEvents.ts";
 import {io} from "socket.io-client";
+import {useLocation} from "react-router-dom";
 
 export default function useConnect() {
-    const [{ socket, roomId }, connectionDispatch] = useConnectionStateProvider();
+    const [{ socket }, connectionDispatch] = useConnectionStateProvider();
+    const location = useLocation();
 
     useEffect(() => {
-        const newRoomId = window.location.pathname.substring(1) || "";
+        const newRoomId = location.pathname.substring(1) || "";
         if (socket || !newRoomId) return;
 
         const newSocket = io(WS_SERVER_URL);
@@ -18,14 +20,10 @@ export default function useConnect() {
             connectionDispatch({type: connectionReducerCases.SET_SOCKET, socket: newSocket});
         };
 
-        if (newSocket.connected) {
-            handleConnect();
-        } else {
-            newSocket.on(ConnectionSocketEvents.CONNECT, handleConnect);
-        }
+        newSocket.on(ConnectionSocketEvents.CONNECT, handleConnect);
 
         return () => {
             newSocket.off(ConnectionSocketEvents.CONNECT, handleConnect);
         };
-    }, [socket, roomId, connectionDispatch]);
+    }, [socket, location, connectionDispatch]);
 }

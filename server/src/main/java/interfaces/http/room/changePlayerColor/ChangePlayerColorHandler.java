@@ -3,16 +3,13 @@ package interfaces.http.room.changePlayerColor;
 import application.RoomAppService;
 import domain.exception.InvalidGameStatusException;
 import domain.exception.PlayerNotFoundException;
-import domain.exception.RoomNotFoundException;
-import domain.room.Room;
+import domain.exception.GameNotFoundException;
 import domain.room.exception.PlayerColorAlreadyExistsException;
 import interfaces.dto.responseDto.EventResponse;
 import interfaces.dto.responseDto.exceptionDto.BadRequestExceptionResponse;
 import interfaces.dto.responseDto.exceptionDto.NotFoundExceptionResponse;
 import interfaces.dto.responseDto.successDto.OkSuccessResponse;
 import interfaces.http.RestEventHandler;
-import interfaces.socket.SocketEventBroadcaster;
-import interfaces.socket.SocketIOServerHolder;
 import interfaces.http.room.changePlayerColor.dto.ChangePlayerColorData;
 import interfaces.http.room.changePlayerColor.dto.ChangePlayerColorRequest;
 
@@ -21,27 +18,21 @@ import static interfaces.dto.responseDto.EventResponseStatus.*;
 public class ChangePlayerColorHandler implements RestEventHandler<ChangePlayerColorRequest> {
     private final RoomAppService roomAppService;
     private final ChangePlayerColorMapper changePlayerColorMapper;
-    private final SocketEventBroadcaster socketEventBroadcaster;
-    private final SocketIOServerHolder socketIOServerHolder;
 
-    public ChangePlayerColorHandler(RoomAppService roomAppService, ChangePlayerColorMapper changePlayerColorMapper, SocketEventBroadcaster socketEventBroadcaster, SocketIOServerHolder socketIOServerHolder) {
+    public ChangePlayerColorHandler(RoomAppService roomAppService, ChangePlayerColorMapper changePlayerColorMapper) {
         this.roomAppService = roomAppService;
         this.changePlayerColorMapper = changePlayerColorMapper;
-        this.socketEventBroadcaster = socketEventBroadcaster;
-        this.socketIOServerHolder = socketIOServerHolder;
     }
 
     @Override
     public EventResponse handleEvent(ChangePlayerColorRequest request) {
         try {
             ChangePlayerColorData data = changePlayerColorMapper.toDomain(request);
-            Room room = roomAppService.changePlayerColor(data.roomId(), data.playerId(), data.newColor());
-
-            socketEventBroadcaster.broadcastRoomState(room, socketIOServerHolder.getSocketIOServer());
+            roomAppService.changePlayerColor(data.gameId(), data.playerId(), data.newColor());
 
             return new OkSuccessResponse<>(CHANGE_PLAYER_COLOR, "Player color changed successfully");
-        } catch (RoomNotFoundException e) {
-            return new NotFoundExceptionResponse(ROOM_NOT_FOUND, e.getMessage());
+        } catch (GameNotFoundException e) {
+            return new NotFoundExceptionResponse(GAME_NOT_FOUND, e.getMessage());
         } catch (PlayerNotFoundException e) {
             return new NotFoundExceptionResponse(PLAYER_NOT_FOUND, e.getMessage());
         } catch (InvalidGameStatusException e) {

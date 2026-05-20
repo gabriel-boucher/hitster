@@ -1,17 +1,16 @@
 package infrastructure.music.repository;
 
+import domain.game.GameId;
 import domain.game.item.ItemStatus;
 import domain.game.item.card.Card;
 import domain.game.item.card.CardId;
 import domain.music.Playlist;
 import domain.music.PlaylistId;
 import domain.music.MusicRepository;
-import domain.room.RoomId;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class InMemoryMusicRepository implements MusicRepository {
     private final HashMap<PlaylistId, Playlist> playlists;
@@ -86,7 +85,7 @@ public class InMemoryMusicRepository implements MusicRepository {
     }
 
     @Override
-    public List<Playlist> searchPlaylistsByQuery(RoomId roomId, String query) {
+    public List<Playlist> searchPlaylistsByQuery(GameId gameId, String query) {
         return playlists.values()
                 .stream()
                 .filter(playlist -> playlist.name().toLowerCase().contains(query.toLowerCase()))
@@ -94,7 +93,7 @@ public class InMemoryMusicRepository implements MusicRepository {
     }
 
     @Override
-    public List<Card> getCardsByPlaylistId(RoomId roomId, List<PlaylistId> playlistIds) {
+    public List<Card> getCardsByPlaylistId(GameId gameId, List<PlaylistId> playlistIds) {
         return playlistIds.stream()
                 .filter(cards::containsKey)
                 .flatMap(id -> cards.get(id).stream())

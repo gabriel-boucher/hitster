@@ -1,6 +1,7 @@
 import {connectionReducerCases} from "./ConnectionReducerCases.ts";
 import {ConnectionAction} from "./ConnectionAction.ts";
 import {ConnectionState} from "./ConnectionState.ts";
+import {connectionInitialState} from "./ConnectionInitialState.ts";
 
 export const connectionReducer = (state: ConnectionState, action: ConnectionAction) => {
   switch (action.type) {
@@ -21,6 +22,9 @@ export const connectionReducer = (state: ConnectionState, action: ConnectionActi
         ...state,
         playerId: action.playerId,
       };
+    }
+    case connectionReducerCases.RESET: {
+      return connectionInitialState;
     }
     default:
       return state;

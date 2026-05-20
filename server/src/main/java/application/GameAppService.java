@@ -1,5 +1,6 @@
 package application;
 
+import domain.connection.ConnectionServer;
 import domain.game.*;
 import domain.game.item.token.TokenId;
 import domain.exception.GameNotFoundException;
@@ -9,44 +10,51 @@ import java.util.function.Consumer;
 
 public class GameAppService {
     private final GameRepository gameRepository;
+    private final ConnectionServer connectionServer;
 
-    public GameAppService(GameRepository gameRepository) {
+    public GameAppService(GameRepository gameRepository, ConnectionServer connectionServer) {
         this.gameRepository = gameRepository;
+        this.connectionServer = connectionServer;
     }
 
-    public Game nextTurn(GameId gameId, PlayerId playerId) {
-        return execute(gameId, game -> game.nextTurn(playerId));
+    public void nextTurn(GameId gameId, PlayerId playerId) {
+        Game g = execute(gameId, game -> game.nextTurn(playerId));
+        connectionServer.broadcastGameState(g);
     }
 
-    public Game addCurrentCard(GameId gameId, PlayerId playerId) {
-        return execute(gameId, game -> game.addCurrentCardToCurrentDeck(playerId));
+    public void addCurrentCard(GameId gameId, PlayerId playerId) {
+        Game g = execute(gameId, game -> game.addCurrentCardToCurrentDeck(playerId));
+        connectionServer.broadcastGameState(g);
     }
 
-    public Game removeCurrentCard(GameId gameId, PlayerId playerId) {
-        return execute(gameId, game -> game.removeCurrentCardFromCurrentDeck(playerId));
+    public void removeCurrentCard(GameId gameId, PlayerId playerId) {
+        Game g = execute(gameId, game -> game.removeCurrentCardFromCurrentDeck(playerId));
+        connectionServer.broadcastGameState(g);
     }
 
-    public Game returnCurrentCard(GameId gameId, PlayerId playerId) {
-        return execute(gameId, game -> game.returnCurrentCardToPile(playerId));
+    public void returnCurrentCard(GameId gameId, PlayerId playerId) {
+        Game g = execute(gameId, game -> game.returnCurrentCardToPile(playerId));
+        connectionServer.broadcastGameState(g);
     }
 
-    public Game moveCurrentCard(GameId gameId, PlayerId playerId, int position) {
-        return execute(gameId, game -> game.moveCurrentCardInCurrentDeck(playerId, position));
+    public void moveCurrentCard(GameId gameId, PlayerId playerId, int position) {
+        Game g = execute(gameId, game -> game.moveCurrentCardInCurrentDeck(playerId, position));
+        connectionServer.broadcastGameState(g);
     }
 
-    public Game addToken(GameId gameId, PlayerId playerId, TokenId tokenId, int position) {
-        return execute(gameId, game -> game.addTokenToCurrentDeck(playerId, tokenId, position));
+    public void addToken(GameId gameId, PlayerId playerId, TokenId tokenId, int position) {
+        Game g = execute(gameId, game -> game.addTokenToCurrentDeck(playerId, tokenId, position));
+        connectionServer.broadcastGameState(g);
     }
 
-    public Game removeToken(GameId gameId, PlayerId playerId, TokenId tokenId) {
-        return execute(gameId, game -> game.removeTokenFromCurrentDeck(playerId, tokenId));
+    public void removeToken(GameId gameId, PlayerId playerId, TokenId tokenId) {
+        Game g = execute(gameId, game -> game.removeTokenFromCurrentDeck(playerId, tokenId));
+        connectionServer.broadcastGameStateExceptPlayer(g, playerId);
     }
 
     private Game execute(GameId gameId, Consumer<Game> action) {
-        Game game = gameRepository.getGameId(gameId);
-        if (game == null) {
-            throw new GameNotFoundException(gameId);
-        }
+        Game game = gameRepository.getGameById(gameId)
+                .orElseThrow(() -> new GameNotFoundException(gameId));
         action.accept(game);
         gameRepository.saveGame(game);
         return game;

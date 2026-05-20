@@ -1,15 +1,19 @@
 package interfaces.http.room.joinRoom;
 
+import domain.connection.ConnectionId;
+import domain.game.GameId;
 import domain.player.PlayerId;
-import domain.room.RoomId;
 import interfaces.http.room.joinRoom.dto.JoinRoomData;
 import interfaces.http.room.joinRoom.dto.JoinRoomRequest;
 
 public class JoinRoomMapper {
     public JoinRoomData toDomain(JoinRoomRequest request) {
         return new JoinRoomData(
-                RoomId.fromString(request.roomId()),
-                PlayerId.fromString(request.playerId())
+                GameId.fromString(request.gameId()),
+                request.playerId().isEmpty() ?
+                        PlayerId.create() :
+                        PlayerId.fromString(request.playerId()),
+                ConnectionId.fromString(request.socketId())
         );
     }
 }

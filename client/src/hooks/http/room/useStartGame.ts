@@ -19,11 +19,11 @@ export default function useStartGame() {
   }, [roomId, playerId]);
 }
 
-async function startGame(roomId: RoomId, playerId: PlayerId): Promise<EventResponse<undefined>> {
+async function startGame(gameId: RoomId, playerId: PlayerId): Promise<EventResponse<undefined>> {
   const response = await axios.post(
       `${HTTP_SERVER_URL}/api/room/${RoomHttpEvents.START_GAME}`,
       {
-        roomId,
+        gameId,
         playerId
       }
   );

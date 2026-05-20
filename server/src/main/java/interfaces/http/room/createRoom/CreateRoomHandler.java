@@ -22,8 +22,8 @@ public class CreateRoomHandler implements RestEventHandler<CreateRoomRequest> {
     @Override
     public EventResponse handleEvent(CreateRoomRequest request) {
         try {
-            Room room = roomAppService.createRoom();
-            System.out.println("Create room : RoomId = " + room.getId().toString());
+            Room room = roomAppService.createGame();
+            System.out.println("Create room : GameId = " + room.getId().toString());
 
             return new CreatedSuccessResponse<>(CREATE_ROOM, new CreateRoomResponse(room.getId().toString()));
         } catch (SpotifyAccessTokenException e) {

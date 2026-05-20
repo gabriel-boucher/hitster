@@ -8,4 +8,6 @@ public class Env {
 
     public final static String SPOTIFY_CLIENT_ID = System.getenv("SPOTIFY_CLIENT_ID");
     public final static String SPOTIFY_CLIENT_SECRET = System.getenv("SPOTIFY_CLIENT_SECRET");
+
+    public final static String JWT_SECRET = System.getenv("JWT_SECRET");
 }

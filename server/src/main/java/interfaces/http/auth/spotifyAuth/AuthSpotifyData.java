@@ -1,11 +1,11 @@
 package interfaces.http.auth.spotifyAuth;
 
+import domain.game.GameId;
 import domain.player.PlayerId;
-import domain.room.RoomId;
 import infrastructure.musicAuth.spotify.apiToken.SpotifyAccessCode;
 
 public record AuthSpotifyData(
-        RoomId roomId,
+        GameId gameId,
         PlayerId playerId,
         SpotifyAccessCode spotifyAccessCode
 ) {

@@ -2,7 +2,7 @@ package interfaces.http.auth.spotifyAuth;
 
 
 public record AuthSpotifyRequest(
-        String roomId,
+        String gameId,
         String playerId,
         String spotifyAccessCode
 ) {

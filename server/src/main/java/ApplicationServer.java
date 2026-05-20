@@ -1,13 +1,13 @@
+import com.corundumstudio.socketio.SocketIOServer;
 import context.ApplicationContext;
 import interfaces.filter.CORSFilter;
 import interfaces.http.auth.AuthResource;
 import interfaces.http.music.MusicResource;
 import interfaces.http.room.RoomResource;
-import interfaces.socket.SocketIOServerHolder;
+import interfaces.socket.SocketIOConnectionServer;
 import interfaces.socket.connection.ConnectionResource;
 import interfaces.http.game.GameResource;
 import com.corundumstudio.socketio.Configuration;
-import com.corundumstudio.socketio.SocketIOServer;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -18,8 +18,17 @@ import static environments.Env.*;
 
 public class ApplicationServer {
     private static HttpServer httpServer;
-    private static SocketIOServer socketIOServer;
-    private final static ApplicationContext applicationContext = new ApplicationContext();
+    private static final SocketIOConnectionServer connectionServer = createConnectionServer();
+    private final static ApplicationContext applicationContext = new ApplicationContext(connectionServer);
+
+    private static SocketIOConnectionServer createConnectionServer() {
+        Configuration config = new Configuration();
+        config.setHostname(HOST);
+        config.setPort(Integer.parseInt(WS_SERVER_PORT));
+        config.setOrigin("*");
+
+        return new SocketIOConnectionServer(new SocketIOServer(config));
+    }
 
     public static void startHttpServer() {
         AuthResource authResource = applicationContext.getAuthResource();
@@ -41,19 +50,10 @@ public class ApplicationServer {
     
     public static void startWebSocketServer() {
         ConnectionResource connectionResource = applicationContext.getConnectionResource();
-        SocketIOServerHolder socketIOServerHolder = applicationContext.getSocketIOServerHolder();
 
-        Configuration config = new Configuration();
-        config.setHostname(HOST);
-        config.setPort(Integer.parseInt(WS_SERVER_PORT));
-        config.setOrigin("*");
+        connectionResource.setupEventListeners(connectionServer.socketIOServer);
 
-        socketIOServer = new SocketIOServer(config);
-        socketIOServerHolder.setSocketIOServer(socketIOServer);
-
-        connectionResource.setupEventListeners(socketIOServer);
-
-        socketIOServer.start();
+        connectionServer.start();
         System.out.println("Socket.IO server started at ws://" + HOST + ":" + WS_SERVER_PORT);
     }
     
@@ -63,7 +63,7 @@ public class ApplicationServer {
     }
     
     public static void stopWebSocketServer() {
-        socketIOServer.stop();
+        connectionServer.stop();
         System.out.println("Socket.IO server stopped");
     }
     

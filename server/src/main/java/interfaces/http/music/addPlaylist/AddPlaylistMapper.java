@@ -1,7 +1,7 @@
 package interfaces.http.music.addPlaylist;
 
+import domain.game.GameId;
 import domain.player.PlayerId;
-import domain.room.RoomId;
 import interfaces.mapper.PlaylistMapper;
 import interfaces.http.music.addPlaylist.dto.AddPlaylistData;
 import interfaces.http.music.addPlaylist.dto.AddPlaylistRequest;
@@ -15,7 +15,7 @@ public class AddPlaylistMapper {
 
     public AddPlaylistData toDomain(AddPlaylistRequest request) {
         return new AddPlaylistData(
-                RoomId.fromString(request.roomId()),
+                GameId.fromString(request.gameId()),
                 PlayerId.fromString(request.playerId()),
                 playlistMapper.toDomain(request.playlist())
         );

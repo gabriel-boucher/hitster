@@ -55,7 +55,7 @@ public class RoomResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public EventResponse joinRoom(JoinRoomRequest joinRoomRequest) {
-        System.out.println("Join room for roomId: " + joinRoomRequest.roomId() + " by playerId: " + joinRoomRequest.playerId());
+        System.out.println("Join room for gameId: " + joinRoomRequest.gameId() + " by playerId: " + joinRoomRequest.playerId());
 
         return joinRoomHandler.handleEvent(joinRoomRequest);
     }
@@ -65,7 +65,7 @@ public class RoomResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public EventResponse changePlayerName(ChangePlayerNameRequest changePlayerNameRequest) {
-        System.out.println("Change player name for roomId: " + changePlayerNameRequest.roomId() + " by playerId: " + changePlayerNameRequest.playerId());
+        System.out.println("Change player name for gameId: " + changePlayerNameRequest.gameId() + " by playerId: " + changePlayerNameRequest.playerId());
 
         return changePlayerNameHandler.handleEvent(changePlayerNameRequest);
     }
@@ -75,7 +75,7 @@ public class RoomResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public EventResponse changePlayerColor(ChangePlayerColorRequest changePlayerColorRequest) {
-        System.out.println("Change player color for roomId: " + changePlayerColorRequest.roomId() + " by playerId: " + changePlayerColorRequest.playerId());
+        System.out.println("Change player color for gameId: " + changePlayerColorRequest.gameId() + " by playerId: " + changePlayerColorRequest.playerId());
 
         return changePlayerColorHandler.handleEvent(changePlayerColorRequest);
     }
@@ -85,11 +85,11 @@ public class RoomResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public EventResponse removePlayer(
-            @HeaderParam("x-room-id") String roomId,
+            @HeaderParam("x-game-id") String gameId,
             @HeaderParam("x-player-id") String playerId,
             @PathParam("playerToRemoveId") String playerToRemoveId) {
-        System.out.println("Remove player for roomId: " + roomId + " by playerId: " + playerId);
-        RemovePlayerRequest removePlayerRequest = new RemovePlayerRequest(roomId, playerId, playerToRemoveId);
+        System.out.println("Remove player for gameId: " + gameId + " by playerId: " + playerId);
+        RemovePlayerRequest removePlayerRequest = new RemovePlayerRequest(gameId, playerId, playerToRemoveId);
 
         return removePlayerHandler.handleEvent(removePlayerRequest);
     }
@@ -99,7 +99,7 @@ public class RoomResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public EventResponse startGame(StartGameRequest startGameRequest) {
-        System.out.println("Start game for roomId: " + startGameRequest.roomId() + " by playerId: " + startGameRequest.playerId());
+        System.out.println("Start game for gameId: " + startGameRequest.gameId() + " by playerId: " + startGameRequest.playerId());
 
         return startGameHandler.handleEvent(startGameRequest);
     }

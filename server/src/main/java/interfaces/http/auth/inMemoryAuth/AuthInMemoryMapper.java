@@ -1,12 +1,12 @@
 package interfaces.http.auth.inMemoryAuth;
 
+import domain.game.GameId;
 import domain.player.PlayerId;
-import domain.room.RoomId;
 
 public class AuthInMemoryMapper {
     public AuthInMemoryData toDomain(AuthInMemoryRequest request) {
         return new AuthInMemoryData(
-                RoomId.fromString(request.roomId()),
+                GameId.fromString(request.gameId()),
                 PlayerId.fromString(request.playerId())
         );
     }

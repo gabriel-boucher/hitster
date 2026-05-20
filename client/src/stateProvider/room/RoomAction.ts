@@ -18,7 +18,12 @@ export interface SetMusicPlayerTypeRoomAction {
   musicPlayerType: MusicPlayerType;
 }
 
+export interface ResetRoomAction {
+  type: roomReducerCases.RESET;
+}
+
 export type RoomAction =
   | SetPlayersRoomAction
   | SetPlaylistsRoomAction
-  | SetMusicPlayerTypeRoomAction;
+  | SetMusicPlayerTypeRoomAction
+  | ResetRoomAction;

@@ -16,12 +16,12 @@ export default function useRemovePlayer() {
   }, [socket, roomId, playerId]);
 }
 
-async function removePlayer(roomId: RoomId, playerId: PlayerId, playerToRemoveId: PlayerId): Promise<void> {
+async function removePlayer(gameId: RoomId, playerId: PlayerId, playerToRemoveId: PlayerId): Promise<void> {
   await axios.delete(
       `${HTTP_SERVER_URL}/api/room/${RoomHttpEvents.REMOVE_PLAYER}/${playerToRemoveId}`,
       {
         headers: {
-          "x-room-id": roomId,
+          "x-game-id": gameId,
           "x-player-id": playerId,
         },
       }

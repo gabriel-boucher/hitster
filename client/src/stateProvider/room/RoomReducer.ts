@@ -1,6 +1,7 @@
 import {roomReducerCases} from "./RoomReducerCases.ts";
 import {RoomAction} from "./RoomAction.ts";
 import {RoomState} from "./RoomState.ts";
+import {roomInitialState} from "./RoomInitialState.ts";
 
 export const roomReducer = (state: RoomState, action: RoomAction) => {
   switch (action.type) {
@@ -21,6 +22,9 @@ export const roomReducer = (state: RoomState, action: RoomAction) => {
         ...state,
         musicPlayerType: action.musicPlayerType,
       };
+    }
+    case roomReducerCases.RESET: {
+      return roomInitialState;
     }
     default:
       return state;

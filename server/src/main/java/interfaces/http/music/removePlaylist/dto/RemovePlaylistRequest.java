@@ -1,7 +1,7 @@
 package interfaces.http.music.removePlaylist.dto;
 
 public record RemovePlaylistRequest(
-        String roomId,
+        String gameId,
         String playerId,
         String playlistId
 ) {

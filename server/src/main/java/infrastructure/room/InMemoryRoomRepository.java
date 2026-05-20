@@ -1,21 +1,22 @@
 package infrastructure.room;
 
+import domain.game.GameId;
 import domain.room.Room;
-import domain.room.RoomId;
 import domain.room.RoomRepository;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 public class InMemoryRoomRepository implements RoomRepository {
-    private final HashMap<RoomId, Room> rooms;
+    private final HashMap<GameId, Room> rooms;
 
     public InMemoryRoomRepository() {
         this.rooms = new HashMap<>();
     }
 
     @Override
-    public Room getRoomById(RoomId roomId) {
-        return rooms.get(roomId);
+    public Optional<Room> getRoomById(GameId gameId) {
+        return Optional.ofNullable(rooms.get(gameId));
     }
 
     @Override

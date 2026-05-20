@@ -36,13 +36,13 @@ export default function useSearchPlaylists({ setSearchedPlaylists, setLoading, d
   }, [debouncedSearch, setSearchedPlaylists, setLoading]);
 }
 
-async function searchPlaylists(roomId: string, playerId: string, query: string): Promise<EventResponse<{ playlists: Playlist[]}>> {
+async function searchPlaylists(gameId: string, playerId: string, query: string): Promise<EventResponse<{ playlists: Playlist[]}>> {
   const response = await axios.get(
       `${HTTP_SERVER_URL}/api/music/${MusicHttpEvents.SEARCH_PLAYLISTS}`,
       {
         params: { query },
         headers: {
-          "x-room-id": roomId,
+          "x-game-id": gameId,
           "x-player-id": playerId,
         },
       }

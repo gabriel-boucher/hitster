@@ -1,10 +1,12 @@
 package interfaces.http.room.joinRoom.dto;
 
+import domain.connection.ConnectionId;
+import domain.game.GameId;
 import domain.player.PlayerId;
-import domain.room.RoomId;
 
 public record JoinRoomData(
-        RoomId roomId,
-        PlayerId playerId
+        GameId gameId,
+        PlayerId playerId,
+        ConnectionId connectionId
 ) {
 }

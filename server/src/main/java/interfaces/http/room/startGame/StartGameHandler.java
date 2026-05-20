@@ -3,8 +3,7 @@ package interfaces.http.room.startGame;
 import application.RoomAppService;
 import domain.exception.InvalidGameStatusException;
 import domain.exception.PlayerNotFoundException;
-import domain.exception.RoomNotFoundException;
-import domain.game.Game;
+import domain.exception.GameNotFoundException;
 import domain.room.exception.NoPlaylistSelectedException;
 import domain.room.exception.PlayerHostMustStartGameException;
 import domain.room.exception.PlayerNameNotSetException;
@@ -15,8 +14,6 @@ import interfaces.dto.responseDto.exceptionDto.NotFoundExceptionResponse;
 import interfaces.dto.responseDto.exceptionDto.UnauthorizedExceptionResponse;
 import interfaces.dto.responseDto.successDto.OkSuccessResponse;
 import interfaces.http.RestEventHandler;
-import interfaces.socket.SocketEventBroadcaster;
-import interfaces.socket.SocketIOServerHolder;
 import interfaces.http.room.startGame.dto.StartGameData;
 import interfaces.http.room.startGame.dto.StartGameRequest;
 
@@ -25,27 +22,21 @@ import static interfaces.dto.responseDto.EventResponseStatus.*;
 public class StartGameHandler implements RestEventHandler<StartGameRequest> {
     private final RoomAppService roomAppService;
     private final StartGameMapper startGameMapper;
-    private final SocketEventBroadcaster socketEventBroadcaster;
-    private final SocketIOServerHolder socketIOServerHolder;
 
-    public StartGameHandler(RoomAppService roomAppService, StartGameMapper startGameMapper, SocketEventBroadcaster socketEventBroadcaster, SocketIOServerHolder socketIOServerHolder) {
+    public StartGameHandler(RoomAppService roomAppService, StartGameMapper startGameMapper) {
         this.roomAppService = roomAppService;
         this.startGameMapper = startGameMapper;
-        this.socketEventBroadcaster = socketEventBroadcaster;
-        this.socketIOServerHolder = socketIOServerHolder;
     }
 
     @Override
     public EventResponse handleEvent(StartGameRequest request) {
         try {
             StartGameData data = startGameMapper.toDomain(request);
-            Game game = roomAppService.startGame(data.roomId(), data.playerId());
-
-            socketEventBroadcaster.broadcastGameState(game, socketIOServerHolder.getSocketIOServer());
+            roomAppService.startGame(data.gameId(), data.playerId());
 
             return new OkSuccessResponse<>(START_GAME, "Game started successfully");
-        } catch (RoomNotFoundException e) {
-            return new NotFoundExceptionResponse(ROOM_NOT_FOUND, e.getMessage());
+        } catch (GameNotFoundException e) {
+            return new NotFoundExceptionResponse(GAME_NOT_FOUND, e.getMessage());
         } catch (PlayerNotFoundException e) {
             return new NotFoundExceptionResponse(PLAYER_NOT_FOUND, e.getMessage());
         } catch (InvalidGameStatusException e) {

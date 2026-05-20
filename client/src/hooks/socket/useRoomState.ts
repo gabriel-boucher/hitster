@@ -18,11 +18,11 @@ export default function useRoomState() {
     const handleRoomState = (response: EventResponse<RoomState>) => {
       const roomState = response.data;
       if (response.success && roomState) {
-        connectionDispatch({ type: connectionReducerCases.SET_ROOM_ID, roomId: roomState.roomId });
+        connectionDispatch({ type: connectionReducerCases.SET_ROOM_ID, roomId: roomState.gameId });
         roomDispatch({ type: roomReducerCases.SET_PLAYERS, players: roomState.players });
         roomDispatch({ type: roomReducerCases.SET_PLAYLISTS, playlists: roomState.playlists });
         roomDispatch({ type: roomReducerCases.SET_MUSIC_PLAYER_TYPE, musicPlayerType: roomState.musicPlayerType });
-        if (roomState.roomId === "") {
+        if (roomState.gameId === "") {
           window.location.href = CLIENT_URL;
         }
       }

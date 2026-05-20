@@ -2,6 +2,7 @@ package domain.room;
 
 import domain.game.Game;
 import domain.game.GameFactory;
+import domain.game.GameId;
 import domain.game.GameStatus;
 import domain.music.MusicPlayerType;
 import domain.player.Player;
@@ -10,11 +11,12 @@ import domain.player.PlayerFactory;
 import domain.player.PlayerId;
 import domain.music.Playlist;
 import domain.music.PlaylistId;
+import domain.room.exception.PlayerAlreadyInRoomException;
 
 import java.util.List;
 
 public class Room {
-    private final RoomId id;
+    private final GameId id;
     private final GameStatus gameStatus;
     private MusicPlayerType musicPlayerType;
     private final List<Player> players;
@@ -23,7 +25,7 @@ public class Room {
     private final PlayerFactory playerFactory;
     private final RoomValidator validator;
 
-    public Room(RoomId id, GameStatus gameStatus, List<Player> players,
+    public Room(GameId id, GameStatus gameStatus, List<Player> players,
                 List<Playlist> playlists, GameFactory gameFactory, PlayerFactory playerFactory, RoomValidator validator) {
         this.id = id;
         this.gameStatus = gameStatus;
@@ -35,7 +37,7 @@ public class Room {
         this.validator = validator;
     }
 
-    public RoomId getId() {
+    public GameId getId() {
         return id;
     }
 
@@ -52,7 +54,11 @@ public class Room {
     }
 
     public void joinRoom(PlayerId playerId) {
-        validator.validatePlayerCanJoin(playerId, players, gameStatus);
+        try {
+            validator.validatePlayerCanJoin(playerId, players);
+        } catch (PlayerAlreadyInRoomException e) {
+            return;
+        }
         Player player = playerFactory.create(playerId, players);
         players.add(player);
     }

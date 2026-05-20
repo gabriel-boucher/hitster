@@ -15,7 +15,7 @@ export default function PlayerInGame({
   setHoveredPlayerId,
   setIsClickedPlayer,
 }: PlayerProps) {
-  const [{ socket }] = useConnectionStateProvider();
+  const [{ playerId }] = useConnectionStateProvider();
   const [{ currentPlayerId }] = useGameStateProvider();
 
   const handleMouseClick = () => {
@@ -27,7 +27,7 @@ export default function PlayerInGame({
   };
 
   const handleMouseLeave = () => {
-    setHoveredPlayerId(socket.id!);
+    setHoveredPlayerId(playerId);
     setIsClickedPlayer(false);
   };
 

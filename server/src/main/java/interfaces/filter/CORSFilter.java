@@ -17,7 +17,7 @@ public class CORSFilter implements ContainerResponseFilter {
 
         responseContext.getHeaders().add(
                 "Access-Control-Allow-Headers",
-                "origin, content-type, accept, authorization, x-room-id, x-player-id"
+                "origin, content-type, accept, authorization, x-game-id, x-player-id"
         );
 
         responseContext.getHeaders().add(

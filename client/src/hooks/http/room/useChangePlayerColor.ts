@@ -16,11 +16,11 @@ export default function useChangePlayerColor() {
   }, [socket, roomId, playerId]);
 }
 
-async function changePlayerColor(roomId: RoomId, playerId: PlayerId, newColor: string): Promise<void> {
+async function changePlayerColor(gameId: RoomId, playerId: PlayerId, newColor: string): Promise<void> {
   await axios.put(
       `${HTTP_SERVER_URL}/api/room/${RoomHttpEvents.CHANGE_PLAYER_COLOR}`,
       {
-        roomId,
+        gameId,
         playerId,
         newColor
       }

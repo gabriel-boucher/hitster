@@ -1,7 +1,7 @@
 package interfaces.http.room.startGame.dto;
 
 public record StartGameRequest(
-        String roomId,
+        String gameId,
         String playerId
 ) {
 }

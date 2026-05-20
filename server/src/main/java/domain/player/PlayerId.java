@@ -3,6 +3,10 @@ package domain.player;
 import java.util.UUID;
 
 public record PlayerId(UUID id) {
+    public static PlayerId create() {
+        return new PlayerId(UUID.randomUUID());
+    }
+
     public static PlayerId fromString(String id) {
         return new PlayerId(UUID.fromString(id));
     }

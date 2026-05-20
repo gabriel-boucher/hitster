@@ -5,7 +5,7 @@ import {MusicPlayerType} from "../music/MusicPlayerType.ts";
 export type RoomId = string;
 
 export type RoomState = {
-  roomId: RoomId;
+  gameId: RoomId;
   players: Player[];
   playlists: Playlist[];
   musicPlayerType: MusicPlayerType;

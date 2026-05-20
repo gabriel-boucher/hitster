@@ -8,7 +8,7 @@ import {useConnectionStateProvider} from "../../../stateProvider/connection/Conn
 import {useRoomStateProvider} from "../../../stateProvider/room/RoomStateProvider.tsx";
 
 export default function PlayerInLobby() {
-  const [{ socket }] = useConnectionStateProvider();
+  const [{ playerId }] = useConnectionStateProvider();
   const [{ players }] = useRoomStateProvider();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -38,7 +38,7 @@ export default function PlayerInLobby() {
       <PlayerColorSelected
         $playerColor={
           players.find(
-            (player: Player) => player.id === socket.id
+            (player: Player) => player.id === playerId
           )?.color || PlayerColor.RED
         }
         onClick={() => setIsMenuOpen((prev) => !prev)}

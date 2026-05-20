@@ -1,6 +1,7 @@
 package domain.room;
 
 import domain.game.GameFactory;
+import domain.game.GameId;
 import domain.game.GameStatus;
 import domain.game.GameValidator;
 import domain.player.Player;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RoomBuilder {
-    private RoomId roomId = RoomId.create();
+    private GameId gameId = GameId.create();
     private SpotifyAccessToken spotifyAccessToken = new SpotifyAccessToken(new SpotifyAccessTokenId("testToken"), 3600, new SpotifyAccessTokenId("testRefreshToken"));
     private GameStatus gameStatus = GameStatus.LOBBY;
     private List<Player> players = new ArrayList<>();
@@ -24,8 +25,8 @@ public class RoomBuilder {
     private PlayerFactory playerFactory = new PlayerFactory();
     private RoomValidator roomValidator = new RoomValidator(new PlayerValidator(), new PlaylistValidator(), new GameValidator());
 
-    public RoomBuilder withRoomId(RoomId roomId) {
-        this.roomId = roomId;
+    public RoomBuilder withGameId(GameId gameId) {
+        this.gameId = gameId;
         return this;
     }
 
@@ -65,6 +66,6 @@ public class RoomBuilder {
     }
 
     public Room build() {
-        return new Room(roomId, spotifyAccessToken, gameStatus, players, playlists, gameFactory, playerFactory, roomValidator);
+        return new Room(gameId, gameStatus, players, playlists, gameFactory, playerFactory, roomValidator);
     }
 }

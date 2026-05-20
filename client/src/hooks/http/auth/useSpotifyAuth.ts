@@ -42,11 +42,11 @@ export default function useSpotifyAuth() {
     }, [roomId, playerId]);
 }
 
-async function spotifyAuth(roomId: string, playerId: string, spotifyAccessCode: string): Promise<EventResponse<undefined>> {
+async function spotifyAuth(gameId: string, playerId: string, spotifyAccessCode: string): Promise<EventResponse<undefined>> {
     const response = await axios.post(
         `${HTTP_SERVER_URL}/api/auth/spotify`,
         {
-            roomId,
+            gameId,
             playerId,
             spotifyAccessCode,
         }

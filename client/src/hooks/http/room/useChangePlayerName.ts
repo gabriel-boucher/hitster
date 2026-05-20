@@ -16,11 +16,11 @@ export default function useChangePlayerName() {
   }, [socket, roomId, playerId]);
 }
 
-async function changePlayerName(roomId: RoomId, playerId: PlayerId, newName: string): Promise<void> {
+async function changePlayerName(gameId: RoomId, playerId: PlayerId, newName: string): Promise<void> {
   await axios.put(
       `${HTTP_SERVER_URL}/api/room/${RoomHttpEvents.CHANGE_PLAYER_NAME}`,
       {
-        roomId,
+        gameId,
         playerId,
         newName
       }

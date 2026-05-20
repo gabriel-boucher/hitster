@@ -1,11 +1,11 @@
 package interfaces.http.room.changePlayerColor.dto;
 
+import domain.game.GameId;
 import domain.player.PlayerColor;
 import domain.player.PlayerId;
-import domain.room.RoomId;
 
 public record ChangePlayerColorData(
-        RoomId roomId,
+        GameId gameId,
         PlayerId playerId,
         PlayerColor newColor
 ) {

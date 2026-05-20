@@ -1,6 +1,10 @@
 package domain.room;
 
+import domain.game.GameId;
+
+import java.util.Optional;
+
 public interface RoomRepository {
-    Room getRoomById(RoomId roomId);
+    Optional<Room> getRoomById(GameId gameId);
     void saveRoom(Room room);
 }

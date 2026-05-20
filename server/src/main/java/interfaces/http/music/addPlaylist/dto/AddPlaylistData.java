@@ -1,11 +1,11 @@
 package interfaces.http.music.addPlaylist.dto;
 
+import domain.game.GameId;
 import domain.player.PlayerId;
-import domain.room.RoomId;
 import domain.music.Playlist;
 
 public record AddPlaylistData(
-        RoomId roomId,
+        GameId gameId,
         PlayerId playerId,
         Playlist playlist
 ) {

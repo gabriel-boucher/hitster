@@ -4,21 +4,19 @@ import { CreateRoomResponse } from "../../../type/room/CreateRoomResponse.ts";
 import { HTTP_SERVER_URL } from "../../../config/url.ts";
 import axios from "axios";
 import { RoomId } from "../../../type/room/RoomState.ts";
-import { useConnectionStateProvider } from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
-import { connectionReducerCases } from "../../../stateProvider/connection/ConnectionReducerCases.ts";
 import { RoomHttpEvents } from "./roomHttpEvents.ts";
+import {useNavigate} from "react-router-dom";
 
 export default function useCreateRoom() {
-  const [, connectionDispatch] = useConnectionStateProvider();
+  const navigate = useNavigate();
 
   return useCallback(async () => {
     const response = await createRoom();
     if (!response.success || !response.data) return;
 
-    const newRoomId: RoomId = response.data.roomId;
-    window.history.pushState({}, "", "/" + newRoomId);
-    connectionDispatch({ type: connectionReducerCases.SET_ROOM_ID, roomId: newRoomId });
-  }, [connectionDispatch]);
+    const newRoomId: RoomId = response.data.gameId;
+    navigate(newRoomId);
+  }, [navigate]);
 }
 
 async function createRoom(): Promise<EventResponse<CreateRoomResponse>> {

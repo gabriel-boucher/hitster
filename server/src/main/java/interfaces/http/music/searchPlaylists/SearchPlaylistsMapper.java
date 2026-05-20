@@ -1,7 +1,7 @@
 package interfaces.http.music.searchPlaylists;
 
+import domain.game.GameId;
 import domain.player.PlayerId;
-import domain.room.RoomId;
 import domain.music.Playlist;
 import interfaces.mapper.PlaylistMapper;
 
@@ -16,7 +16,7 @@ public class SearchPlaylistsMapper {
 
     public SearchPlaylistsData toDomain(SearchPlaylistsRequest requests) {
         return new SearchPlaylistsData(
-                RoomId.fromString(requests.roomId()),
+                GameId.fromString(requests.gameId()),
                 PlayerId.fromString(requests.playerId()),
                 requests.query()
         );

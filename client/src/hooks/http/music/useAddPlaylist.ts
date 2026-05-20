@@ -17,11 +17,11 @@ export default function useAddPlaylist() {
   }, [socket, roomId, playerId]);
 }
 
-async function addPlaylist(roomId: RoomId, playerId: PlayerId, playlist: Playlist): Promise<void> {
+async function addPlaylist(gameId: RoomId, playerId: PlayerId, playlist: Playlist): Promise<void> {
   await axios.post(
       `${HTTP_SERVER_URL}/api/music/${MusicHttpEvents.ADD_PLAYLIST}`,
       {
-        roomId,
+        gameId,
         playerId,
         playlist,
       }

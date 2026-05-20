@@ -4,10 +4,12 @@ import {
   ReactNode,
   useContext,
   useReducer,
+  useCallback,
 } from "react";
 import {ConnectionState} from "./ConnectionState.ts";
 import {ConnectionAction} from "./ConnectionAction.ts";
 import {connectionDefaultDispatch, connectionInitialState} from "./ConnectionInitialState.ts";
+import {connectionReducerCases} from "./ConnectionReducerCases.ts";
 
 const ConnectionStateContext = createContext<[ConnectionState, Dispatch<ConnectionAction>]>([
   connectionInitialState,
@@ -28,4 +30,11 @@ export const ConnectionStateProvider = ({children, initialState, reducer}: Conne
 
 export const useConnectionStateProvider = (): [ConnectionState, Dispatch<ConnectionAction>] =>
   useContext(ConnectionStateContext);
+
+export const useResetConnectionState = () => {
+  const [, dispatch] = useConnectionStateProvider();
+  return useCallback(() => {
+    dispatch({ type: connectionReducerCases.RESET });
+  }, [dispatch]);
+};
 

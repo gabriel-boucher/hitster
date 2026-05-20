@@ -1,10 +1,10 @@
 package interfaces.http.room.removePlayer.dto;
 
+import domain.game.GameId;
 import domain.player.PlayerId;
-import domain.room.RoomId;
 
 public record RemovePlayerData(
-        RoomId roomId,
+        GameId gameId,
         PlayerId playerId,
         PlayerId playerToRemoveId
 ) {

@@ -1,11 +1,11 @@
 package domain.music;
 
+import domain.game.GameId;
 import domain.game.item.card.Card;
-import domain.room.RoomId;
 
 import java.util.List;
 
 public interface MusicRepository {
-    List<Playlist> searchPlaylistsByQuery(RoomId roomId, String query);
-    List<Card> getCardsByPlaylistId(RoomId roomId, List<PlaylistId> playlistIds);
+    List<Playlist> searchPlaylistsByQuery(GameId gameId, String query);
+    List<Card> getCardsByPlaylistId(GameId gameId, List<PlaylistId> playlistIds);
 }

@@ -5,7 +5,7 @@ import {connectionReducerCases} from "./ConnectionReducerCases.ts";
 
 export interface SetSocketConnectionAction {
   type: connectionReducerCases.SET_SOCKET;
-  socket: Socket;
+  socket: Socket | undefined;
 }
 
 export interface SetRoomIdConnectionAction {
@@ -18,7 +18,12 @@ export interface SetPlayerIdConnectionAction {
   playerId: PlayerId;
 }
 
+export interface ResetConnectionAction {
+  type: connectionReducerCases.RESET;
+}
+
 export type ConnectionAction =
   | SetSocketConnectionAction
   | SetRoomIdConnectionAction
   | SetPlayerIdConnectionAction
+  | ResetConnectionAction

@@ -2,7 +2,7 @@ package interfaces.http.music.searchPlaylists;
 
 import application.MusicAppService;
 import domain.exception.PlayerNotFoundException;
-import domain.exception.RoomNotFoundException;
+import domain.exception.GameNotFoundException;
 import domain.music.Playlist;
 import infrastructure.music.exception.searchPlaylists.SearchPlaylistsSpotifyException;
 import interfaces.dto.responseDto.EventResponse;
@@ -28,12 +28,12 @@ public class SearchPlaylistsHandler implements RestEventHandler<SearchPlaylistsR
     public EventResponse handleEvent(SearchPlaylistsRequest request) {
         try {
             SearchPlaylistsData data = searchPlaylistsMapper.toDomain(request);
-            List<Playlist> playlists = musicAppService.searchPlaylists(data.roomId(), data.playerId(), data.query());
+            List<Playlist> playlists = musicAppService.searchPlaylists(data.gameId(), data.playerId(), data.query());
             SearchPlaylistsResponse response = searchPlaylistsMapper.toDto(playlists);
 
             return new OkSuccessResponse<>(SEARCH_PLAYLISTS, response);
-        } catch (RoomNotFoundException e) {
-            return new NotFoundExceptionResponse(ROOM_NOT_FOUND, e.getMessage());
+        } catch (GameNotFoundException e) {
+            return new NotFoundExceptionResponse(GAME_NOT_FOUND, e.getMessage());
         } catch (PlayerNotFoundException e) {
             return new NotFoundExceptionResponse(PLAYER_NOT_FOUND, e.getMessage());
         } catch (SearchPlaylistsSpotifyException e) {

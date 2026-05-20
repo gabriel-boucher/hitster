@@ -1,6 +1,7 @@
 import {gameReducerCases} from "./GameReducerCases.ts";
 import {GameAction} from "./GameAction.ts";
 import {GameState} from "./GameState.ts";
+import {gameInitialState} from "./GameInitialState.ts";
 
 export const gameReducer = (state: GameState, action: GameAction) => {
   switch (action.type) {
@@ -33,6 +34,9 @@ export const gameReducer = (state: GameState, action: GameAction) => {
         ...state,
         currentPlayerId: action.currentPlayerId,
       };
+    }
+    case gameReducerCases.RESET: {
+      return gameInitialState;
     }
     default:
       return state;

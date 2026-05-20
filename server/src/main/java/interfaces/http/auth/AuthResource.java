@@ -24,7 +24,7 @@ public class AuthResource {
     @Path("in-memory")
     @Consumes(MediaType.APPLICATION_JSON)
     public EventResponse inMemoryAuth(AuthInMemoryRequest authInMemoryRequest) {
-        System.out.println("In-memory authorization for roomId: " + authInMemoryRequest.roomId() + " by playerId: " + authInMemoryRequest.playerId());
+        System.out.println("In-memory authorization for gameId: " + authInMemoryRequest.gameId() + " by playerId: " + authInMemoryRequest.playerId());
 
         return authInMemoryHandler.handleEvent(authInMemoryRequest);
     }
@@ -33,7 +33,7 @@ public class AuthResource {
     @Path("spotify")
     @Consumes(MediaType.APPLICATION_JSON)
     public EventResponse spotifyAuth(AuthSpotifyRequest authSpotifyRequest) {
-        System.out.println("Spotify authorization for roomId: " + authSpotifyRequest.roomId() + " by playerId: " + authSpotifyRequest.playerId() + " with code: " + authSpotifyRequest.spotifyAccessCode());
+        System.out.println("Spotify authorization for gameId: " + authSpotifyRequest.gameId() + " by playerId: " + authSpotifyRequest.playerId() + " with code: " + authSpotifyRequest.spotifyAccessCode());
 
         return authSpotifyHandler.handleEvent(authSpotifyRequest);
     }

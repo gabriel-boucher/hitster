@@ -17,12 +17,12 @@ export default function useRemovePlaylist() {
   }, [socket, roomId, playerId]);
 }
 
-async function removePlaylist(roomId: RoomId, playerId: PlayerId, playlistId: PlaylistId): Promise<void> {
+async function removePlaylist(gameId: RoomId, playerId: PlayerId, playlistId: PlaylistId): Promise<void> {
   await axios.delete(
       `${HTTP_SERVER_URL}/api/music/${MusicHttpEvents.REMOVE_PLAYLIST}/${playlistId}`,
       {
         headers: {
-          "x-room-id": roomId,
+          "x-game-id": gameId,
           "x-player-id": playerId,
         },
       }

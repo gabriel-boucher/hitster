@@ -1,11 +1,11 @@
 package infrastructure.music.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import domain.game.GameId;
 import domain.game.item.card.Card;
 import domain.music.Playlist;
 import domain.music.PlaylistId;
 import domain.music.MusicRepository;
-import domain.room.RoomId;
 import infrastructure.musicAuth.spotify.apiToken.SpotifyAccessToken;
 import infrastructure.music.dto.getPlaylistItems.GetPlaylistItemsSpotifyDto;
 import infrastructure.music.exception.getPlaylistItems.GetPlaylistItemsSpotifyException;
@@ -44,8 +44,8 @@ public class SpotifyMusicRepository implements MusicRepository {
     }
 
     @Override
-    public List<Playlist> searchPlaylistsByQuery(RoomId roomId, String query) {
-        SpotifyAccessToken spotifyAccessToken = spotifyAccessTokenRepository.getSpotifyApiTokenByRoomId(roomId);
+    public List<Playlist> searchPlaylistsByQuery(GameId gameId, String query) {
+        SpotifyAccessToken spotifyAccessToken = spotifyAccessTokenRepository.getSpotifyApiTokenByGameId(gameId);
         try {
             String encoded = URLEncoder.encode(query, StandardCharsets.UTF_8);
             String uri = SEARCH_BASE_URL + "?q=" + encoded + "&type=" + SEARCH_TYPE;
@@ -62,8 +62,8 @@ public class SpotifyMusicRepository implements MusicRepository {
     }
 
     @Override
-    public List<Card> getCardsByPlaylistId(RoomId roomId, List<PlaylistId> playlistIds) {
-        SpotifyAccessToken spotifyAccessToken = spotifyAccessTokenRepository.getSpotifyApiTokenByRoomId(roomId);
+    public List<Card> getCardsByPlaylistId(GameId gameId, List<PlaylistId> playlistIds) {
+        SpotifyAccessToken spotifyAccessToken = spotifyAccessTokenRepository.getSpotifyApiTokenByGameId(gameId);
         try {
             Set<Card> cards = new HashSet<>();
 

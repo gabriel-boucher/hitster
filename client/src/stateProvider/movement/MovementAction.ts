@@ -15,7 +15,12 @@ export interface SetDraggingPositionAction {
     draggingPosition: { x: number; y: number };
 }
 
+export interface ResetMovementAction {
+    type: movementReducerCases.RESET;
+}
+
 export type MovementAction =
     | SetIsDraggingAction
     | SetCurrentCardWidthAction
     | SetDraggingPositionAction
+    | ResetMovementAction

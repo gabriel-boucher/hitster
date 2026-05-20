@@ -30,9 +30,14 @@ export interface SetCurrentPlayerIdGameAction {
   currentPlayerId: PlayerId;
 }
 
+export interface ResetGameAction {
+  type: gameReducerCases.RESET;
+}
+
 export type GameAction =
   | SetGameStatusGameAction
   | SetItemsGameAction
   | SetCurrentCardIdGameAction
   | SetCurrentCardStatusGameAction
   | SetCurrentPlayerIdGameAction
+  | ResetGameAction

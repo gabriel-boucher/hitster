@@ -67,10 +67,14 @@ public class RoomValidator {
         return player;
     }
 
-    public void validateCanRemovePlayer(PlayerId playerId, PlayerId playerToRemoveId, List<Player> players, GameStatus gameStatus) {
-        playerValidator.validatePlayerExist(playerId, players);
+    public void validateCanRemovePlayer(PlayerId playerToRemoveId, List<Player> players, GameStatus gameStatus) {
         playerValidator.validatePlayerExist(playerToRemoveId, players);
         gameValidator.validateGameStatus(gameStatus, GameStatus.LOBBY);
+    }
+
+    public void validateCanKickPlayer(PlayerId playerId, PlayerId playerToRemoveId, List<Player> players, GameStatus gameStatus) {
+        playerValidator.validatePlayerExist(playerId, players);
+        validateCanRemovePlayer(playerToRemoveId, players, gameStatus);
 
         if (!players.getFirst().getId().equals(playerId) || playerId.equals(playerToRemoveId)) {
             throw new PlayerHostCannotBeRemovedException(playerId);

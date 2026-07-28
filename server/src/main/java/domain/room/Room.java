@@ -26,6 +26,7 @@ public class Room {
     private final RoomValidator validator;
 
     public Room(GameId id, GameStatus gameStatus, List<Player> players,
+
                 List<Playlist> playlists, GameFactory gameFactory, PlayerFactory playerFactory, RoomValidator validator) {
         this.id = id;
         this.gameStatus = gameStatus;
@@ -79,9 +80,13 @@ public class Room {
         player.setPlayerColor(newColor);
     }
 
-    public void removePlayer(PlayerId playerId, PlayerId playerToRemoveId) {
-        validator.validateCanRemovePlayer(playerId, playerToRemoveId, players, gameStatus);
+    public void removePlayer(PlayerId playerToRemoveId) {
         players.removeIf(player -> player.getId().equals(playerToRemoveId));
+    }
+
+    public void kickPlayer(PlayerId playerId, PlayerId playerToRemoveId) {
+        validator.validateCanKickPlayer(playerId, playerToRemoveId, players, gameStatus);
+        removePlayer(playerToRemoveId);
     }
 
     public void addPlaylist(PlayerId playerId, Playlist playlist) {

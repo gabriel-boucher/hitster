@@ -5,6 +5,7 @@ import domain.exception.ConnectionNotFoundException;
 import domain.exception.InvalidGameStatusException;
 import domain.exception.PlayerNotFoundException;
 import domain.exception.GameNotFoundException;
+import domain.player.PlayerId;
 import domain.room.exception.PlayerAlreadyInRoomException;
 import interfaces.dto.responseDto.EventResponse;
 import interfaces.dto.responseDto.exceptionDto.BadRequestExceptionResponse;
@@ -29,9 +30,9 @@ public class JoinRoomHandler implements RestEventHandler<JoinRoomRequest> {
     public EventResponse handleEvent(JoinRoomRequest request) {
         try {
             JoinRoomData data = joinRoomMapper.toDomain(request);
-            roomAppService.joinGame(data.connectionId(), data.gameId(), data.playerId());
+            PlayerId playerId = roomAppService.joinGame(data.connectionId(), data.gameId(), data.playerId());
 
-            return new OkSuccessResponse<>(JOIN_ROOM, data.playerId().toString());
+            return new OkSuccessResponse<>(JOIN_ROOM, playerId.toString());
         } catch (GameNotFoundException | IllegalArgumentException e) { // room not found | uuid mapper
             return new NotFoundExceptionResponse(GAME_NOT_FOUND, e.getMessage());
         } catch (ConnectionNotFoundException e) {

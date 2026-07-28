@@ -19,7 +19,7 @@ public class PlayerFactory {
         }
     }
 
-    public PlayerColor getAvailableColor(List<Player> players) {
+    private PlayerColor getAvailableColor(List<Player> players) {
         for (PlayerColor color : PlayerColor.values()) {
             boolean isTaken = players.stream()
                     .anyMatch(player -> color.equals(player.getColor()));

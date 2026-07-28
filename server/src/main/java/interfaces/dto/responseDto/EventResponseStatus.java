@@ -11,6 +11,7 @@ public enum EventResponseStatus {
     SEARCH_PLAYLISTS,
     CREATE_ROOM,
     JOIN_ROOM,
+    LEAVE_ROOM,
     CHANGE_PLAYER_NAME,
     CHANGE_PLAYER_COLOR,
     REMOVE_PLAYER,

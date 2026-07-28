@@ -5,6 +5,7 @@ import application.RoomAppService;
 import application.GameAppService;
 import application.MusicAppService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import domain.connection.ConnectionFactory;
 import domain.connection.ConnectionRepository;
 import domain.connection.ConnectionServer;
 import domain.game.GameFactory;
@@ -71,6 +72,8 @@ import interfaces.http.music.removePlaylist.RemovePlaylistMapper;
 import interfaces.http.game.GameResource;
 import interfaces.mapper.PlaylistMapper;
 import interfaces.http.music.searchPlaylists.SearchPlaylistsMapper;
+import interfaces.socket.connection.disconnect.DisconnectHandler;
+import interfaces.socket.connection.disconnect.DisconnectMapper;
 
 public class ApplicationContext {
     private final ConnectionResource connectionResource;
@@ -81,6 +84,9 @@ public class ApplicationContext {
 
     public ApplicationContext(ConnectionServer connectionServer) {
         ObjectMapper objectMapper = new ObjectMapper();
+
+        // Connection mappers
+        DisconnectMapper disconnectMapper = new DisconnectMapper();
 
         // MusicResource mappers
         PlaylistMapper playlistMapper = new PlaylistMapper();
@@ -139,6 +145,7 @@ public class ApplicationContext {
         // Factories
         GameFactory gameFactory = new GameFactory();
         RoomFactory roomFactory = new RoomFactory();
+        ConnectionFactory connectionFactory = new ConnectionFactory();
         PlayerFactory playerFactory = new PlayerFactory();
 
         InMemoryMusicRepository inMemoryMusicRepository = new InMemoryMusicRepository();
@@ -149,10 +156,12 @@ public class ApplicationContext {
         connectionServer.setup(roomStateMapper, gameStateMapper);
 
         AuthAppService authAppService = new AuthAppService(roomRepository, spotifyAuthRepository, connectionServer);
-        RoomAppService roomAppService = new RoomAppService(roomRepository, gameRepository, connectionRepository, connectionServer, roomFactory, gameFactory, playerFactory, musicRepositoryFactory, roomValidator);
+        RoomAppService roomAppService = new RoomAppService(roomRepository, gameRepository, connectionRepository, connectionServer, roomFactory, gameFactory, connectionFactory, playerFactory, musicRepositoryFactory, roomValidator);
         GameAppService gameAppService = new GameAppService(gameRepository, connectionServer);
         MusicAppService musicAppService = new MusicAppService(roomRepository, musicRepositoryFactory, musicPlayerValidator);
 
+
+        DisconnectHandler disconnectHandler = new DisconnectHandler(roomAppService, disconnectMapper);
 
         AuthInMemoryHandler authInMemoryHandler = new AuthInMemoryHandler(authAppService, authInMemoryMapper);
         AuthSpotifyHandler authSpotifyHandler = new AuthSpotifyHandler(authAppService, authSpotifyMapper);
@@ -176,7 +185,7 @@ public class ApplicationContext {
         AddTokenHandler addTokenHandler = new AddTokenHandler(gameAppService, addTokenMapper);
         RemoveTokenHandler removeTokenHandler = new RemoveTokenHandler(gameAppService, removeTokenMapper);
 
-        connectionResource = new ConnectionResource();
+        connectionResource = new ConnectionResource(disconnectHandler);
         authResource = new AuthResource(authInMemoryHandler, authSpotifyHandler);
         roomResource = new RoomResource(createRoomHandler, joinRoomHandler, changePlayerNameHandler, changePlayerColorHandler, removePlayerHandler, startGameHandler);
         gameResource = new GameResource(nextTurnHandler, addCurrentCardHandler, removeCurrentCardHandler, returnCurrentCardHandler, moveCurrentCardHandler, addTokenHandler, removeTokenHandler);

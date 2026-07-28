@@ -15,6 +15,8 @@ public interface ConnectionServer {
 
     void joinRoom(Connection connection);
 
+    void leaveRoom(Connection connection);
+
     void broadcastRoomState(Room room);
 
     void broadcastRoomStateExceptPlayer(Room room, PlayerId excludedPlayerId);

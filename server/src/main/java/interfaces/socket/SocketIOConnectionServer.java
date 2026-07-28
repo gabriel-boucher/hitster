@@ -54,6 +54,16 @@ public class SocketIOConnectionServer implements ConnectionServer {
     }
 
     @Override
+    public void leaveRoom(Connection connection) {
+        SocketIOClient client = socketIOServer.getClient(connection.getConnectionId().id());
+        if (client == null) {
+            throw new ConnectionNotFoundException(connection.getConnectionId());
+        }
+        client.leaveRoom(connection.getGameId().toString());
+        client.sendEvent("leave-room");
+    }
+
+    @Override
     public void broadcastRoomState(Room room) {
         RoomStateResponse roomStateResponse = roomStateMapper.toDto(room);
         socketIOServer.getRoomOperations(roomStateResponse.gameId()).sendEvent("room-state-changed", new OkSuccessResponse<>(ROOM_STATE_CHANGED, roomStateResponse));
@@ -66,10 +76,7 @@ public class SocketIOConnectionServer implements ConnectionServer {
         socketIOServer.getRoomOperations(roomStateResponse.gameId())
                 .getClients()
                 .forEach(client -> {
-                    if (client.getSessionId().toString().equals(excludedPlayerId.toString())) {
-                        RoomStateResponse excludedResponse = new RoomStateResponse("", new ArrayList<>(), new ArrayList<>(), "IN_MEMORY");
-                        client.sendEvent("room-state-changed", new OkSuccessResponse<>(ROOM_STATE_CHANGED, excludedResponse));
-                    } else {
+                    if (!client.getSessionId().toString().equals(excludedPlayerId.toString())) {
                         client.sendEvent("room-state-changed", new OkSuccessResponse<>(ROOM_STATE_CHANGED, roomStateResponse));
                     }
                 });

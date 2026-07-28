@@ -27,7 +27,6 @@ public class ChangePlayerNameHandler implements RestEventHandler<ChangePlayerNam
     @Override
     public EventResponse handleEvent(ChangePlayerNameRequest request) {
         try {
-            System.out.println(request.toString());
             ChangePlayerNameData data = changePlayerNameMapper.toDomain(request);
             roomAppService.changePlayerName(data.gameId(), data.playerId(), data.newName());
 

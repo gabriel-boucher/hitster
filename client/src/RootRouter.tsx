@@ -11,6 +11,7 @@ import {useState} from "react";
 import useJoinRoom from "./hooks/http/room/useJoinRoom.ts";
 import useConnect from "./hooks/socket/connection/useConnect.ts";
 import useDisconnect from "./hooks/socket/connection/useDisconnect.ts";
+import useLeaveRoom from "./hooks/socket/connection/useLeaveRoom.ts";
 
 export default function RootRouter() {
   const [{ roomId }] = useConnectionStateProvider();
@@ -20,6 +21,7 @@ export default function RootRouter() {
   useConnect();
   useDisconnect();
   useJoinRoom();
+  useLeaveRoom();
   useRoomState();
   useGameState();
 

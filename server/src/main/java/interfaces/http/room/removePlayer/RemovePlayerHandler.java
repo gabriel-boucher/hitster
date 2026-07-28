@@ -28,7 +28,7 @@ public class RemovePlayerHandler implements RestEventHandler<RemovePlayerRequest
     public EventResponse handleEvent(RemovePlayerRequest request) {
         try {
             RemovePlayerData data = removePlayerMapper.toDomain(request);
-            roomAppService.removePlayer(data.gameId(), data.playerId(), data.playerToRemoveId());
+            roomAppService.kickPlayer(data.gameId(), data.playerId(), data.playerToRemoveId());
 
             return new OkSuccessResponse<>(REMOVE_PLAYER, "Player removed successfully");
         } catch (GameNotFoundException e) {

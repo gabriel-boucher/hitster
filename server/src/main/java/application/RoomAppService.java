@@ -1,9 +1,7 @@
 package application;
 
-import domain.connection.Connection;
-import domain.connection.ConnectionId;
-import domain.connection.ConnectionRepository;
-import domain.connection.ConnectionServer;
+import domain.connection.*;
+import domain.exception.ConnectionNotFoundException;
 import domain.exception.GameNotFoundException;
 import domain.game.Game;
 import domain.game.GameFactory;
@@ -27,17 +25,19 @@ public class RoomAppService {
     private final ConnectionServer connectionServer;
     private final RoomFactory roomFactory;
     private final GameFactory gameFactory;
+    private final ConnectionFactory connectionFactory;
     private final PlayerFactory playerFactory;
     private final MusicRepositoryFactory musicRepositoryFactory;
     private final RoomValidator roomValidator;
 
-    public RoomAppService(RoomRepository roomRepository, GameRepository gameRepository, ConnectionRepository connectionRepository, ConnectionServer connectionServer, RoomFactory roomFactory, GameFactory gameFactory, PlayerFactory playerFactory, MusicRepositoryFactory musicRepositoryFactory, RoomValidator roomValidator) {
+    public RoomAppService(RoomRepository roomRepository, GameRepository gameRepository, ConnectionRepository connectionRepository, ConnectionServer connectionServer, RoomFactory roomFactory, GameFactory gameFactory, ConnectionFactory connectionFactory, PlayerFactory playerFactory, MusicRepositoryFactory musicRepositoryFactory, RoomValidator roomValidator) {
         this.roomRepository = roomRepository;
         this.gameRepository = gameRepository;
         this.connectionRepository = connectionRepository;
         this.connectionServer = connectionServer;
         this.roomFactory = roomFactory;
         this.gameFactory = gameFactory;
+        this.connectionFactory = connectionFactory;
         this.playerFactory = playerFactory;
         this.musicRepositoryFactory = musicRepositoryFactory;
         this.roomValidator = roomValidator;
@@ -49,44 +49,35 @@ public class RoomAppService {
         return room;
     }
 
-    public void joinGame(ConnectionId connectionId, GameId gameId, PlayerId playerId) {
-        Connection connection = connectionRepository.getConnectionByPlayerId(playerId)
-                .orElse(new Connection(connectionId, PlayerId.create(), gameId, true));
+    public PlayerId joinGame(ConnectionId connectionId, GameId gameId, PlayerId playerId) {
+        Connection connection = connectionFactory.create(connectionId, playerId, gameId);
         Room room = roomRepository.getRoomById(gameId)
                 .orElseThrow(() -> new GameNotFoundException(gameId));
 
-        connection.connect();
         room.joinRoom(playerId);
         connectionServer.joinRoom(connection);
 
         roomRepository.saveRoom(room);
-        connectionRepository.saveConnection(connection);
+        connectionRepository.addConnection(connection);
         connectionServer.broadcastRoomState(room);
+
+        return connection.getPlayerId();
     }
 
-    public void changePlayerName(GameId gameId, PlayerId playerId, String newName) {
-        Room r = execute(gameId, room -> room.changePlayerName(playerId, newName));
-        connectionServer.broadcastRoomState(r);
-    }
+    public void leaveGame(ConnectionId connectionId) {
+        Connection connection = connectionRepository.getConnectionById(connectionId)
+                .orElseThrow(() -> new ConnectionNotFoundException(connectionId));
+        List<Connection> connections = connectionRepository.getConnectionsByPlayerIdAndGameId(connection.getPlayerId(), connection.getGameId());
+        Room room = roomRepository.getRoomById(connection.getGameId())
+                .orElseThrow(() -> new GameNotFoundException(connection.getGameId()));
 
-    public void changePlayerColor(GameId gameId, PlayerId playerId, PlayerColor newColor) {
-        Room r = execute(gameId, room -> room.changePlayerColor(playerId, newColor));
-        connectionServer.broadcastRoomState(r);
-    }
+        if (connections.size() == 1) {
+            room.removePlayer(connection.getPlayerId());
+        }
 
-    public void removePlayer(GameId gameId, PlayerId playerId, PlayerId playerToRemoveId) {
-        Room r = execute(gameId, room -> room.removePlayer(playerId, playerToRemoveId));
-        connectionServer.broadcastRoomStateExceptPlayer(r, playerToRemoveId);
-    }
-
-    public void addPlaylist(GameId gameId, PlayerId playerId, Playlist playlist) {
-        Room r = execute(gameId, room -> room.addPlaylist(playerId, playlist));
-        connectionServer.broadcastRoomState(r);
-    }
-
-    public void removePlaylist(GameId gameId, PlayerId playerId, PlaylistId playlistId) {
-        Room r = execute(gameId, room -> room.removePlaylist(playerId, playlistId));
-        connectionServer.broadcastRoomState(r);
+        roomRepository.saveRoom(room);
+        connectionRepository.removeConnection(connection);
+        connectionServer.broadcastRoomState(room);
     }
 
     public void startGame(GameId gameId, PlayerId playerId) {
@@ -101,6 +92,39 @@ public class RoomAppService {
         game.startGame(pile);
         gameRepository.saveGame(game);
         connectionServer.broadcastGameState(game);
+    }
+
+    public void kickPlayer(GameId gameId, PlayerId playerId, PlayerId playerToRemoveId) {
+        List<Connection> connections = connectionRepository.getConnectionsByPlayerIdAndGameId(playerToRemoveId, gameId);
+        Room room = roomRepository.getRoomById(gameId)
+                .orElseThrow(() -> new GameNotFoundException(gameId));
+
+        room.kickPlayer(playerId, playerToRemoveId);
+        connections.forEach(connectionServer::leaveRoom);
+
+        roomRepository.saveRoom(room);
+        connections.forEach(connectionRepository::removeConnection);
+        connectionServer.broadcastRoomState(room);
+    }
+
+    public void changePlayerName(GameId gameId, PlayerId playerId, String newName) {
+        Room r = execute(gameId, room -> room.changePlayerName(playerId, newName));
+        connectionServer.broadcastRoomState(r);
+    }
+
+    public void changePlayerColor(GameId gameId, PlayerId playerId, PlayerColor newColor) {
+        Room r = execute(gameId, room -> room.changePlayerColor(playerId, newColor));
+        connectionServer.broadcastRoomState(r);
+    }
+
+    public void addPlaylist(GameId gameId, PlayerId playerId, Playlist playlist) {
+        Room r = execute(gameId, room -> room.addPlaylist(playerId, playlist));
+        connectionServer.broadcastRoomState(r);
+    }
+
+    public void removePlaylist(GameId gameId, PlayerId playerId, PlaylistId playlistId) {
+        Room r = execute(gameId, room -> room.removePlaylist(playerId, playlistId));
+        connectionServer.broadcastRoomState(r);
     }
 
     private Room execute(GameId gameId, Consumer<Room> action) {

@@ -7,7 +7,7 @@ import domain.exception.GameNotFoundException;
 import domain.room.exception.NoPlaylistSelectedException;
 import domain.room.exception.PlayerHostMustStartGameException;
 import domain.room.exception.PlayerNameNotSetException;
-import infrastructure.music.exception.getPlaylistItems.GetPlaylistItemsSpotifyException;
+import infrastructure.persistence.inMemory.music.exception.getPlaylistItems.GetPlaylistItemsSpotifyException;
 import interfaces.dto.responseDto.EventResponse;
 import interfaces.dto.responseDto.exceptionDto.BadRequestExceptionResponse;
 import interfaces.dto.responseDto.exceptionDto.NotFoundExceptionResponse;
@@ -15,11 +15,10 @@ import interfaces.dto.responseDto.exceptionDto.UnauthorizedExceptionResponse;
 import interfaces.dto.responseDto.successDto.OkSuccessResponse;
 import interfaces.http.RestEventHandler;
 import interfaces.http.room.startGame.dto.StartGameData;
-import interfaces.http.room.startGame.dto.StartGameRequest;
 
 import static interfaces.dto.responseDto.EventResponseStatus.*;
 
-public class StartGameHandler implements RestEventHandler<StartGameRequest> {
+public class StartGameHandler implements RestEventHandler {
     private final RoomAppService roomAppService;
     private final StartGameMapper startGameMapper;
 
@@ -29,9 +28,9 @@ public class StartGameHandler implements RestEventHandler<StartGameRequest> {
     }
 
     @Override
-    public EventResponse handleEvent(StartGameRequest request) {
+    public EventResponse handleEvent(String gameId, String playerId) {
         try {
-            StartGameData data = startGameMapper.toDomain(request);
+            StartGameData data = startGameMapper.toDomain(gameId, playerId);
             roomAppService.startGame(data.gameId(), data.playerId());
 
             return new OkSuccessResponse<>(START_GAME, "Game started successfully");

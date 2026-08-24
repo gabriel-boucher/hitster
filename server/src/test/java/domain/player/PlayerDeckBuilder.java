@@ -1,7 +1,8 @@
 package domain.player;
 
-import domain.game.item.card.Card;
-import domain.game.item.token.Token;
+import domain.deck.Deck;
+import domain.deck.item.card.Card;
+import domain.deck.item.token.Token;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,7 @@ public class PlayerDeckBuilder {
         return this;
     }
 
-    public PlayerDeck build() {
-        return new PlayerDeck(cards, tokens);
+    public Deck build() {
+        return new Deck(cards, tokens);
     }
 }

@@ -1,6 +1,6 @@
 package domain.game;
 
-import domain.game.item.card.Card;
+import domain.deck.item.card.Card;
 import domain.music.PlaylistId;
 
 import java.util.List;

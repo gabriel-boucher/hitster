@@ -3,13 +3,12 @@ package interfaces.http.room.startGame;
 import domain.game.GameId;
 import domain.player.PlayerId;
 import interfaces.http.room.startGame.dto.StartGameData;
-import interfaces.http.room.startGame.dto.StartGameRequest;
 
 public class StartGameMapper {
-    public StartGameData toDomain(StartGameRequest request) {
+    public StartGameData toDomain(String gameId, String playerId) {
         return new StartGameData(
-                GameId.fromString(request.gameId()),
-                PlayerId.fromString(request.playerId())
+                GameId.fromString(gameId),
+                PlayerId.fromString(playerId)
         );
     }
 }

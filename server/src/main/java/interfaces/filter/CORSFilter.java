@@ -17,12 +17,12 @@ public class CORSFilter implements ContainerResponseFilter {
 
         responseContext.getHeaders().add(
                 "Access-Control-Allow-Headers",
-                "origin, content-type, accept, authorization, x-game-id, x-player-id"
+                "origin, content-type, accept, authorization, x-game-gameId, x-player-gameId"
         );
 
         responseContext.getHeaders().add(
                 "Access-Control-Allow-Methods",
-                "GET, POST, PUT, DELETE, OPTIONS"
+                "GET, POST, PUT, PATCH, DELETE, OPTIONS"
         );
 
         responseContext.getHeaders().putSingle(

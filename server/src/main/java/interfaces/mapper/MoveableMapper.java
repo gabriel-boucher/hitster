@@ -1,8 +1,8 @@
 package interfaces.mapper;
 
-import domain.game.item.Moveable;
-import domain.game.item.card.Card;
-import domain.game.item.token.Token;
+import domain.deck.item.Moveable;
+import domain.deck.item.card.Card;
+import domain.deck.item.token.Token;
 import interfaces.dto.MoveableDto;
 
 public class MoveableMapper {

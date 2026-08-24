@@ -2,29 +2,19 @@ import { PlaylistId } from "../../../type/music/Playlist.ts";
 import { useCallback } from "react";
 import { useConnectionStateProvider } from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
 import { RoomId } from "../../../type/room/RoomState.ts";
-import { PlayerId } from "../../../type/player/Player.ts";
-import axios from "axios";
-import { HTTP_SERVER_URL } from "../../../config/url.ts";
-import { MusicHttpEvents } from "./musicHttpEvents.ts";
+import { apiPaths } from "../../../config/apiPaths.ts";
+import { api } from "../apiRequest.ts";
 
 export default function useRemovePlaylist() {
-  const [{ socket, roomId, playerId }] = useConnectionStateProvider();
+  const [{ socket, roomId }] = useConnectionStateProvider();
 
   return useCallback(async (playlistId: PlaylistId) => {
     if (!socket) return;
 
-    await removePlaylist(roomId, playerId, playlistId);
-  }, [socket, roomId, playerId]);
+    await removePlaylist(roomId, playlistId);
+  }, [socket, roomId]);
 }
 
-async function removePlaylist(gameId: RoomId, playerId: PlayerId, playlistId: PlaylistId): Promise<void> {
-  await axios.delete(
-      `${HTTP_SERVER_URL}/api/music/${MusicHttpEvents.REMOVE_PLAYLIST}/${playlistId}`,
-      {
-        headers: {
-          "x-game-id": gameId,
-          "x-player-id": playerId,
-        },
-      }
-  );
+async function removePlaylist(gameId: RoomId, playlistId: PlaylistId): Promise<void> {
+  await api.delete(apiPaths.removePlaylist(gameId, playlistId));
 }

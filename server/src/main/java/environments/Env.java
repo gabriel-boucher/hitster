@@ -1,13 +1,20 @@
 package environments;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 public class Env {
-    public final static String HOST = System.getenv("HOST");
-    public final static String CLIENT_PORT = System.getenv("CLIENT_PORT");
-    public final static String HTTP_SERVER_PORT = System.getenv("HTTP_SERVER_PORT");
-    public final static String WS_SERVER_PORT = System.getenv("WS_SERVER_PORT");
+    private final static Dotenv dotenv = Dotenv.configure()
+            .directory("src/main/java/environments")
+            .ignoreIfMissing()
+            .load();
 
-    public final static String SPOTIFY_CLIENT_ID = System.getenv("SPOTIFY_CLIENT_ID");
-    public final static String SPOTIFY_CLIENT_SECRET = System.getenv("SPOTIFY_CLIENT_SECRET");
+    public final static String HOST = dotenv.get("HOST");
+    public final static String CLIENT_PORT = dotenv.get("CLIENT_PORT");
+    public final static String HTTP_SERVER_PORT = dotenv.get("HTTP_SERVER_PORT");
+    public final static String WS_SERVER_PORT = dotenv.get("WS_SERVER_PORT");
 
-    public final static String JWT_SECRET = System.getenv("JWT_SECRET");
+    public final static String SPOTIFY_CLIENT_ID = dotenv.get("SPOTIFY_CLIENT_ID");
+    public final static String SPOTIFY_CLIENT_SECRET = dotenv.get("SPOTIFY_CLIENT_SECRET");
+
+    public final static String JWT_SECRET = dotenv.get("JWT_SECRET");
 }

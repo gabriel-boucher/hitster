@@ -1,21 +1,18 @@
 package domain.game;
 
-import domain.game.currentDeck.CurrentDeck;
-import domain.game.item.card.Card;
-import domain.player.PlayerValidator;
+import domain.deck.currentDeck.CurrentDeck;
 import domain.player.Players;
 import domain.room.Room;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class GameFactory {
     public Game createGame(Room room) {
         return new Game(
                 GameId.fromString(room.getId().toString()),
-                GameStatus.PLAYING,
-                new Players(room.getPlayers()),
-                new Pile(new ArrayList<>()),
+                room.getGameStatus(),
+                new Players(room.getPlayers(), room.getPlayers().getFirst().getId()),
+                new Stack(new ArrayList<>()),
                 new CurrentDeck(new ArrayList<>()),
                 new GameInitializer(),
                 new GameValidator()

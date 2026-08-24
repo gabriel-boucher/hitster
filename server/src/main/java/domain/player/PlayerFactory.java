@@ -1,5 +1,6 @@
 package domain.player;
 
+import domain.deck.Deck;
 import interfaces.exception.NotImplementedException;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ public class PlayerFactory {
             final boolean nameExists = players.stream()
                     .anyMatch(player -> player.getName().equals(playerName));
             if (!nameExists) {
-                return new Player(playerId, playerName, getAvailableColor(players), new PlayerDeck(new ArrayList<>(), new ArrayList<>()));
+                return new Player(playerId, playerName, getAvailableColor(players), new Deck(new ArrayList<>(), new ArrayList<>()));
             }
             count++;
         }

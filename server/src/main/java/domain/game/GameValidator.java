@@ -2,7 +2,7 @@ package domain.game;
 
 import domain.exception.InvalidGameStatusException;
 import domain.game.exception.InvalidPlayerTurnException;
-import domain.game.item.token.Token;
+import domain.deck.item.token.Token;
 import domain.player.Player;
 
 public class GameValidator {

@@ -1,29 +1,30 @@
 package domain.game;
 
-import domain.game.currentDeck.CurrentDeck;
-import domain.game.item.card.Card;
-import domain.game.item.token.Token;
-import domain.game.item.token.TokenId;
+import domain.deck.currentDeck.CurrentDeck;
+import domain.deck.item.card.Card;
+import domain.deck.item.token.Token;
+import domain.deck.item.token.TokenId;
 import domain.player.Player;
 import domain.player.PlayerId;
 import domain.player.Players;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Game {
     private final GameId id;
     private final GameStatus status;
     private final Players players;
-    private final Pile pile;
+    private final Stack stack;
     private final CurrentDeck currentDeck;
     private final GameInitializer gameInitializer;
     private final GameValidator gameValidator;
 
-    public Game(GameId id, GameStatus status, Players players, Pile pile, CurrentDeck currentDeck, GameInitializer gameInitializer, GameValidator gameValidator) {
+    public Game(GameId id, GameStatus status, Players players, Stack stack, CurrentDeck currentDeck, GameInitializer gameInitializer, GameValidator gameValidator) {
         this.id = id;
         this.status = status;
         this.players = players;
-        this.pile = pile;
+        this.stack = stack;
         this.currentDeck = currentDeck;
         this.gameInitializer = gameInitializer;
         this.gameValidator = gameValidator;
@@ -41,8 +42,12 @@ public class Game {
         return players.getPlayers();
     }
 
-    public PlayerId getCurrentPlayerId() {
-        return players.getCurrentPlayerId();
+    public Player getCurrentPlayer() {
+        return players.getCurrentPlayer();
+    }
+
+    public Stack getStack() {
+        return stack;
     }
 
     public CurrentDeck getCurrentDeck() {
@@ -50,21 +55,21 @@ public class Game {
     }
 
     public Card getCurrentCard() {
-        return pile.getCurrentCard();
+        return stack.getCurrentCard();
     }
 
-    public void startGame(List<Card> pile) {
-        this.pile.setPile(pile);
-        gameInitializer.initialize(players, this.pile, currentDeck);
+    public void startGame(List<Card> stack) {
+        this.stack.setCards(stack);
+        gameInitializer.initialize(players, this.stack, currentDeck);
     }
 
     public void nextTurn(PlayerId playerId) {
         Player player = players.getPlayerById(playerId);
         gameValidator.validateCanGoNextTurn(player, players.getCurrentPlayer(), status);
 
-        Card currentCard = pile.getCurrentCard();
+        Card currentCard = stack.getCurrentCard();
         PlayerId newCardOwnerId = currentDeck.getCurrentCardWinner(currentCard, playerId);
-        pile.removeCurrentCard();
+        stack.removeCurrentCard();
 
         if (newCardOwnerId != null) {
             Player newCardOwner = players.getPlayerById(newCardOwnerId);
@@ -82,7 +87,7 @@ public class Game {
         Player player = players.getPlayerById(playerId);
         gameValidator.validateCanAddCurrentCardToCurrentDeck(player, players.getCurrentPlayer(), status);
 
-        Card currentCard = pile.getCurrentCard();
+        Card currentCard = stack.getCurrentCard();
         currentDeck.addCardToDeck(currentCard);
     }
 
@@ -90,7 +95,7 @@ public class Game {
         Player player = players.getPlayerById(playerId);
         gameValidator.validateCanRemoveCurrentCardFromCurrentDeck(player, players.getCurrentPlayer(), status);
 
-        Card currentCard = pile.getCurrentCard();
+        Card currentCard = stack.getCurrentCard();
         currentDeck.removeCardFromDeck(currentCard);
     }
 
@@ -98,16 +103,17 @@ public class Game {
         Player player = players.getPlayerById(playerId);
         gameValidator.validateCanReturnCurrentCardToPile(player, players.getCurrentPlayer(), status);
 
-        Card currentCard = pile.getCurrentCard();
-        currentDeck.returnCardToPile(currentCard);
+        Card currentCard = stack.getCurrentCard();
+        currentDeck.returnCardToStack(currentCard);
     }
 
     public void moveCurrentCardInCurrentDeck(PlayerId playerId, int position) {
         Player player = players.getPlayerById(playerId);
         gameValidator.validateCanMoveCurrentCardInCurrentDeck(player, players.getCurrentPlayer(), status);
 
-        Card currentCard = pile.getCurrentCard();
-        currentDeck.moveCardInDeck(currentCard, position);
+        Card currentCard = stack.getCurrentCard();
+        Optional<Token> token = currentDeck.moveCardInDeck(currentCard, position);
+        token.ifPresent(t -> removeTokenFromCurrentDeck(t.getOwnerId(), t.getId()));
     }
 
     public void addTokenToCurrentDeck(PlayerId playerId, TokenId tokenId, int position) {
@@ -124,5 +130,7 @@ public class Game {
         gameValidator.validateCanRemoveTokenFromCurrentDeck(player, players.getCurrentPlayer(), token, status);
 
         currentDeck.removeTokenFromDeck(token);
+
+        System.out.println(token.getStatus().toString());
     }
 }

@@ -6,7 +6,7 @@ import domain.music.*;
 import domain.player.PlayerId;
 import domain.room.Room;
 import domain.room.RoomRepository;
-import infrastructure.music.MusicRepositoryFactory;
+import infrastructure.persistence.inMemory.music.MusicRepositoryFactory;
 
 import java.util.List;
 

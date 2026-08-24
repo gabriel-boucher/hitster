@@ -1,7 +1,7 @@
 package interfaces.mapper;
 
 import domain.game.Game;
-import domain.game.item.card.Card;
+import domain.deck.item.card.Card;
 import interfaces.http.game.GameStateResponse;
 
 public class GameStateMapper {
@@ -22,7 +22,7 @@ public class GameStateMapper {
                 currentDeckMapper.toDto(game.getCurrentDeck(), currentCard),
                 currentCard.getId().toString(),
                 currentCard.getStatus().toString(),
-                game.getCurrentPlayerId().toString()
+                game.getCurrentPlayer().getId().toString()
         );
     }
 

@@ -4,18 +4,18 @@ import application.MusicAppService;
 import domain.exception.PlayerNotFoundException;
 import domain.exception.GameNotFoundException;
 import domain.music.Playlist;
-import infrastructure.music.exception.searchPlaylists.SearchPlaylistsSpotifyException;
+import infrastructure.persistence.inMemory.music.exception.searchPlaylists.SearchPlaylistsSpotifyException;
 import interfaces.dto.responseDto.EventResponse;
 import interfaces.dto.responseDto.exceptionDto.BadRequestExceptionResponse;
 import interfaces.dto.responseDto.exceptionDto.NotFoundExceptionResponse;
 import interfaces.dto.responseDto.successDto.OkSuccessResponse;
-import interfaces.http.RestEventHandler;
+import interfaces.http.RestEventHandlerWithRequest;
 
 import java.util.List;
 
 import static interfaces.dto.responseDto.EventResponseStatus.*;
 
-public class SearchPlaylistsHandler implements RestEventHandler<SearchPlaylistsRequest> {
+public class SearchPlaylistsHandler implements RestEventHandlerWithRequest<SearchPlaylistsRequest> {
     private final MusicAppService musicAppService;
     private final SearchPlaylistsMapper searchPlaylistsMapper;
 
@@ -25,9 +25,9 @@ public class SearchPlaylistsHandler implements RestEventHandler<SearchPlaylistsR
     }
 
     @Override
-    public EventResponse handleEvent(SearchPlaylistsRequest request) {
+    public EventResponse handleEvent(String gameId, String playerId, SearchPlaylistsRequest request) {
         try {
-            SearchPlaylistsData data = searchPlaylistsMapper.toDomain(request);
+            SearchPlaylistsData data = searchPlaylistsMapper.toDomain(gameId, playerId, request);
             List<Playlist> playlists = musicAppService.searchPlaylists(data.gameId(), data.playerId(), data.query());
             SearchPlaylistsResponse response = searchPlaylistsMapper.toDto(playlists);
 

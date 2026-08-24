@@ -7,13 +7,13 @@ import domain.game.Game;
 import domain.game.GameFactory;
 import domain.game.GameId;
 import domain.game.GameRepository;
-import domain.game.item.card.Card;
+import domain.deck.item.card.Card;
 import domain.player.PlayerColor;
 import domain.player.PlayerFactory;
 import domain.player.PlayerId;
 import domain.room.*;
 import domain.music.*;
-import infrastructure.music.MusicRepositoryFactory;
+import infrastructure.persistence.inMemory.music.MusicRepositoryFactory;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -83,13 +83,13 @@ public class RoomAppService {
     public void startGame(GameId gameId, PlayerId playerId) {
         Room room = roomRepository.getRoomById(gameId)
                 .orElseThrow(() -> new GameNotFoundException(gameId));
-
         Game game = room.startGame(playerId);
-        roomRepository.saveRoom(room);
 
         MusicRepository musicRepository = musicRepositoryFactory.getMusicRepository(room);
-        List<Card> pile = musicRepository.getCardsByPlaylistId(room.getId(), room.getPlaylists().stream().map(Playlist::id).toList());
-        game.startGame(pile);
+        List<Card> stack = musicRepository.getCardsByPlaylistId(room.getId(), room.getPlaylists().stream().map(Playlist::id).toList());
+        game.startGame(stack);
+
+        roomRepository.saveRoom(room);
         gameRepository.saveGame(game);
         connectionServer.broadcastGameState(game);
     }

@@ -1,16 +1,17 @@
 package domain.player;
 
-import domain.game.item.card.Card;
-import domain.game.item.token.Token;
-import domain.game.item.token.TokenId;
+import domain.deck.Deck;
+import domain.deck.item.card.Card;
+import domain.deck.item.token.Token;
+import domain.deck.item.token.TokenId;
 
 public class Player {
     private final PlayerId id;
     private String name;
     private PlayerColor color;
-    private final PlayerDeck deck;
+    private final Deck deck;
 
-    public Player(PlayerId id, String name, PlayerColor playerColor, PlayerDeck deck) {
+    public Player(PlayerId id, String name, PlayerColor playerColor, Deck deck) {
         this.id = id;
         this.deck = deck;
         this.name = name;
@@ -29,7 +30,7 @@ public class Player {
         return color;
     }
 
-    public PlayerDeck getDeck() {
+    public Deck getDeck() {
         return deck;
     }
 

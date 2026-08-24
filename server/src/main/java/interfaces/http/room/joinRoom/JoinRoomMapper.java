@@ -7,12 +7,12 @@ import interfaces.http.room.joinRoom.dto.JoinRoomData;
 import interfaces.http.room.joinRoom.dto.JoinRoomRequest;
 
 public class JoinRoomMapper {
-    public JoinRoomData toDomain(JoinRoomRequest request) {
+    public JoinRoomData toDomain(String gameId, String playerId, JoinRoomRequest request) {
         return new JoinRoomData(
-                GameId.fromString(request.gameId()),
-                request.playerId().isEmpty() ?
+                GameId.fromString(gameId),
+                playerId.isEmpty() ?
                         PlayerId.create() :
-                        PlayerId.fromString(request.playerId()),
+                        PlayerId.fromString(playerId),
                 ConnectionId.fromString(request.socketId())
         );
     }

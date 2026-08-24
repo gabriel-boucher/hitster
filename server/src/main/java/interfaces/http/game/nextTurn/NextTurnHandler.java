@@ -10,11 +10,10 @@ import interfaces.dto.responseDto.exceptionDto.NotFoundExceptionResponse;
 import interfaces.dto.responseDto.successDto.OkSuccessResponse;
 import interfaces.http.RestEventHandler;
 import interfaces.http.game.nextTurn.dto.NextTurnData;
-import interfaces.http.game.nextTurn.dto.NextTurnRequest;
 
 import static interfaces.dto.responseDto.EventResponseStatus.*;
 
-public class NextTurnHandler implements RestEventHandler<NextTurnRequest> {
+public class NextTurnHandler implements RestEventHandler {
     private final GameAppService gameAppService;
     private final NextTurnMapper nextTurnMapper;
 
@@ -24,9 +23,9 @@ public class NextTurnHandler implements RestEventHandler<NextTurnRequest> {
     }
 
     @Override
-    public EventResponse handleEvent(NextTurnRequest request) {
+    public EventResponse handleEvent(String gameId, String playerId) {
         try {
-            NextTurnData data = nextTurnMapper.toDomain(request);
+            NextTurnData data = nextTurnMapper.toDomain(gameId, playerId);
             gameAppService.nextTurn(data.gameId(), data.playerId());
 
             return new OkSuccessResponse<>(NEXT_TURN, "Turn changed successfully");

@@ -1,31 +1,31 @@
 package domain.game;
 
-import domain.game.currentDeck.CurrentDeck;
-import domain.game.item.ItemStatus;
-import domain.game.item.card.Card;
-import domain.game.item.token.Token;
-import domain.game.item.token.TokenId;
+import domain.deck.currentDeck.CurrentDeck;
+import domain.deck.item.ItemStatus;
+import domain.deck.item.card.Card;
+import domain.deck.item.token.Token;
+import domain.deck.item.token.TokenId;
 import domain.player.Player;
 import domain.player.Players;
 
 import java.util.List;
 
 public class GameInitializer {
-    public void initialize(Players players, Pile pile, CurrentDeck currentDeck) {
-        initializePlayers(players, pile);
+    public void initialize(Players players, Stack stack, CurrentDeck currentDeck) {
+        initializePlayers(players, stack);
         initializeCurrentPlayer(players);
         initializeCurrentDeck(currentDeck, players);
     }
 
-    private void initializePlayers(Players players, Pile pile) {
+    private void initializePlayers(Players players, Stack stack) {
         for (Player player : players.getPlayers()) {
-            giveStartingCards(pile, player);
+            giveStartingCards(stack, player);
             giveStartingTokens(player);
         }
     }
 
-    private void giveStartingCards(Pile pile, Player player) {
-        Card card = pile.removeCurrentCard();
+    private void giveStartingCards(Stack stack, Player player) {
+        Card card = stack.removeCurrentCard();
         player.addCurrentCardToDeckAndSetUsed(card);
     }
 

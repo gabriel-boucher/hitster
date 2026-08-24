@@ -1,8 +1,11 @@
 import com.corundumstudio.socketio.SocketIOServer;
 import context.ApplicationContext;
 import interfaces.filter.CORSFilter;
-import interfaces.http.auth.AuthResource;
+import interfaces.filter.auth.AuthFilter;
+import interfaces.http.deckMovement.DeckMovementResource;
 import interfaces.http.music.MusicResource;
+import interfaces.http.player.PlayerResource;
+import interfaces.http.playlist.PlaylistResource;
 import interfaces.http.room.RoomResource;
 import interfaces.socket.SocketIOConnectionServer;
 import interfaces.socket.connection.ConnectionResource;
@@ -31,16 +34,21 @@ public class ApplicationServer {
     }
 
     public static void startHttpServer() {
-        AuthResource authResource = applicationContext.getAuthResource();
-        MusicResource musicResource = applicationContext.getSpotifyResource();
         RoomResource roomResource = applicationContext.getRoomRessource();
         GameResource gameResource = applicationContext.getGameRessource();
+        PlayerResource playerResource = applicationContext.getPlayerResource();
+        PlaylistResource playlistResource = applicationContext.getPlaylistResource();
+        MusicResource musicResource = applicationContext.getMusicResource();
+        DeckMovementResource deckMovementResource = applicationContext.getDeckMovementResource();
 
         final ResourceConfig rc = new ResourceConfig()
-                .register(authResource)
-                .register(musicResource)
                 .register(roomResource)
                 .register(gameResource)
+                .register(playerResource)
+                .register(playlistResource)
+                .register(musicResource)
+                .register(deckMovementResource)
+                .register(AuthFilter.class)
                 .register(CORSFilter.class);
 
         String baseUrl = "http://" + HOST + ":" + HTTP_SERVER_PORT;

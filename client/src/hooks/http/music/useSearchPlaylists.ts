@@ -1,11 +1,11 @@
 import { Dispatch, SetStateAction, useCallback } from "react";
 import { Playlist } from "../../../type/music/Playlist.ts";
 import { useConnectionStateProvider } from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
-import { HTTP_SERVER_URL } from "../../../config/url.ts";
-import axios from "axios";
-import { MusicHttpEvents } from "./musicHttpEvents.ts";
-import {useDebouncedCallback} from "../../useDebounceCallback.ts";
-import {EventResponse} from "../../../type/EventResponse.ts";
+import { useDebouncedCallback } from "../../useDebounceCallback.ts";
+import { EventResponse } from "../../../type/EventResponse.ts";
+import { RoomId } from "../../../type/room/RoomState.ts";
+import { apiPaths } from "../../../config/apiPaths.ts";
+import { api } from "../apiRequest.ts";
 
 interface Props {
   setSearchedPlaylists: Dispatch<SetStateAction<Playlist[]>>;
@@ -14,14 +14,14 @@ interface Props {
 }
 
 export default function useSearchPlaylists({ setSearchedPlaylists, setLoading, delay = 500 }: Props) {
-  const [{ roomId, playerId }] = useConnectionStateProvider();
+  const [{ roomId }] = useConnectionStateProvider();
 
   const search = useCallback(async (query: string) => {
-    const response = await searchPlaylists(roomId, playerId, query);
+    const response = await searchPlaylists(roomId, query);
     const playlists = response.data?.playlists || [];
     setSearchedPlaylists(playlists);
     setLoading(false);
-  }, [roomId, playerId, setSearchedPlaylists, setLoading]);
+  }, [roomId, setSearchedPlaylists, setLoading]);
 
   const debouncedSearch = useDebouncedCallback(delay, search);
 
@@ -36,17 +36,7 @@ export default function useSearchPlaylists({ setSearchedPlaylists, setLoading, d
   }, [debouncedSearch, setSearchedPlaylists, setLoading]);
 }
 
-async function searchPlaylists(gameId: string, playerId: string, query: string): Promise<EventResponse<{ playlists: Playlist[]}>> {
-  const response = await axios.get(
-      `${HTTP_SERVER_URL}/api/music/${MusicHttpEvents.SEARCH_PLAYLISTS}`,
-      {
-        params: { query },
-        headers: {
-          "x-game-id": gameId,
-          "x-player-id": playerId,
-        },
-      }
-  );
-
+async function searchPlaylists(gameId: RoomId, query: string): Promise<EventResponse<{ playlists: Playlist[]}>> {
+  const response = await api.get(apiPaths.searchPlaylists(gameId), { params: { query } });
   return response.data;
 }

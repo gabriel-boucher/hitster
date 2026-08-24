@@ -1,22 +1,18 @@
 import { useCallback } from "react";
-import axios from "axios";
-import {HTTP_SERVER_URL} from "../../../config/url.ts";
-import {useConnectionStateProvider} from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
+import { useConnectionStateProvider } from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
+import { RoomId } from "../../../type/room/RoomState.ts";
+import { apiPaths } from "../../../config/apiPaths.ts";
+import { api } from "../apiRequest.ts";
+import { MusicHttpEvents } from "../music/musicHttpEvents.ts";
 
 export default function useInMemoryAuth() {
-    const [{ roomId, playerId }] = useConnectionStateProvider();
+    const [{ roomId }] = useConnectionStateProvider();
 
     return useCallback(async () => {
-       await inMemoryAuth(roomId, playerId);
-    }, [roomId, playerId]);
+       await inMemoryAuth(roomId);
+    }, [roomId]);
 }
 
-async function inMemoryAuth(gameId: string, playerId: string): Promise<void> {
-    await axios.post(
-        `${HTTP_SERVER_URL}/api/auth/in-memory`,
-        {
-            gameId,
-            playerId,
-        }
-    );
+async function inMemoryAuth(gameId: RoomId): Promise<void> {
+    await api.post(apiPaths.musicAuth(gameId, MusicHttpEvents.IN_MEMORY_AUTH), { accessCode: "" });
 }

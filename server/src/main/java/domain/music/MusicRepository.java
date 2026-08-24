@@ -1,7 +1,7 @@
 package domain.music;
 
 import domain.game.GameId;
-import domain.game.item.card.Card;
+import domain.deck.item.card.Card;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package interfaces.mapper;
 
-import domain.player.PlayerDeck;
+import domain.deck.Deck;
 import interfaces.dto.PlayerDeckDto;
 
 public class PlayerDeckMapper {
@@ -12,7 +12,7 @@ public class PlayerDeckMapper {
         this.tokenMapper = tokenMapper;
     }
 
-    public PlayerDeckDto toDto(PlayerDeck deck) {
+    public PlayerDeckDto toDto(Deck deck) {
         return new PlayerDeckDto(
                 deck.getCards().stream().map(cardMapper::toDto).toList(),
                 deck.getTokens().stream().map(tokenMapper::toDto).toList()

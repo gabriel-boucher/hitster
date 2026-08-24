@@ -1,6 +1,6 @@
 package domain.player;
 
-import domain.game.item.card.Card;
+import domain.deck.item.card.Card;
 import domain.exception.PlayerNotFoundException;
 
 import java.util.List;
@@ -9,16 +9,13 @@ public class Players {
     private final List<Player> players;
     private PlayerId currentPlayerId;
 
-    public Players(List<Player> players) {
+    public Players(List<Player> players, PlayerId currentPlayerId) {
         this.players = players;
+        this.currentPlayerId = currentPlayerId;
     }
 
     public List<Player> getPlayers() {
         return players;
-    }
-
-    public PlayerId getCurrentPlayerId() {
-        return currentPlayerId;
     }
 
     public Player getCurrentPlayer() {

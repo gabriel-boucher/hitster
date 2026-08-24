@@ -1,16 +1,18 @@
 import { useCallback } from "react";
-import axios from "axios";
-import { HTTP_SERVER_URL } from "../../../config/url.ts";
 import { useConnectionStateProvider } from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
 import { SPOTIFY_AUTH_URL } from "../../../config/spotifyAuth.ts";
 import { EventResponse } from "../../../type/EventResponse.ts";
+import { RoomId } from "../../../type/room/RoomState.ts";
+import { apiPaths } from "../../../config/apiPaths.ts";
+import { api } from "../apiRequest.ts";
+import { MusicHttpEvents } from "../music/musicHttpEvents.ts";
 
 export default function useSpotifyAuth() {
-    const [{ roomId, playerId }] = useConnectionStateProvider();
+    const [{ roomId }] = useConnectionStateProvider();
 
     return useCallback(async () => {
         // If already authenticated, send empty string and call success
-        const response = await spotifyAuth(roomId, playerId, "");
+        const response = await spotifyAuth(roomId, "");
         if (response.success) return;
 
         const width = 500;
@@ -34,22 +36,15 @@ export default function useSpotifyAuth() {
                 popup.close();
             }
             if (event.data.success && event.data.code) {
-                await spotifyAuth(roomId, playerId, event.data.code);
+                await spotifyAuth(roomId, event.data.code);
             }
         };
 
         window.addEventListener('message', messageHandler);
-    }, [roomId, playerId]);
+    }, [roomId]);
 }
 
-async function spotifyAuth(gameId: string, playerId: string, spotifyAccessCode: string): Promise<EventResponse<undefined>> {
-    const response = await axios.post(
-        `${HTTP_SERVER_URL}/api/auth/spotify`,
-        {
-            gameId,
-            playerId,
-            spotifyAccessCode,
-        }
-    );
+async function spotifyAuth(gameId: RoomId, accessCode: string): Promise<EventResponse<string>> {
+    const response = await api.post(apiPaths.musicAuth(gameId, MusicHttpEvents.SPOTIFY_AUTH), { accessCode });
     return response.data;
 }

@@ -1,6 +1,6 @@
 package context;
 
-import application.AuthAppService;
+import application.MusicAuthAppService;
 import application.RoomAppService;
 import application.GameAppService;
 import application.MusicAppService;
@@ -18,69 +18,88 @@ import domain.player.PlayerValidator;
 import domain.room.RoomFactory;
 import domain.room.RoomRepository;
 import domain.room.RoomValidator;
-import infrastructure.connection.InMemoryConnectionRepository;
-import infrastructure.game.InMemoryGameRepository;
-import infrastructure.music.MusicRepositoryFactory;
-import infrastructure.music.repository.InMemoryMusicRepository;
-import infrastructure.musicAuth.spotify.auth.SpotifyAccessTokenMapper;
-import infrastructure.musicAuth.spotify.auth.SpotifyAuthRepository;
-import infrastructure.music.mapper.getPlaylistItems.GetPlaylistItemsSpotifyMapper;
-import infrastructure.music.mapper.searchPlaylists.SearchPlaylistsSpotifyMapper;
-import infrastructure.music.repository.SpotifyMusicRepository;
-import infrastructure.musicAuth.spotify.apiToken.InMemorySpotifyAccessTokenRepository;
-import infrastructure.musicAuth.spotify.apiToken.SpotifyAccessTokenRepository;
-import infrastructure.room.InMemoryRoomRepository;
-import interfaces.mapper.*;
-import interfaces.http.auth.AuthResource;
-import interfaces.http.auth.inMemoryAuth.AuthInMemoryHandler;
-import interfaces.http.auth.spotifyAuth.AuthSpotifyHandler;
+import infrastructure.persistence.dao.*;
+import infrastructure.persistence.inMemory.connection.InMemoryConnectionRepository;
+import infrastructure.persistence.inMemory.deck.dao.CardInMemoryDao;
+import infrastructure.persistence.inMemory.deck.dao.CurrentItemsInMemoryDao;
+import infrastructure.persistence.inMemory.deck.dao.TokenInMemoryDao;
+import infrastructure.persistence.inMemory.game.InMemoryGameRepository;
+import infrastructure.persistence.inMemory.game.dao.GameInMemoryDao;
+import infrastructure.persistence.inMemory.game.dao.GameStatusInMemoryDao;
+import infrastructure.persistence.inMemory.music.MusicRepositoryFactory;
+import infrastructure.persistence.inMemory.music.repository.InMemoryMusicRepository;
+import infrastructure.persistence.inMemory.musicAuth.spotify.auth.SpotifyAccessTokenMapper;
+import infrastructure.persistence.inMemory.musicAuth.spotify.auth.SpotifyAuthRepository;
+import infrastructure.persistence.inMemory.music.mapper.getPlaylistItems.GetPlaylistItemsSpotifyMapper;
+import infrastructure.persistence.inMemory.music.mapper.searchPlaylists.SearchPlaylistsSpotifyMapper;
+import infrastructure.persistence.inMemory.music.repository.SpotifyMusicRepository;
+import infrastructure.persistence.inMemory.musicAuth.spotify.apiToken.InMemorySpotifyAccessTokenRepository;
+import infrastructure.persistence.inMemory.musicAuth.spotify.apiToken.SpotifyAccessTokenRepository;
+import infrastructure.persistence.inMemory.player.dao.PlayerInMemoryDao;
+import infrastructure.persistence.inMemory.room.InMemoryRoomRepository;
+import infrastructure.persistence.inMemory.room.dao.PlaylistInMemoryDao;
+import infrastructure.persistence.inMemory.room.dao.RoomInMemoryDao;
+import infrastructure.persistence.mapper.*;
+import interfaces.http.deckMovement.DeckMovementResource;
+import interfaces.http.deckMovement.cardMovement.CardMovementHandler;
+import interfaces.http.deckMovement.tokenMovement.TokenMovementHandler;
 import interfaces.http.music.MusicResource;
-import interfaces.http.auth.inMemoryAuth.AuthInMemoryMapper;
-import interfaces.http.auth.spotifyAuth.AuthSpotifyMapper;
+import interfaces.http.music.playlistProvider.PlaylistProviderHandler;
+import interfaces.http.player.PlayerResource;
+import interfaces.http.playlist.PlaylistResource;
+import interfaces.mapper.*;
+import interfaces.http.music.playlistProvider.inMemoryAuth.AuthInMemoryHandler;
+import interfaces.http.music.playlistProvider.spotifyAuth.AuthSpotifyHandler;
+import interfaces.http.music.playlistProvider.inMemoryAuth.AuthInMemoryMapper;
+import interfaces.http.music.playlistProvider.spotifyAuth.AuthSpotifyMapper;
 import interfaces.http.music.searchPlaylists.SearchPlaylistsHandler;
 import interfaces.socket.connection.ConnectionResource;
-import interfaces.http.game.addCurrentCard.AddCurrentCardHandler;
-import interfaces.http.game.addCurrentCard.AddCurrentCardMapper;
-import interfaces.http.game.addToken.AddTokenHandler;
-import interfaces.http.game.addToken.AddTokenMapper;
+import interfaces.http.deckMovement.cardMovement.addCurrentCard.AddCurrentCardHandler;
+import interfaces.http.deckMovement.cardMovement.addCurrentCard.AddCurrentCardMapper;
+import interfaces.http.deckMovement.tokenMovement.addToken.AddTokenHandler;
+import interfaces.http.deckMovement.tokenMovement.addToken.AddTokenMapper;
 import interfaces.http.game.nextTurn.NextTurnHandler;
 import interfaces.http.game.nextTurn.NextTurnMapper;
-import interfaces.http.game.removeCurrentCard.RemoveCurrentCardHandler;
-import interfaces.http.game.removeCurrentCard.RemoveCurrentCardMapper;
-import interfaces.http.game.removeToken.RemoveTokenHandler;
-import interfaces.http.game.removeToken.RemoveTokenMapper;
-import interfaces.http.game.moveCurrentCard.MoveCurrentCardHandler;
-import interfaces.http.game.moveCurrentCard.MoveCurrentCardMapper;
-import interfaces.http.game.returnCurrentCard.ReturnCurrentCardHandler;
-import interfaces.http.game.returnCurrentCard.ReturnCurrentCardMapper;
-import interfaces.http.music.addPlaylist.AddPlaylistHandler;
-import interfaces.http.room.changePlayerColor.ChangePlayerColorHandler;
-import interfaces.http.room.changePlayerName.ChangePlayerNameHandler;
+import interfaces.http.deckMovement.cardMovement.removeCurrentCard.RemoveCurrentCardHandler;
+import interfaces.http.deckMovement.cardMovement.removeCurrentCard.RemoveCurrentCardMapper;
+import interfaces.http.deckMovement.tokenMovement.removeToken.RemoveTokenHandler;
+import interfaces.http.deckMovement.tokenMovement.removeToken.RemoveTokenMapper;
+import interfaces.http.deckMovement.cardMovement.moveCurrentCard.MoveCurrentCardHandler;
+import interfaces.http.deckMovement.cardMovement.moveCurrentCard.MoveCurrentCardMapper;
+import interfaces.http.deckMovement.cardMovement.returnCurrentCard.ReturnCurrentCardHandler;
+import interfaces.http.deckMovement.cardMovement.returnCurrentCard.ReturnCurrentCardMapper;
+import interfaces.http.playlist.addPlaylist.AddPlaylistHandler;
+import interfaces.http.player.changePlayerColor.ChangePlayerColorHandler;
+import interfaces.http.player.changePlayerName.ChangePlayerNameHandler;
 import interfaces.http.room.createRoom.CreateRoomHandler;
 import interfaces.http.room.joinRoom.JoinRoomHandler;
-import interfaces.http.room.removePlayer.RemovePlayerHandler;
-import interfaces.http.music.removePlaylist.RemovePlaylistHandler;
+import interfaces.http.player.removePlayer.RemovePlayerHandler;
+import interfaces.http.playlist.removePlaylist.RemovePlaylistHandler;
 import interfaces.http.room.startGame.StartGameHandler;
 import interfaces.http.room.startGame.StartGameMapper;
 import interfaces.http.room.RoomResource;
-import interfaces.http.music.addPlaylist.AddPlaylistMapper;
-import interfaces.http.room.changePlayerColor.ChangePlayerColorMapper;
-import interfaces.http.room.changePlayerName.ChangePlayerNameMapper;
+import interfaces.http.playlist.addPlaylist.AddPlaylistMapper;
+import interfaces.http.player.changePlayerColor.ChangePlayerColorMapper;
+import interfaces.http.player.changePlayerName.ChangePlayerNameMapper;
 import interfaces.http.room.joinRoom.JoinRoomMapper;
-import interfaces.http.room.removePlayer.RemovePlayerMapper;
-import interfaces.http.music.removePlaylist.RemovePlaylistMapper;
+import interfaces.http.player.removePlayer.RemovePlayerMapper;
+import interfaces.http.playlist.removePlaylist.RemovePlaylistMapper;
 import interfaces.http.game.GameResource;
 import interfaces.mapper.PlaylistMapper;
 import interfaces.http.music.searchPlaylists.SearchPlaylistsMapper;
 import interfaces.socket.connection.disconnect.DisconnectHandler;
 import interfaces.socket.connection.disconnect.DisconnectMapper;
 
+import java.util.HashMap;
+
 public class ApplicationContext {
     private final ConnectionResource connectionResource;
-    private final AuthResource authResource;
     private final RoomResource roomResource;
     private final GameResource gameResource;
+    private final PlayerResource playerResource;
+    private final PlaylistResource playlistResource;
     private final MusicResource musicResource;
+    private final DeckMovementResource deckMovementResource;
 
     public ApplicationContext(ConnectionServer connectionServer) {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -88,7 +107,7 @@ public class ApplicationContext {
         // Connection mappers
         DisconnectMapper disconnectMapper = new DisconnectMapper();
 
-        // MusicResource mappers
+        // PlaylistResource mappers
         PlaylistMapper playlistMapper = new PlaylistMapper();
         AuthInMemoryMapper authInMemoryMapper = new AuthInMemoryMapper();
         AuthSpotifyMapper authSpotifyMapper = new AuthSpotifyMapper();
@@ -128,9 +147,28 @@ public class ApplicationContext {
         SearchPlaylistsSpotifyMapper searchPlaylistsSpotifyMapper = new SearchPlaylistsSpotifyMapper();
         GetPlaylistItemsSpotifyMapper getPlaylistItemsSpotifyMapper = new GetPlaylistItemsSpotifyMapper();
 
+        // Persistence mappers
+        CardPersistenceMapper cardPersistenceMapper = new CardPersistenceMapper();
+        TokenPersistenceMapper tokenPersistenceMapper = new TokenPersistenceMapper();
+        CurrentItemPersistenceMapper currentItemPersistenceMapper = new CurrentItemPersistenceMapper(cardPersistenceMapper, tokenPersistenceMapper);
+        PlaylistPersistenceMapper playlistPersistenceMapper = new PlaylistPersistenceMapper();
+        PlayerPersistenceMapper playerPersistenceMapper = new PlayerPersistenceMapper(cardPersistenceMapper, tokenPersistenceMapper);
+        RoomPersistenceMapper roomPersistenceMapper = new RoomPersistenceMapper(playerPersistenceMapper, playlistPersistenceMapper);
+        GamePersistenceMapper gamePersistenceMapper = new GamePersistenceMapper(playerPersistenceMapper, cardPersistenceMapper, currentItemPersistenceMapper);
+
+        // Daos
+        GameDao gameDao = new GameInMemoryDao(new HashMap<>());
+        RoomDao roomDao = new RoomInMemoryDao(new HashMap<>());
+        GameStatusDao gameStatusDao = new GameStatusInMemoryDao(new HashMap<>());
+        PlaylistDao playlistDao = new PlaylistInMemoryDao(new HashMap<>());
+        CardDao cardDao = new CardInMemoryDao(new HashMap<>());
+        TokenDao tokenDao = new TokenInMemoryDao(new HashMap<>());
+        CurrentItemsDao currentItemsDao = new CurrentItemsInMemoryDao(cardDao, tokenDao, new HashMap<>());
+        PlayerDao playerDao = new PlayerInMemoryDao(new HashMap<>(), cardDao, tokenDao);
+
         // Repositories
-        GameRepository gameRepository = new InMemoryGameRepository();
-        RoomRepository roomRepository = new InMemoryRoomRepository();
+        GameRepository gameRepository = new InMemoryGameRepository(gameDao, gameStatusDao, playerDao, cardDao, currentItemsDao, gamePersistenceMapper, playerPersistenceMapper, cardPersistenceMapper, currentItemPersistenceMapper);
+        RoomRepository roomRepository = new InMemoryRoomRepository(roomDao, gameStatusDao, playerDao, playlistDao, roomPersistenceMapper, playerPersistenceMapper, playlistPersistenceMapper);
         ConnectionRepository connectionRepository = new InMemoryConnectionRepository();
         SpotifyAccessTokenRepository spotifyAccessTokenRepository = new InMemorySpotifyAccessTokenRepository();
         SpotifyAuthRepository spotifyAuthRepository = new SpotifyAuthRepository(spotifyAccessTokenRepository, spotifyAccessTokenMapper, objectMapper);
@@ -155,7 +193,7 @@ public class ApplicationContext {
         // AppServices
         connectionServer.setup(roomStateMapper, gameStateMapper);
 
-        AuthAppService authAppService = new AuthAppService(roomRepository, spotifyAuthRepository, connectionServer);
+        MusicAuthAppService musicAuthAppService = new MusicAuthAppService(roomRepository, spotifyAuthRepository, connectionServer);
         RoomAppService roomAppService = new RoomAppService(roomRepository, gameRepository, connectionRepository, connectionServer, roomFactory, gameFactory, connectionFactory, playerFactory, musicRepositoryFactory, roomValidator);
         GameAppService gameAppService = new GameAppService(gameRepository, connectionServer);
         MusicAppService musicAppService = new MusicAppService(roomRepository, musicRepositoryFactory, musicPlayerValidator);
@@ -163,41 +201,44 @@ public class ApplicationContext {
 
         DisconnectHandler disconnectHandler = new DisconnectHandler(roomAppService, disconnectMapper);
 
-        AuthInMemoryHandler authInMemoryHandler = new AuthInMemoryHandler(authAppService, authInMemoryMapper);
-        AuthSpotifyHandler authSpotifyHandler = new AuthSpotifyHandler(authAppService, authSpotifyMapper);
-
+        AuthInMemoryHandler authInMemoryHandler = new AuthInMemoryHandler(musicAuthAppService, authInMemoryMapper);
+        AuthSpotifyHandler authSpotifyHandler = new AuthSpotifyHandler(musicAuthAppService, authSpotifyMapper);
         SearchPlaylistsHandler searchPlaylistsHandler = new SearchPlaylistsHandler(musicAppService, searchPlaylistsMapper);
+        PlaylistProviderHandler playlistProviderHandler = new PlaylistProviderHandler(authInMemoryHandler, authSpotifyHandler);
 
         CreateRoomHandler createRoomHandler = new CreateRoomHandler(roomAppService);
         JoinRoomHandler joinRoomHandler = new JoinRoomHandler(roomAppService, joinRoomMapper);
+        StartGameHandler startGameHandler = new StartGameHandler(roomAppService, startGameMapper);
+
         ChangePlayerNameHandler changePlayerNameHandler = new ChangePlayerNameHandler(roomAppService, changePlayerNameMapper);
         ChangePlayerColorHandler changePlayerColorHandler = new ChangePlayerColorHandler(roomAppService, changePlayerColorMapper);
         RemovePlayerHandler removePlayerHandler = new RemovePlayerHandler(roomAppService, removePlayerMapper);
+
         AddPlaylistHandler addPlaylistHandler = new AddPlaylistHandler(roomAppService, addPlaylistMapper);
         RemovePlaylistHandler removePlaylistHandler = new RemovePlaylistHandler(roomAppService, removePlaylistMapper);
-        StartGameHandler startGameHandler = new StartGameHandler(roomAppService, startGameMapper);
 
         NextTurnHandler nextTurnHandler = new NextTurnHandler(gameAppService, nextTurnMapper);
+
         AddCurrentCardHandler addCurrentCardHandler = new AddCurrentCardHandler(gameAppService, addCurrentCardMapper);
         RemoveCurrentCardHandler removeCurrentCardHandler = new RemoveCurrentCardHandler(gameAppService, removeCurrentCardMapper);
         ReturnCurrentCardHandler returnCurrentCardHandler = new ReturnCurrentCardHandler(gameAppService, returnCurrentCardMapper);
         MoveCurrentCardHandler moveCurrentCardHandler = new MoveCurrentCardHandler(gameAppService, moveCurrentCardMapper);
         AddTokenHandler addTokenHandler = new AddTokenHandler(gameAppService, addTokenMapper);
         RemoveTokenHandler removeTokenHandler = new RemoveTokenHandler(gameAppService, removeTokenMapper);
+        CardMovementHandler cardMovementHandler = new CardMovementHandler(addCurrentCardHandler, moveCurrentCardHandler, removeCurrentCardHandler, returnCurrentCardHandler);
+        TokenMovementHandler tokenMovementHandler = new TokenMovementHandler(addTokenHandler, removeTokenHandler);
 
         connectionResource = new ConnectionResource(disconnectHandler);
-        authResource = new AuthResource(authInMemoryHandler, authSpotifyHandler);
-        roomResource = new RoomResource(createRoomHandler, joinRoomHandler, changePlayerNameHandler, changePlayerColorHandler, removePlayerHandler, startGameHandler);
-        gameResource = new GameResource(nextTurnHandler, addCurrentCardHandler, removeCurrentCardHandler, returnCurrentCardHandler, moveCurrentCardHandler, addTokenHandler, removeTokenHandler);
-        musicResource = new MusicResource(searchPlaylistsHandler, addPlaylistHandler, removePlaylistHandler);
+        roomResource = new RoomResource(createRoomHandler, joinRoomHandler, startGameHandler);
+        gameResource = new GameResource(nextTurnHandler);
+        playerResource = new PlayerResource(changePlayerNameHandler, changePlayerColorHandler, removePlayerHandler);
+        playlistResource = new PlaylistResource(addPlaylistHandler, removePlaylistHandler);
+        musicResource = new MusicResource(searchPlaylistsHandler, playlistProviderHandler);
+        deckMovementResource = new DeckMovementResource(cardMovementHandler, tokenMovementHandler);
     }
 
     public ConnectionResource getConnectionResource() {
         return connectionResource;
-    }
-
-    public AuthResource getAuthResource() {
-        return authResource;
     }
 
     public RoomResource getRoomRessource() {
@@ -208,8 +249,20 @@ public class ApplicationContext {
         return gameResource;
     }
 
-    public MusicResource getSpotifyResource() {
-        return musicResource;
+    public PlayerResource getPlayerResource() {
+        return playerResource;
+    }
+
+    public PlaylistResource getPlaylistResource() {
+        return playlistResource;
+    }
+
+    public MusicResource getMusicResource() {
+        return  musicResource;
+    }
+
+    public DeckMovementResource getDeckMovementResource() {
+        return deckMovementResource;
     }
 }
 

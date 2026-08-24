@@ -2,7 +2,7 @@ package application;
 
 import domain.connection.ConnectionServer;
 import domain.game.*;
-import domain.game.item.token.TokenId;
+import domain.deck.item.token.TokenId;
 import domain.exception.GameNotFoundException;
 import domain.player.PlayerId;
 

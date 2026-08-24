@@ -5,6 +5,6 @@ import interfaces.exception.InvalidStateException;
 
 public class InvalidGameStatusException extends InvalidStateException {
     public InvalidGameStatusException(GameStatus gameStatus) {
-        super("Invalid game status: " + gameStatus);
+        super("Invalid game gameStatus: " + gameStatus);
     }
 }

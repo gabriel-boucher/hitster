@@ -1,9 +1,11 @@
 package domain.game.item.card;
 
-import domain.game.item.ItemStatus;
+import domain.deck.item.ItemStatus;
+import domain.deck.item.card.Card;
+import domain.deck.item.card.CardId;
 
 public class CardBuilder {
-    private CardId id = new CardId("default-id");
+    private CardId id = new CardId("default-gameId");
     private ItemStatus status = ItemStatus.BOARD;
     private String song = "default-song";
     private String artist = "default-artist";

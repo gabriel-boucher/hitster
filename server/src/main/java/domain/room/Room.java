@@ -17,7 +17,7 @@ import java.util.List;
 
 public class Room {
     private final GameId id;
-    private final GameStatus gameStatus;
+    private GameStatus gameStatus;
     private MusicPlayerType musicPlayerType;
     private final List<Player> players;
     private final List<Playlist> playlists;
@@ -25,12 +25,11 @@ public class Room {
     private final PlayerFactory playerFactory;
     private final RoomValidator validator;
 
-    public Room(GameId id, GameStatus gameStatus, List<Player> players,
-
+    public Room(GameId id, GameStatus gameStatus, MusicPlayerType musicPlayerType, List<Player> players,
                 List<Playlist> playlists, GameFactory gameFactory, PlayerFactory playerFactory, RoomValidator validator) {
         this.id = id;
         this.gameStatus = gameStatus;
-        this.musicPlayerType = MusicPlayerType.IN_MEMORY;
+        this.musicPlayerType = musicPlayerType;
         this.players = players;
         this.playlists = playlists;
         this.gameFactory = gameFactory;
@@ -40,6 +39,10 @@ public class Room {
 
     public GameId getId() {
         return id;
+    }
+
+    public GameStatus getGameStatus() {
+        return gameStatus;
     }
 
     public MusicPlayerType getMusicPlayerType() {
@@ -101,6 +104,7 @@ public class Room {
 
     public Game startGame(PlayerId playerId) {
         validator.validatePlayerCanStartGame(playerId, players, playlists, gameStatus);
+        gameStatus = GameStatus.PLAYING;
         return gameFactory.createGame(this);
     }
 }

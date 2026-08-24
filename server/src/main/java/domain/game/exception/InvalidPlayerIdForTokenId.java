@@ -1,6 +1,6 @@
 package domain.game.exception;
 
-import domain.game.item.token.TokenId;
+import domain.deck.item.token.TokenId;
 import domain.player.PlayerId;
 
 public class InvalidPlayerIdForTokenId extends RuntimeException {

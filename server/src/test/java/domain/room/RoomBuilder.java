@@ -9,8 +9,8 @@ import domain.player.PlayerFactory;
 import domain.player.PlayerValidator;
 import domain.music.Playlist;
 import domain.music.PlaylistValidator;
-import infrastructure.musicAuth.spotify.apiToken.SpotifyAccessToken;
-import infrastructure.musicAuth.spotify.apiToken.SpotifyAccessTokenId;
+import infrastructure.persistence.inMemory.musicAuth.spotify.apiToken.SpotifyAccessToken;
+import infrastructure.persistence.inMemory.musicAuth.spotify.apiToken.SpotifyAccessTokenId;
 
 import java.util.ArrayList;
 import java.util.List;

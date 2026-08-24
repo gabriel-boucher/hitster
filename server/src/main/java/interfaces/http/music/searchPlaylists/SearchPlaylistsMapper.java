@@ -14,10 +14,10 @@ public class SearchPlaylistsMapper {
         this.playlistMapper = playlistMapper;
     }
 
-    public SearchPlaylistsData toDomain(SearchPlaylistsRequest requests) {
+    public SearchPlaylistsData toDomain(String gameId, String playerId, SearchPlaylistsRequest requests) {
         return new SearchPlaylistsData(
-                GameId.fromString(requests.gameId()),
-                PlayerId.fromString(requests.playerId()),
+                GameId.fromString(gameId),
+                PlayerId.fromString(playerId),
                 requests.query()
         );
     }

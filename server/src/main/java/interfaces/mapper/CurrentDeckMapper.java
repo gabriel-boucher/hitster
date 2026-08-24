@@ -1,8 +1,8 @@
 package interfaces.mapper;
 
-import domain.game.currentDeck.CurrentDeck;
-import domain.game.item.Moveable;
-import domain.game.item.card.Card;
+import domain.deck.currentDeck.CurrentDeck;
+import domain.deck.item.Moveable;
+import domain.deck.item.card.Card;
 import interfaces.dto.MoveableDto;
 
 import java.util.List;
@@ -28,7 +28,7 @@ public class CurrentDeckMapper {
                     currentCard.getStatus(),
                     "",
                     "",
-                    currentCard.getDate(),
+                    0,
                     ""
             );
         }

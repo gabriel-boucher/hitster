@@ -1,7 +1,7 @@
 package domain.music;
 
 public class PlaylistBuilder {
-    private PlaylistId id = new PlaylistId("default-playlist-id");
+    private PlaylistId id = new PlaylistId("default-playlist-gameId");
     private String name = "Default Playlist";
     private String imageUrl = "Default Owner";
     private int totalTracks = 0;

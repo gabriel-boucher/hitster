@@ -1,8 +1,9 @@
 package domain.player;
 
-import domain.game.item.card.Card;
-import domain.game.item.token.Token;
-import domain.game.item.token.TokenId;
+import domain.deck.Deck;
+import domain.deck.item.card.Card;
+import domain.deck.item.token.Token;
+import domain.deck.item.token.TokenId;
 import domain.game.item.card.CardBuilder;
 import domain.game.item.token.TokenBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +24,7 @@ class PlayerTest {
     private final static TokenId A_TOKEN_ID = new TokenId(UUID.randomUUID());
 
     @Mock
-    private PlayerDeck playerDeck;
+    private Deck deck;
 
     private final PlayerBuilder playerBuilder = new PlayerBuilder();
     private final CardBuilder cardBuilder = new CardBuilder();
@@ -37,7 +38,7 @@ class PlayerTest {
     public void setUp() {
         player = playerBuilder
                 .withPlayerId(A_PLAYER_ID)
-                .withDeck(playerDeck)
+                .withDeck(deck)
                 .build();
         card = cardBuilder.build();
         token = tokenBuilder
@@ -52,12 +53,12 @@ class PlayerTest {
 
     @Test
     public void whenGetDeck_thenReturnDeck() {
-        assertEquals(playerDeck, player.getDeck());
+        assertEquals(deck, player.getDeck());
     }
 
     @Test
     public void whenGetTokenById_thenReturnTokenFromDeck() {
-        willReturn(token).given(playerDeck).getTokenById(A_TOKEN_ID);
+        willReturn(token).given(deck).getTokenById(A_TOKEN_ID);
 
         Token retrievedToken = player.getTokenById(A_TOKEN_ID);
 
@@ -68,13 +69,13 @@ class PlayerTest {
     public void whenAddCurrentCardToDeckAndSetInactive_thenVerifyCallToPlayerDeck() {
         player.addCurrentCardToDeckAndSetUsed(card);
 
-        verify(playerDeck).addCurrentCardAndSetUsed(card);
+        verify(deck).addCurrentCardAndSetUsed(card);
     }
 
     @Test
     public void whenAddTokenToDeck_thenVerifyCallToPlayerDeck() {
         player.addTokenToDeck(token);
 
-        verify(playerDeck).addToken(token);
+        verify(deck).addToken(token);
     }
 }

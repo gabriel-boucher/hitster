@@ -1,6 +1,8 @@
 package domain.game.item.token;
 
-import domain.game.item.ItemStatus;
+import domain.deck.item.ItemStatus;
+import domain.deck.item.token.Token;
+import domain.deck.item.token.TokenId;
 import domain.player.PlayerId;
 
 import java.util.UUID;

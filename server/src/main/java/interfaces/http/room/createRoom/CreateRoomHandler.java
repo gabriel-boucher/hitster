@@ -2,17 +2,16 @@ package interfaces.http.room.createRoom;
 
 import application.RoomAppService;
 import domain.room.Room;
-import infrastructure.musicAuth.spotify.auth.SpotifyAccessTokenException;
+import infrastructure.persistence.inMemory.musicAuth.spotify.auth.SpotifyAccessTokenException;
 import interfaces.dto.responseDto.EventResponse;
 import interfaces.dto.responseDto.exceptionDto.UnauthorizedExceptionResponse;
 import interfaces.dto.responseDto.successDto.CreatedSuccessResponse;
 import interfaces.http.RestEventHandler;
-import interfaces.http.room.createRoom.dto.CreateRoomRequest;
 import interfaces.http.room.createRoom.dto.CreateRoomResponse;
 
 import static interfaces.dto.responseDto.EventResponseStatus.*;
 
-public class CreateRoomHandler implements RestEventHandler<CreateRoomRequest> {
+public class CreateRoomHandler implements RestEventHandler {
     private final RoomAppService roomAppService;
 
     public CreateRoomHandler(RoomAppService roomAppService) {
@@ -20,7 +19,7 @@ public class CreateRoomHandler implements RestEventHandler<CreateRoomRequest> {
     }
 
     @Override
-    public EventResponse handleEvent(CreateRoomRequest request) {
+    public EventResponse handleEvent(String gameId, String playerId) {
         try {
             Room room = roomAppService.createGame();
             System.out.println("Create room : GameId = " + room.getId().toString());

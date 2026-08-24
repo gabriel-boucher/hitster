@@ -1,11 +1,10 @@
 import { useCallback } from "react";
 import { EventResponse } from "../../../type/EventResponse.ts";
 import { CreateRoomResponse } from "../../../type/room/CreateRoomResponse.ts";
-import { HTTP_SERVER_URL } from "../../../config/url.ts";
-import axios from "axios";
 import { RoomId } from "../../../type/room/RoomState.ts";
-import { RoomHttpEvents } from "./roomHttpEvents.ts";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { apiPaths } from "../../../config/apiPaths.ts";
+import { api } from "../apiRequest.ts";
 
 export default function useCreateRoom() {
   const navigate = useNavigate();
@@ -20,8 +19,6 @@ export default function useCreateRoom() {
 }
 
 async function createRoom(): Promise<EventResponse<CreateRoomResponse>> {
-  const response = await axios.post(
-      `${HTTP_SERVER_URL}/api/room/${RoomHttpEvents.CREATE_ROOM}`
-  );
+  const response = await api.post(apiPaths.createRoom());
   return response.data;
 }

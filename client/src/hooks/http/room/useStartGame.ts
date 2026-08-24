@@ -1,31 +1,23 @@
-import { RoomHttpEvents } from "./roomHttpEvents.ts";
 import { useCallback } from "react";
 import { EventResponse } from "../../../type/EventResponse.ts";
 import { useConnectionStateProvider } from "../../../stateProvider/connection/ConnectionStateProvider.tsx";
-import axios from "axios";
-import { HTTP_SERVER_URL } from "../../../config/url.ts";
-import {RoomId} from "../../../type/room/RoomState.ts";
-import {PlayerId} from "../../../type/player/Player.ts";
+import { RoomId } from "../../../type/room/RoomState.ts";
+import { apiPaths } from "../../../config/apiPaths.ts";
+import { api } from "../apiRequest.ts";
 
 export default function useStartGame() {
-  const [{ roomId, playerId }] = useConnectionStateProvider();
+  const [{ roomId }] = useConnectionStateProvider();
 
   return useCallback(async (setPageLoading: (loading: boolean) => void) => {
     setPageLoading(true);
-    const response = await startGame(roomId, playerId);
+    const response = await startGame(roomId);
     setPageLoading(false);
     if (response.success) return;
     alert(response.message);
-  }, [roomId, playerId]);
+  }, [roomId]);
 }
 
-async function startGame(gameId: RoomId, playerId: PlayerId): Promise<EventResponse<undefined>> {
-  const response = await axios.post(
-      `${HTTP_SERVER_URL}/api/room/${RoomHttpEvents.START_GAME}`,
-      {
-        gameId,
-        playerId
-      }
-  );
+async function startGame(gameId: RoomId): Promise<EventResponse<string>> {
+  const response = await api.post(apiPaths.startGame(gameId));
   return response.data;
 }

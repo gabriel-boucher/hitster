@@ -1,12 +1,14 @@
 package domain.player;
 
+import domain.deck.Deck;
+
 import java.util.ArrayList;
 
 public class PlayerBuilder {
-    private PlayerId playerId = PlayerId.fromString("default-player-id");
+    private PlayerId playerId = PlayerId.fromString("default-player-gameId");
     private String name = "Default Player";
     private PlayerColor color = PlayerColor.RED;
-    private PlayerDeck deck = new PlayerDeck(new ArrayList<>(), new ArrayList<>());
+    private Deck deck = new Deck(new ArrayList<>(), new ArrayList<>());
 
     public PlayerBuilder withPlayerId(PlayerId playerId) {
         this.playerId = playerId;
@@ -23,7 +25,7 @@ public class PlayerBuilder {
         return this;
     }
 
-    public PlayerBuilder withDeck(PlayerDeck deck) {
+    public PlayerBuilder withDeck(Deck deck) {
         this.deck = deck;
         return this;
     }

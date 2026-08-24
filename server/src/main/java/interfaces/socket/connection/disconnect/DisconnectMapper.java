@@ -8,7 +8,7 @@ import interfaces.socket.connection.disconnect.dto.DisconnectRequest;
 public class DisconnectMapper {
     public DisconnectData toDomain(SocketIOClient client) {
         return new DisconnectData(
-                ConnectionId.fromString(client.getSessionId().toString())
+            ConnectionId.fromString(client.getSessionId().toString())
         );
     }
 }

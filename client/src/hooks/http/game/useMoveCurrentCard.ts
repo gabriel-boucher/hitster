@@ -11,7 +11,6 @@ export default function useMoveCurrentCard() {
 
     return useCallback(async (position: number) => {
         try {
-            console.log("move")
             await moveCurrentCard(roomId, position);
         } catch (error) {
             console.error("Failed to move current card", error);

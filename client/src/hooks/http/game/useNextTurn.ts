@@ -12,7 +12,6 @@ export default function useNextTurn() {
     const [{ currentCardStatus }] = useGameStateProvider();
 
     return useCallback(async () => {
-        console.log(currentCardStatus)
         if (currentCardStatus !== ItemStatus.ACTIVE_IN_CURRENT_DECK) return;
 
         try {

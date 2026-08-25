@@ -11,7 +11,6 @@ export default function useRemoveCurrentCard() {
 
     return useCallback(async () => {
         try {
-            console.log("remove")
             await removeCurrentCard(roomId);
         } catch (error) {
             console.error("Failed to remove current card", error);

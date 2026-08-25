@@ -11,7 +11,6 @@ export default function useReturnCurrentCard() {
 
     return useCallback(async () => {
         try {
-            console.log("return");
             await returnCurrentCard(roomId);
         } catch (error) {
             console.error("Failed to return current card", error);

@@ -19,7 +19,6 @@ export default function useGameState() {
 
     const handleGameState = (response: EventResponse<GameState>) => {
       const gameState = response.data;
-      console.log(gameState)
 
       if (response.success && gameState) {
         connectionDispatch({ type: connectionReducerCases.SET_ROOM_ID, roomId: gameState.id });

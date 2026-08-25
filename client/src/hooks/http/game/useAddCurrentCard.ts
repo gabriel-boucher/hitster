@@ -11,7 +11,6 @@ export default function useAddCurrentCard() {
 
     return useCallback(async () => {
         try {
-            console.log("add")
             await addCurrentCard(roomId);
         } catch (error) {
             console.error("Failed to add current card", error);

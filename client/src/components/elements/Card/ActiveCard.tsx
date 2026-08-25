@@ -8,6 +8,7 @@ import * as React from "react";
 import useMouseDragOverDeck from "../../../hooks/movement/useMouseDragOverDeck.ts";
 import useMouseOverDeck from "../../../hooks/movement/useMouseOverDeck.ts";
 import useMouseDownCard from "../../../hooks/movement/useMouseDownCard.ts";
+import {Position} from "../../../hooks/movement/getNewIndex.ts";
 
 export default function ActiveCard({ card }: { card: Card }) {
   const [{ currentCardId }] = useGameStateProvider();
@@ -23,22 +24,28 @@ export default function ActiveCard({ card }: { card: Card }) {
   const mouseOverDeck = useMouseOverDeck()
   const mouseDownCard = useMouseDownCard()
 
-  const handleMouseEvents = useMemo(
+  const mouseDownEvents = useMemo(
     () => ({
-      onMouseOver: (e: React.MouseEvent<HTMLDivElement>) =>
-        isDragging
-          ? mouseDragOverDeck(e, card)
-          : mouseOverDeck(e, card),
       onMouseDown: (e: React.MouseEvent<HTMLDivElement>) =>
           mouseDownCard(e, card),
-      onTouchMove: (e: React.TouchEvent<HTMLDivElement>) =>
-        isDragging
-          ? mouseDragOverDeck(e, card)
-          : mouseOverDeck(e, card),
       onTouchStart: (e: React.TouchEvent<HTMLDivElement>) =>
           mouseDownCard(e, card),
     }),
-    [card, isDragging, mouseDragOverDeck, mouseOverDeck, mouseDownCard]
+    [card, mouseDownCard]
+  );
+
+  const mouseOverEvents = useMemo(
+    () => (mousePosition: Position) => ({
+      onMouseOver: (e: React.MouseEvent<HTMLDivElement>) =>
+        isDragging
+          ? mouseDragOverDeck(e, card, mousePosition)
+          : mouseOverDeck(e, card, mousePosition),
+      onTouchMove: (e: React.TouchEvent<HTMLDivElement>) =>
+        isDragging
+          ? mouseDragOverDeck(e, card, mousePosition)
+          : mouseOverDeck(e, card, mousePosition),
+    }),
+    [card, isDragging, mouseDragOverDeck, mouseOverDeck]
   );
 
   const style = {
@@ -53,8 +60,17 @@ export default function ActiveCard({ card }: { card: Card }) {
     style.border = "none";
   }
 
+  const cursorStyle = {
+    cursor: "default",
+  };
+  if (isDragging) {
+    cursorStyle.cursor = "grabbing";
+  } else if (card.id === currentCardId) {
+    cursorStyle.cursor = "grab";
+  }
+
   return (
-    <ActiveCardComponent {...handleMouseEvents} ref={cardRef}>
+    <ActiveCardComponent {...mouseDownEvents} ref={cardRef}>
       <div className="card-container" style={style}>
          {card.id !== currentCardId && (
           <div className="details">
@@ -62,6 +78,8 @@ export default function ActiveCard({ card }: { card: Card }) {
           </div>
          )}
       </div>
+      <div className="card-hover left" {...mouseOverEvents(Position.LEFT)} style={ cursorStyle }/>
+      <div className="card-hover right" {...mouseOverEvents(Position.RIGHT)} style={ cursorStyle }/>
     </ActiveCardComponent>
   );
 }
@@ -79,23 +97,34 @@ const ActiveCardComponent = styled.div`
 
   position: relative;
   user-select: none;
-
-  &:first-child::before,
-  &:last-child::after {
-    content: "";
+    
+  .card-hover {
     position: absolute;
-    top: 0;
     height: 100%;
-    width: 100vw;
-    user-select: none;
+    width: 50%;
+    z-index: 1;
   }
-
-  &::before {
-    right: 99%;
+    
+  .card-hover.left {
+    left: 0;
   }
-
-  &::after {
-    left: 99%;
+    
+  .card-hover.right {
+    right: 0;
+  }
+    
+  &:last-child {
+    .card-hover.right {
+        right: calc(-50vw + 50%);
+        width: 50vw;
+    }
+  }
+    
+  &:first-child {
+    .card-hover.left {
+        left: calc(-50vw + 50%);
+        width: 50vw;
+    }
   }
 
   .card-container {
@@ -115,7 +144,6 @@ const ActiveCardComponent = styled.div`
 
     font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
     transition: width 0.3s ease;
-    cursor: pointer;
   }
 
   .details {
@@ -137,7 +165,7 @@ const ActiveCardComponent = styled.div`
 
     background-color: hsla(0, 0%, 100%, 90%);
     border-radius: inherit;
-    padding: 0px 4px 4px 4px;
+    padding: 0 4px 4px 4px;
 
     user-select: none;
 

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import * as React from "react";
 import {useMemo} from "react";
 import {Token} from "../../../type/item/Token.ts";
 import {ItemStatus} from "../../../type/item/ItemStatus.ts";
@@ -7,7 +8,7 @@ import {useMovementStateProvider} from "../../../stateProvider/movement/Movement
 import useMouseDragOverDeck from "../../../hooks/movement/useMouseDragOverDeck.ts";
 import useMouseOverDeck from "../../../hooks/movement/useMouseOverDeck.ts";
 import useMouseClickToken from "../../../hooks/movement/useMouseClickToken.ts";
-import * as React from "react";
+import {Position} from "../../../hooks/movement/getNewIndex.ts";
 
 export default function ActiveToken({ token } : { token: Token }) {
   const [{ players }] = useRoomStateProvider();
@@ -17,23 +18,25 @@ export default function ActiveToken({ token } : { token: Token }) {
   const mouseOverDeck = useMouseOverDeck()
   const mouseClickToken = useMouseClickToken()
 
-  const handleMouseEvents = useMemo(
+  const mouseClickEvents = useMemo(
     () => ({
       onClick: () => mouseClickToken(token),
+    }),
+    [token, mouseClickToken]
+  );
+
+  const mouseOverEvents = useMemo(
+    () => (mousePosition: Position) => ({
       onMouseOver: (e: React.MouseEvent<HTMLDivElement>) =>
         isDragging
-          ? mouseDragOverDeck(e, token)
-          : mouseOverDeck(e, token),
-      onTouchStart : (e: React.TouchEvent<HTMLDivElement>) =>
+          ? mouseDragOverDeck(e, token, mousePosition)
+          : mouseOverDeck(e, token, mousePosition),
+      onTouchMove: (e: React.TouchEvent<HTMLDivElement>) =>
         isDragging
-          ? mouseDragOverDeck(e, token)
-          : mouseOverDeck(e, token),
-      onTouchMove : (e: React.TouchEvent<HTMLDivElement>) =>
-        isDragging
-          ? mouseDragOverDeck(e, token)
-          : mouseOverDeck(e, token),
+          ? mouseDragOverDeck(e, token, mousePosition)
+          : mouseOverDeck(e, token, mousePosition),
     }),
-    [token, isDragging, mouseDragOverDeck, mouseOverDeck, mouseClickToken]
+    [token, isDragging, mouseDragOverDeck, mouseOverDeck]
   );
 
   const style = {
@@ -42,7 +45,7 @@ export default function ActiveToken({ token } : { token: Token }) {
   };
 
   return (
-    <ActiveTokenComponent {...handleMouseEvents}>
+    <ActiveTokenComponent {...mouseClickEvents}>
       <div className="token-container" style={style}>
         <div className="details">
           <div className="player-name">
@@ -50,6 +53,8 @@ export default function ActiveToken({ token } : { token: Token }) {
           </div>
         </div>
       </div>
+      {isDragging && (<div className="token-hover left" {...mouseOverEvents(Position.LEFT)}/>)}
+      {isDragging && (<div className="token-hover right" {...mouseOverEvents(Position.RIGHT)}/>)}
     </ActiveTokenComponent>
   );
 }
@@ -69,24 +74,35 @@ const ActiveTokenComponent = styled.div`
   position: relative;
   user-select: none;
 
-  &:first-child::before,
-  &:last-child::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    height: 100%;
-    width: 100vw;
-    user-select: none;
-  }
+    .token-hover {
+        position: absolute;
+        height: 100%;
+        width: 50%;
+        z-index: 1;
+    }
 
-  &::before {
-    right: 99%;
-  }
+    .token-hover.left {
+        left: 0;
+    }
 
-  &::after {
-    left: 99%;
-  }
+    .token-hover.right {
+        right: 0;
+    }
 
+    &:last-child {
+        .token-hover.right {
+            right: calc(-50vw + 50%);
+            width: 50vw;
+        }
+    }
+
+    &:first-child {
+        .token-hover.left {
+            left: calc(-50vw + 50%);
+            width: 50vw;
+        }
+    }
+    
   .token-container {
     aspect-ratio: 1/1;
     width: 60%;
@@ -102,7 +118,6 @@ const ActiveTokenComponent = styled.div`
     background-image: url("src/assets/hitster_logo_square.webp");
     background-repeat: no-repeat;
     background-size: cover;
-
     cursor: pointer;
   }
 
@@ -126,7 +141,7 @@ const ActiveTokenComponent = styled.div`
     font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
 
     background-color: hsla(0, 0%, 100%, 90%);
-    padding: 0px 4px 4px 4px;
+    padding: 0 4px 4px 4px;
 
     user-select: none;
 

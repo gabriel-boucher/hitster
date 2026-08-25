@@ -1,5 +1,4 @@
 import {useConnectionStateProvider} from "../../stateProvider/connection/ConnectionStateProvider.tsx";
-import * as React from "react";
 import {useCallback} from "react";
 import {ItemStatus} from "../../type/item/ItemStatus.ts";
 import {gameReducerCases} from "../../stateProvider/game/GameReducerCases.ts";
@@ -7,27 +6,27 @@ import {useGameStateProvider} from "../../stateProvider/game/GameStateProvider.t
 import {Card, CardId} from "../../type/item/Card.ts";
 import {Token} from "../../type/item/Token.ts";
 import {useMovementStateProvider} from "../../stateProvider/movement/MovementStateProvider.tsx";
-import getNewIndex from "./getNewIndex.ts";
+import getNewIndex, {Position} from "./getNewIndex.ts";
 import useMoveCurrentCard from "../http/game/useMoveCurrentCard.ts";
-import useThrottle from "../useThrottle.ts";
+import * as React from "react";
 
 export default function useMouseDragOverDeck() {
     const [{ playerId }] = useConnectionStateProvider();
     const [{ items, currentPlayerId, currentCardId, currentCardStatus }, dispatchGameState] = useGameStateProvider();
     const [{ isDragging }] = useMovementStateProvider();
 
-    const canRun = useThrottle(50);
     const moveCurrentCard = useMoveCurrentCard();
 
-    return useCallback((e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>, over: Card | Token) => {
-        if (!canRun()) return;
+    return useCallback((e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>, over: Card | Token, mousePosition: Position) => {
         if (!isDragging) return;
         if (playerId !== currentPlayerId) return;
         if (over.id === currentCardId) return;
+        e.stopPropagation();
+        e.preventDefault();
 
         const currentCard = createCurrentCard(currentCardId, currentCardStatus);
 
-        const newIndex = getNewIndex(e, items, over, currentCardStatus);
+        const newIndex = getNewIndex(e, items, over, currentCardStatus, mousePosition);
         const newItems = getNewItems(items, currentCard, newIndex);
         dispatchGameState({ type: gameReducerCases.SET_ITEMS, items: newItems });
 
@@ -43,7 +42,6 @@ export default function useMouseDragOverDeck() {
         currentPlayerId,
         items,
         dispatchGameState,
-        canRun,
         moveCurrentCard
     ]);
 }

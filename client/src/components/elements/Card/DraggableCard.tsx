@@ -32,7 +32,5 @@ const Card = styled.div`
 
   cursor: grabbing;
   user-select: none;
-  pointer-events: none;
-  z-index: 1000;
   will-change: transform;
 `;

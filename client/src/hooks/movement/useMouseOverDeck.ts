@@ -4,35 +4,33 @@ import {useGameStateProvider} from "../../stateProvider/game/GameStateProvider.t
 import {Card} from "../../type/item/Card.ts";
 import {gameReducerCases} from "../../stateProvider/game/GameReducerCases.ts";
 import {ItemStatus} from "../../type/item/ItemStatus.ts";
-import * as React from "react";
 import {Token} from "../../type/item/Token.ts";
 import {roomReducerCases} from "../../stateProvider/room/RoomReducerCases.ts";
 import {useRoomStateProvider} from "../../stateProvider/room/RoomStateProvider.tsx";
 import {Player, PlayerId} from "../../type/player/Player.ts";
-import getNewIndex from "./getNewIndex.ts";
-import useThrottle from "../useThrottle.ts";
+import getNewIndex, {Position} from "./getNewIndex.ts";
+import * as React from "react";
 
 export default function useMouseOverDeck() {
     const [{ playerId }] = useConnectionStateProvider();
     const [{ players }, dispatchRoomState] = useRoomStateProvider();
     const [{ items, currentPlayerId }, dispatchGameState] = useGameStateProvider();
 
-    const canRun = useThrottle(50);
-
-    return useCallback((e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>, over: Card | Token) => {
-        if (!canRun()) return;
+    return useCallback((e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>, over: Card | Token, mousePosition: Position) => {
         if (playerId === currentPlayerId) return;
         const currentToken = getCurrentToken(players, playerId as PlayerId);
         if (!currentToken) return;
         if (over.id === currentToken.id) return
+        e.stopPropagation();
+        e.preventDefault();
 
-        const newIndex = getNewIndex(e, items, over, currentToken.status);
+        const newIndex = getNewIndex(e, items, over, currentToken.status, mousePosition);
         const { newItems, newPlayers } = getNewItems(items, currentToken, newIndex, players, playerId);
         dispatchGameState({ type: gameReducerCases.SET_ITEMS, items: newItems });
 
         dispatchRoomState({ type: roomReducerCases.SET_PLAYERS, players: newPlayers });
     },
-    [players, items, currentPlayerId, playerId, dispatchGameState, dispatchRoomState, canRun]);
+    [players, items, currentPlayerId, playerId, dispatchGameState, dispatchRoomState]);
 }
 
 function getCurrentToken(players: Player[], playerId: PlayerId): Token | undefined {

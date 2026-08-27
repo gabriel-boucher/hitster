@@ -15,5 +15,5 @@ export default function useChangePlayerColor() {
 }
 
 async function changePlayerColor(gameId: RoomId, newColor: string): Promise<void> {
-  await api.patch(apiPaths.changePlayerColor(gameId), { newColor });
+  await api.patch(apiPaths.changePlayerColor(gameId, newColor));
 }

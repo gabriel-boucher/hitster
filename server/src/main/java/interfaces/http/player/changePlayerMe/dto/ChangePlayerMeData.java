@@ -1,12 +1,13 @@
-package interfaces.http.player.changePlayerColor.dto;
+package interfaces.http.player.changePlayerMe.dto;
 
 import domain.game.GameId;
 import domain.player.PlayerColor;
 import domain.player.PlayerId;
 
-public record ChangePlayerColorData(
+public record ChangePlayerMeData(
         GameId gameId,
         PlayerId playerId,
+        String newName,
         PlayerColor newColor
 ) {
 }

@@ -6,10 +6,10 @@ export const apiPaths = {
   createRoom: () => "/api/games/new/create",
   joinRoom: (gameId: RoomId) => `/api/games/${gameId}/join`,
   startGame: (gameId: RoomId) => `/api/games/${gameId}/start`,
-  changePlayerName: (gameId: RoomId) =>
-    `/api/games/${gameId}/player/${gameId}/change-player-name`,
-  changePlayerColor: (gameId: RoomId) =>
-    `/api/games/${gameId}/player/${gameId}/change-player-color`,
+  changePlayerName: (gameId: RoomId, playerName: string) =>
+    `/api/games/${gameId}/player/me?name=${encodeURIComponent(playerName)}`,
+  changePlayerColor: (gameId: RoomId, playerColor: string) =>
+    `/api/games/${gameId}/player/me?color=${encodeURIComponent(playerColor)}`,
   removePlayer: (gameId: RoomId, playerToRemoveId: PlayerId) =>
     `/api/games/${gameId}/player/${playerToRemoveId}`,
   nextTurn: (gameId: RoomId) => `/api/games/${gameId}/turn`,

@@ -15,5 +15,5 @@ export default function useChangePlayerName() {
 }
 
 async function changePlayerName(gameId: RoomId, newName: string): Promise<void> {
-  await api.patch(apiPaths.changePlayerName(gameId), { newName });
+  await api.patch(apiPaths.changePlayerName(gameId, newName));
 }

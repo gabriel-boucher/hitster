@@ -131,13 +131,15 @@ public class RoomAppService {
         connectionServer.broadcastGameState(game);
     }
 
-    public void changePlayerName(GameId gameId, PlayerId playerId, String newName) {
-        Room r = execute(gameId, room -> room.changePlayerName(playerId, newName));
-        connectionServer.broadcastRoomState(r);
-    }
-
-    public void changePlayerColor(GameId gameId, PlayerId playerId, PlayerColor newColor) {
-        Room r = execute(gameId, room -> room.changePlayerColor(playerId, newColor));
+    public void changePlayerMe(GameId gameId, PlayerId playerId, String newName, PlayerColor newColor) {
+        Room r = execute(gameId, room -> {
+            if (newName != null && !newName.isBlank()) {
+                room.changePlayerName(playerId, newName);
+            }
+            if (newColor != null) {
+                room.changePlayerColor(playerId, newColor);
+            }
+        });
         connectionServer.broadcastRoomState(r);
     }
 

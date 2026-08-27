@@ -69,8 +69,7 @@ import interfaces.http.deckMovement.cardMovement.moveCurrentCard.MoveCurrentCard
 import interfaces.http.deckMovement.cardMovement.returnCurrentCard.ReturnCurrentCardHandler;
 import interfaces.http.deckMovement.cardMovement.returnCurrentCard.ReturnCurrentCardMapper;
 import interfaces.http.playlist.addPlaylist.AddPlaylistHandler;
-import interfaces.http.player.changePlayerColor.ChangePlayerColorHandler;
-import interfaces.http.player.changePlayerName.ChangePlayerNameHandler;
+import interfaces.http.player.changePlayerMe.ChangePlayerMeHandler;
 import interfaces.http.room.createRoom.CreateRoomHandler;
 import interfaces.http.room.joinRoom.JoinRoomHandler;
 import interfaces.http.player.removePlayer.RemovePlayerHandler;
@@ -79,8 +78,7 @@ import interfaces.http.room.startGame.StartGameHandler;
 import interfaces.http.room.startGame.StartGameMapper;
 import interfaces.http.room.RoomResource;
 import interfaces.http.playlist.addPlaylist.AddPlaylistMapper;
-import interfaces.http.player.changePlayerColor.ChangePlayerColorMapper;
-import interfaces.http.player.changePlayerName.ChangePlayerNameMapper;
+import interfaces.http.player.changePlayerMe.ChangePlayerMeMapper;
 import interfaces.http.room.joinRoom.JoinRoomMapper;
 import interfaces.http.player.removePlayer.RemovePlayerMapper;
 import interfaces.http.playlist.removePlaylist.RemovePlaylistMapper;
@@ -115,8 +113,7 @@ public class ApplicationContext {
 
         // RoomResource mappers
         JoinRoomMapper joinRoomMapper = new JoinRoomMapper();
-        ChangePlayerNameMapper changePlayerNameMapper = new ChangePlayerNameMapper();
-        ChangePlayerColorMapper changePlayerColorMapper = new ChangePlayerColorMapper();
+        ChangePlayerMeMapper changePlayerMeMapper = new ChangePlayerMeMapper();
         RemovePlayerMapper removePlayerMapper = new RemovePlayerMapper();
         AddPlaylistMapper addPlaylistMapper = new AddPlaylistMapper(playlistMapper);
         RemovePlaylistMapper removePlaylistMapper = new RemovePlaylistMapper();
@@ -210,8 +207,7 @@ public class ApplicationContext {
         JoinRoomHandler joinRoomHandler = new JoinRoomHandler(roomAppService, joinRoomMapper);
         StartGameHandler startGameHandler = new StartGameHandler(roomAppService, startGameMapper);
 
-        ChangePlayerNameHandler changePlayerNameHandler = new ChangePlayerNameHandler(roomAppService, changePlayerNameMapper);
-        ChangePlayerColorHandler changePlayerColorHandler = new ChangePlayerColorHandler(roomAppService, changePlayerColorMapper);
+        ChangePlayerMeHandler changePlayerMeHandler = new ChangePlayerMeHandler(roomAppService, changePlayerMeMapper);
         RemovePlayerHandler removePlayerHandler = new RemovePlayerHandler(roomAppService, removePlayerMapper);
 
         AddPlaylistHandler addPlaylistHandler = new AddPlaylistHandler(roomAppService, addPlaylistMapper);
@@ -231,7 +227,7 @@ public class ApplicationContext {
         connectionResource = new ConnectionResource(disconnectHandler);
         roomResource = new RoomResource(createRoomHandler, joinRoomHandler, startGameHandler);
         gameResource = new GameResource(nextTurnHandler);
-        playerResource = new PlayerResource(changePlayerNameHandler, changePlayerColorHandler, removePlayerHandler);
+        playerResource = new PlayerResource(changePlayerMeHandler, removePlayerHandler);
         playlistResource = new PlaylistResource(addPlaylistHandler, removePlaylistHandler);
         musicResource = new MusicResource(searchPlaylistsHandler, playlistProviderHandler);
         deckMovementResource = new DeckMovementResource(cardMovementHandler, tokenMovementHandler);

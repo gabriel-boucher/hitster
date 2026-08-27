@@ -52,4 +52,22 @@ public class Deck {
         cards.add(currentCard);
         currentCard.setStatus(ItemStatus.USED);
     }
+
+    public void setTokensForNextTurn() {
+        for (Token token : tokens) {
+            if (token.getStatus() == ItemStatus.ACTIVE_IN_CURRENT_DECK) {
+                token.setStatus(ItemStatus.USED);
+            } else if (token.getStatus() != ItemStatus.UNUSED && token.getStatus() != ItemStatus.USED) {
+                token.setStatus(ItemStatus.UNUSED);
+            }
+        }
+    }
+
+    public void setTokensForCancelTurn() {
+        for (Token token : tokens) {
+            if (token.getStatus() != ItemStatus.USED) {
+                token.setStatus(ItemStatus.UNUSED);
+            }
+        }
+    }
 }

@@ -67,7 +67,7 @@ class PlayerTest {
 
     @Test
     public void whenAddCurrentCardToDeckAndSetInactive_thenVerifyCallToPlayerDeck() {
-        player.addCurrentCardToDeckAndSetUsed(card);
+        player.addCardToDeckAndSetUsed(card);
 
         verify(deck).addCurrentCardAndSetUsed(card);
     }

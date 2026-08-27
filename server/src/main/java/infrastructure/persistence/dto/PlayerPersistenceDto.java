@@ -7,6 +7,7 @@ public record PlayerPersistenceDto(
         String name,
         String color,
         List<CardPersistenceDto> cards,
-        List<TokenPersistenceDto> tokens
+        List<TokenPersistenceDto> tokens,
+        boolean isPlaying
 ) {
 }

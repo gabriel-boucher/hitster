@@ -2,6 +2,7 @@ package interfaces.mapper;
 
 import domain.game.Game;
 import domain.deck.item.card.Card;
+import domain.player.Player;
 import interfaces.http.game.GameStateResponse;
 
 public class GameStateMapper {
@@ -18,7 +19,7 @@ public class GameStateMapper {
         return new GameStateResponse(
                 game.getId().toString(),
                 game.getStatus().toString(),
-                game.getPlayers().stream().map(playerMapper::toDto).toList(),
+                game.getPlayers().stream().filter(Player::isPlaying).map(playerMapper::toDto).toList(),
                 currentDeckMapper.toDto(game.getCurrentDeck(), currentCard),
                 currentCard.getId().toString(),
                 currentCard.getStatus().toString(),

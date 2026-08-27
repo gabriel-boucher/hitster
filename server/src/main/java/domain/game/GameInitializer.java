@@ -25,11 +25,16 @@ public class GameInitializer {
     }
 
     private void giveStartingCards(Stack stack, Player player) {
-        Card card = stack.removeCurrentCard();
-        player.addCurrentCardToDeckAndSetUsed(card);
+        Card card = stack.removeRandomCard();
+        player.addCardToDeckAndSetUsed(card);
     }
 
-    private void giveStartingTokens(Player player) {
+    public void giveStartingCardsExceptCurrent(Stack stack, Player player) {
+        Card card = stack.removeRandomCardExceptCurrent();
+        player.addCardToDeckAndSetUsed(card);
+    }
+
+    public void giveStartingTokens(Player player) {
         for (int i = 0; i < 2; i++) {
             player.addTokenToDeck(new Token(
                     TokenId.create(),

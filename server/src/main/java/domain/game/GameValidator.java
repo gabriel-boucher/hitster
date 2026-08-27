@@ -11,6 +11,10 @@ public class GameValidator {
         validateGameStatus(currentStatus, GameStatus.PLAYING);
     }
 
+    public void validateCanCancelTurn(GameStatus currentStatus) {
+        validateGameStatus(currentStatus, GameStatus.PLAYING);
+    }
+
     public void validateCanAddCurrentCardToCurrentDeck(Player requestingPlayer, Player currentPlayer, GameStatus currentStatus) {
         validatePlayerTurn(requestingPlayer, currentPlayer);
         validateGameStatus(currentStatus, GameStatus.PLAYING);

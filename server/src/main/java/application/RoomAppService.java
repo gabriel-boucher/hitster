@@ -3,10 +3,7 @@ package application;
 import domain.connection.*;
 import domain.exception.ConnectionNotFoundException;
 import domain.exception.GameNotFoundException;
-import domain.game.Game;
-import domain.game.GameFactory;
-import domain.game.GameId;
-import domain.game.GameRepository;
+import domain.game.*;
 import domain.deck.item.card.Card;
 import domain.player.PlayerColor;
 import domain.player.PlayerFactory;
@@ -51,15 +48,28 @@ public class RoomAppService {
 
     public PlayerId joinGame(ConnectionId connectionId, GameId gameId, PlayerId playerId) {
         Connection connection = connectionFactory.create(connectionId, playerId, gameId);
+        List<Connection> connections = connectionRepository.getConnectionsByPlayerIdAndGameId(connection.getPlayerId(), connection.getGameId());
         Room room = roomRepository.getRoomById(gameId)
                 .orElseThrow(() -> new GameNotFoundException(gameId));
 
-        room.joinRoom(playerId);
+        if (connections.isEmpty()) {
+            room.addPlayer(playerId);
+        }
         connectionServer.joinRoom(connection);
-
-        roomRepository.saveRoom(room);
         connectionRepository.addConnection(connection);
+        roomRepository.saveRoom(room);
         connectionServer.broadcastRoomState(room);
+
+        if (room.getGameStatus() == GameStatus.PLAYING) {
+            Game game = gameRepository.getGameById(gameId)
+                    .orElseThrow(() -> new GameNotFoundException(gameId));
+
+            if (connections.isEmpty()) {
+                game.addPlayer(playerId);
+            }
+            gameRepository.saveGame(game);
+            connectionServer.broadcastGameState(game);
+        }
 
         return connection.getPlayerId();
     }
@@ -74,10 +84,37 @@ public class RoomAppService {
         if (connections.size() == 1) {
             room.removePlayer(connection.getPlayerId());
         }
-
-        roomRepository.saveRoom(room);
         connectionRepository.removeConnection(connection);
+        roomRepository.saveRoom(room);
         connectionServer.broadcastRoomState(room);
+
+        if (room.getGameStatus() == GameStatus.PLAYING) {
+            Game game = gameRepository.getGameById(connection.getGameId())
+                    .orElseThrow(() -> new GameNotFoundException(connection.getGameId()));
+            game.removePlayer(connection.getPlayerId());
+            gameRepository.saveGame(game);
+            connectionServer.broadcastGameState(game);
+        }
+    }
+
+    public void kickPlayer(GameId gameId, PlayerId playerId, PlayerId playerToRemoveId) {
+        List<Connection> connections = connectionRepository.getConnectionsByPlayerIdAndGameId(playerToRemoveId, gameId);
+        Room room = roomRepository.getRoomById(gameId)
+                .orElseThrow(() -> new GameNotFoundException(gameId));
+
+        room.kickPlayer(playerId, playerToRemoveId);
+        connections.forEach(connectionServer::leaveRoom);
+        connections.forEach(connectionRepository::removeConnection);
+        roomRepository.saveRoom(room);
+        connectionServer.broadcastRoomState(room);
+
+        if (room.getGameStatus() == GameStatus.PLAYING) {
+            Game game = gameRepository.getGameById(gameId)
+                    .orElseThrow(() -> new GameNotFoundException(gameId));
+            game.removePlayer(playerToRemoveId);
+            gameRepository.saveGame(game);
+            connectionServer.broadcastGameState(game);
+        }
     }
 
     public void startGame(GameId gameId, PlayerId playerId) {
@@ -92,19 +129,6 @@ public class RoomAppService {
         roomRepository.saveRoom(room);
         gameRepository.saveGame(game);
         connectionServer.broadcastGameState(game);
-    }
-
-    public void kickPlayer(GameId gameId, PlayerId playerId, PlayerId playerToRemoveId) {
-        List<Connection> connections = connectionRepository.getConnectionsByPlayerIdAndGameId(playerToRemoveId, gameId);
-        Room room = roomRepository.getRoomById(gameId)
-                .orElseThrow(() -> new GameNotFoundException(gameId));
-
-        room.kickPlayer(playerId, playerToRemoveId);
-        connections.forEach(connectionServer::leaveRoom);
-
-        roomRepository.saveRoom(room);
-        connections.forEach(connectionRepository::removeConnection);
-        connectionServer.broadcastRoomState(room);
     }
 
     public void changePlayerName(GameId gameId, PlayerId playerId, String newName) {

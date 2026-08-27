@@ -14,7 +14,7 @@ public class PlayerFactory {
             final boolean nameExists = players.stream()
                     .anyMatch(player -> player.getName().equals(playerName));
             if (!nameExists) {
-                return new Player(playerId, playerName, getAvailableColor(players), new Deck(new ArrayList<>(), new ArrayList<>()));
+                return new Player(playerId, playerName, getAvailableColor(players), new Deck(new ArrayList<>(), new ArrayList<>()), true);
             }
             count++;
         }

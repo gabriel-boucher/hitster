@@ -41,4 +41,20 @@ public class Stack {
         }
         return cards.removeLast();
     }
+
+    public Card removeRandomCard() {
+        if (cards.isEmpty()) {
+            throw new InvalidPileException();
+        }
+        int randomIndex = (int) (Math.random() * cards.size());
+        return cards.remove(randomIndex);
+    }
+
+    public Card removeRandomCardExceptCurrent() {
+        if (cards.size() <= 1) {
+            throw new InvalidPileException();
+        }
+        int randomIndex = (int) (Math.random() * (cards.size() - 1));
+        return cards.remove(randomIndex);
+    }
 }

@@ -57,14 +57,31 @@ public class Room {
         return playlists;
     }
 
-    public void joinRoom(PlayerId playerId) {
-        try {
-            validator.validatePlayerCanJoin(playerId, players);
-        } catch (PlayerAlreadyInRoomException e) {
-            return;
+    public void addPlayer(PlayerId playerId) {
+        for (Player player : players) {
+            if (player.getId().equals(playerId)) {
+                return;
+            }
         }
         Player player = playerFactory.create(playerId, players);
         players.add(player);
+    }
+
+    public void removePlayer(PlayerId playerToRemoveId) {
+        validator.validateCanRemovePlayer(playerToRemoveId, players);
+        if (gameStatus.equals(GameStatus.LOBBY)) {
+            players.removeIf(player -> player.getId().equals(playerToRemoveId));
+        } else {
+            players.stream()
+                    .filter(player -> player.getId().equals(playerToRemoveId))
+                    .findFirst()
+                    .ifPresent(player -> player.setPlaying(false));
+        }
+    }
+
+    public void kickPlayer(PlayerId playerId, PlayerId playerToRemoveId) {
+        validator.validateCanKickPlayer(playerId, playerToRemoveId, players);
+        removePlayer(playerToRemoveId);
     }
 
     public void changeMusicPlayerType(PlayerId playerId, MusicPlayerType musicPlayerType) {
@@ -81,15 +98,6 @@ public class Room {
     public void changePlayerColor(PlayerId playerId, PlayerColor newColor) {
         Player player = validator.validatePlayerCanChangeColor(playerId, newColor, players, gameStatus);
         player.setPlayerColor(newColor);
-    }
-
-    public void removePlayer(PlayerId playerToRemoveId) {
-        players.removeIf(player -> player.getId().equals(playerToRemoveId));
-    }
-
-    public void kickPlayer(PlayerId playerId, PlayerId playerToRemoveId) {
-        validator.validateCanKickPlayer(playerId, playerToRemoveId, players, gameStatus);
-        removePlayer(playerToRemoveId);
     }
 
     public void addPlaylist(PlayerId playerId, Playlist playlist) {

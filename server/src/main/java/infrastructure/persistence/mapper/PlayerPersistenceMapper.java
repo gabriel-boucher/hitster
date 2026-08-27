@@ -32,7 +32,8 @@ public class PlayerPersistenceMapper {
                 new Deck(
                         playerPersistenceDto.cards().stream().map(cardMapper::toDomain).collect(Collectors.toList()),
                         playerPersistenceDto.tokens().stream().map(tokenMapper::toDomain).collect(Collectors.toList())
-                )
+                ),
+                playerPersistenceDto.isPlaying()
         );
     }
 
@@ -42,7 +43,8 @@ public class PlayerPersistenceMapper {
                 player.getName(),
                 player.getColor().name(),
                 player.getDeck().getCards().stream().map(cardMapper::toDto).collect(Collectors.toList()),
-                player.getDeck().getTokens().stream().map(tokenMapper::toDto).collect(Collectors.toList())
+                player.getDeck().getTokens().stream().map(tokenMapper::toDto).collect(Collectors.toList()),
+                player.isPlaying()
         );
     }
 }

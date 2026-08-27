@@ -41,9 +41,24 @@ public class Players {
         for (int i = 0; i < players.size(); i++) {
             if (players.get(i).getId().equals(currentPlayerId)) {
                 int nextIndex = (i + 1) % players.size(); // wrap to 0 if last
-                setCurrentPlayerId(players.get(nextIndex).getId());
-                break;
+                Player player = players.get(nextIndex);
+                if (player.isPlaying()) {
+                    setCurrentPlayerId(player.getId());
+                    return;
+                }
             }
+        }
+    }
+
+    public void setTokensForNextTurn() {
+        for (Player player : players) {
+            player.setTokensForNextTurn();
+        }
+    }
+
+    public void setTokensForCancelTurn() {
+        for (Player player : players) {
+            player.setTokensForCancelTurn();
         }
     }
 }

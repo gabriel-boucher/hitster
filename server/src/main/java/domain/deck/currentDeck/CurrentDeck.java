@@ -96,14 +96,6 @@ public class CurrentDeck {
         token.setStatus(ItemStatus.UNUSED);
     }
 
-    public void setAllTokensToUsed() {
-        for (Moveable item : currentItems) {
-            if (item instanceof Token token) {
-                token.setStatus(ItemStatus.USED);
-            }
-        }
-    }
-
     public PlayerId getCurrentCardWinner(Card currentCard, PlayerId currentPlayerId) {
         if (currentCard.getStatus() != ItemStatus.ACTIVE_IN_CURRENT_DECK) {
             throw new CardNotInCurrentDeckException();

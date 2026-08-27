@@ -30,7 +30,8 @@ public class PlayerInMemoryDao implements PlayerDao {
                 p.name(),
                 p.color(),
                 cardDao.getCardsByGameIdAndPlayerId(gameId, p.id()),
-                tokenDao.getTokensByGameIdAndPlayerId(gameId, p.id())
+                tokenDao.getTokensByGameIdAndPlayerId(gameId, p.id()),
+                p.isPlaying()
         )).collect(Collectors.toList());
     }
 
@@ -42,7 +43,8 @@ public class PlayerInMemoryDao implements PlayerDao {
             return new PlayerInMemoryDto(
                 p.id(),
                 p.name(),
-                p.color()
+                p.color(),
+                p.isPlaying()
             );
         }).collect(Collectors.toList());
 

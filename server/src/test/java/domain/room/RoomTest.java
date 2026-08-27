@@ -65,7 +65,7 @@ class RoomTest {
                 .build();
         willReturn(player).given(playerFactory).create(A_PLAYER_ID, new ArrayList<>());
 
-        room.joinRoom(A_PLAYER_ID);
+        room.addPlayer(A_PLAYER_ID);
 
         assertEquals(1, room.getPlayers().size());
     }
@@ -77,7 +77,7 @@ class RoomTest {
                 .withPlayers(new ArrayList<>())
                 .build();
 
-        room.joinRoom(A_PLAYER_ID);
+        room.addPlayer(A_PLAYER_ID);
 
         verify(playerFactory).create(A_PLAYER_ID, new ArrayList<>());
     }
@@ -90,7 +90,7 @@ class RoomTest {
 
         assertThrows(
                 PlayerAlreadyInRoomException.class,
-                () -> room.joinRoom(A_PLAYER_ID)
+                () -> room.addPlayer(A_PLAYER_ID)
         );
     }
 
@@ -103,7 +103,7 @@ class RoomTest {
 
         assertThrows(
                 InvalidGameStatusException.class,
-                () -> room.joinRoom(A_PLAYER_ID)
+                () -> room.addPlayer(A_PLAYER_ID)
         );
     }
 

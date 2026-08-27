@@ -1,6 +1,8 @@
 package domain.game;
 
+import domain.deck.Deck;
 import domain.deck.currentDeck.CurrentDeck;
+import domain.deck.item.ItemStatus;
 import domain.deck.item.card.Card;
 import domain.deck.item.token.Token;
 import domain.deck.item.token.TokenId;
@@ -58,6 +60,22 @@ public class Game {
         return stack.getCurrentCard();
     }
 
+    public void addPlayer(PlayerId playerId) {
+        Player player = players.getPlayerById(playerId);
+        if (player.isPlaying()) {
+            gameInitializer.giveStartingCardsExceptCurrent(stack, player);
+            gameInitializer.giveStartingTokens(player);
+        } else {
+            player.setPlaying(true);
+        }
+    }
+
+    public void removePlayer(PlayerId playerId) {
+        if (getCurrentPlayer().getId().equals(playerId)) {
+            cancelTurn();
+        }
+    }
+
     public void startGame(List<Card> stack) {
         this.stack.setCards(stack);
         gameInitializer.initialize(players, this.stack, currentDeck);
@@ -67,18 +85,28 @@ public class Game {
         Player player = players.getPlayerById(playerId);
         gameValidator.validateCanGoNextTurn(player, players.getCurrentPlayer(), status);
 
-        Card currentCard = stack.getCurrentCard();
+        Card currentCard = stack.removeCurrentCard();
         PlayerId newCardOwnerId = currentDeck.getCurrentCardWinner(currentCard, playerId);
-        stack.removeCurrentCard();
 
         if (newCardOwnerId != null) {
             Player newCardOwner = players.getPlayerById(newCardOwnerId);
-            newCardOwner.addCurrentCardToDeckAndSetUsed(currentCard);
+            newCardOwner.addCardToDeckAndSetUsed(currentCard);
         }
 
+        players.setTokensForNextTurn();
         players.setNextPlayer();
 
-        currentDeck.setAllTokensToUsed();
+        List<Card> currentCards = players.getCurrentPlayerCards();
+        currentDeck.setCurrentItems(currentCards);
+    }
+
+    private void cancelTurn() {
+        gameValidator.validateCanCancelTurn(status);
+
+        stack.removeCurrentCard();
+        players.setTokensForCancelTurn();
+        players.setNextPlayer();
+
         List<Card> currentCards = players.getCurrentPlayerCards();
         currentDeck.setCurrentItems(currentCards);
     }

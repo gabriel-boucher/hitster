@@ -1,4 +1,4 @@
-package infrastructure.persistence.inMemory.music.repository;
+package infrastructure.external.music.seed;
 
 import domain.game.GameId;
 import domain.deck.item.ItemStatus;
@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class InMemoryMusicRepository implements MusicRepository {
+public class SeedMusicRepository implements MusicRepository {
     private final HashMap<PlaylistId, Playlist> playlists;
     private final HashMap<PlaylistId, List<Card>> cards;
 
-    public InMemoryMusicRepository() {
+    public SeedMusicRepository() {
         this.playlists = initializePlaylists();
         this.cards = initializeCards();
     }

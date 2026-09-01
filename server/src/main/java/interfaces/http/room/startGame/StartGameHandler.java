@@ -7,7 +7,7 @@ import domain.exception.GameNotFoundException;
 import domain.room.exception.NoPlaylistSelectedException;
 import domain.room.exception.PlayerHostMustStartGameException;
 import domain.room.exception.PlayerNameNotSetException;
-import infrastructure.persistence.inMemory.music.exception.getPlaylistItems.GetPlaylistItemsSpotifyException;
+import infrastructure.external.music.spotify.exception.getPlaylistItems.GetPlaylistItemsSpotifyException;
 import interfaces.dto.responseDto.EventResponse;
 import interfaces.dto.responseDto.exceptionDto.BadRequestExceptionResponse;
 import interfaces.dto.responseDto.exceptionDto.NotFoundExceptionResponse;

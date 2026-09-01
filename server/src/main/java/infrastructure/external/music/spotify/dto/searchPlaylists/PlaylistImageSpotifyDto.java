@@ -1,9 +1,9 @@
-package infrastructure.persistence.inMemory.music.dto.getPlaylistItems;
+package infrastructure.external.music.spotify.dto.searchPlaylists;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record AlbumImageSpotifyDto(
+public record PlaylistImageSpotifyDto(
         String url
 ) {
 }

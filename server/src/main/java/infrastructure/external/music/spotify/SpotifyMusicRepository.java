@@ -1,4 +1,4 @@
-package infrastructure.persistence.inMemory.music.repository;
+package infrastructure.external.music.spotify;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import domain.game.GameId;
@@ -7,12 +7,12 @@ import domain.music.Playlist;
 import domain.music.PlaylistId;
 import domain.music.MusicRepository;
 import infrastructure.persistence.inMemory.musicAuth.spotify.apiToken.SpotifyAccessToken;
-import infrastructure.persistence.inMemory.music.dto.getPlaylistItems.GetPlaylistItemsSpotifyDto;
-import infrastructure.persistence.inMemory.music.exception.getPlaylistItems.GetPlaylistItemsSpotifyException;
-import infrastructure.persistence.inMemory.music.mapper.getPlaylistItems.GetPlaylistItemsSpotifyMapper;
-import infrastructure.persistence.inMemory.music.exception.searchPlaylists.SearchPlaylistsSpotifyException;
-import infrastructure.persistence.inMemory.music.dto.searchPlaylists.SearchPlaylistsSpotifyDto;
-import infrastructure.persistence.inMemory.music.mapper.searchPlaylists.SearchPlaylistsSpotifyMapper;
+import infrastructure.external.music.spotify.dto.getPlaylistItems.GetPlaylistItemsSpotifyDto;
+import infrastructure.external.music.spotify.exception.getPlaylistItems.GetPlaylistItemsSpotifyException;
+import infrastructure.external.music.spotify.mapper.getPlaylistItems.GetPlaylistItemsSpotifyMapper;
+import infrastructure.external.music.spotify.exception.searchPlaylists.SearchPlaylistsSpotifyException;
+import infrastructure.external.music.spotify.dto.searchPlaylists.SearchPlaylistsSpotifyDto;
+import infrastructure.external.music.spotify.mapper.searchPlaylists.SearchPlaylistsSpotifyMapper;
 import infrastructure.persistence.inMemory.musicAuth.spotify.apiToken.SpotifyAccessTokenRepository;
 
 import java.net.URI;

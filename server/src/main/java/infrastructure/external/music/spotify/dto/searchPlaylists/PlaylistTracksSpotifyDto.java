@@ -1,4 +1,4 @@
-package infrastructure.persistence.inMemory.music.dto.searchPlaylists;
+package infrastructure.external.music.spotify.dto.searchPlaylists;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

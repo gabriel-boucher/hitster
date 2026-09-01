@@ -26,13 +26,13 @@ import infrastructure.persistence.inMemory.deck.dao.TokenInMemoryDao;
 import infrastructure.persistence.inMemory.game.InMemoryGameRepository;
 import infrastructure.persistence.inMemory.game.dao.GameInMemoryDao;
 import infrastructure.persistence.inMemory.game.dao.GameStatusInMemoryDao;
-import infrastructure.persistence.inMemory.music.MusicRepositoryFactory;
-import infrastructure.persistence.inMemory.music.repository.InMemoryMusicRepository;
+import infrastructure.external.music.MusicRepositoryFactory;
+import infrastructure.external.music.seed.SeedMusicRepository;
 import infrastructure.persistence.inMemory.musicAuth.spotify.auth.SpotifyAccessTokenMapper;
 import infrastructure.persistence.inMemory.musicAuth.spotify.auth.SpotifyAuthRepository;
-import infrastructure.persistence.inMemory.music.mapper.getPlaylistItems.GetPlaylistItemsSpotifyMapper;
-import infrastructure.persistence.inMemory.music.mapper.searchPlaylists.SearchPlaylistsSpotifyMapper;
-import infrastructure.persistence.inMemory.music.repository.SpotifyMusicRepository;
+import infrastructure.external.music.spotify.mapper.getPlaylistItems.GetPlaylistItemsSpotifyMapper;
+import infrastructure.external.music.spotify.mapper.searchPlaylists.SearchPlaylistsSpotifyMapper;
+import infrastructure.external.music.spotify.SpotifyMusicRepository;
 import infrastructure.persistence.inMemory.musicAuth.spotify.apiToken.InMemorySpotifyAccessTokenRepository;
 import infrastructure.persistence.inMemory.musicAuth.spotify.apiToken.SpotifyAccessTokenRepository;
 import infrastructure.persistence.inMemory.player.dao.PlayerInMemoryDao;
@@ -188,9 +188,9 @@ public class ApplicationContext {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         PlayerFactory playerFactory = new PlayerFactory();
 
-        InMemoryMusicRepository inMemoryMusicRepository = new InMemoryMusicRepository();
+        SeedMusicRepository seedMusicRepository = new SeedMusicRepository();
         SpotifyMusicRepository spotifyMusicRepository = new SpotifyMusicRepository(spotifyAccessTokenRepository, searchPlaylistsSpotifyMapper, getPlaylistItemsSpotifyMapper, objectMapper);
-        MusicRepositoryFactory musicRepositoryFactory = new MusicRepositoryFactory(inMemoryMusicRepository, spotifyMusicRepository);
+        MusicRepositoryFactory musicRepositoryFactory = new MusicRepositoryFactory(seedMusicRepository, spotifyMusicRepository);
 
         // AppServices
         connectionServer.setup(roomStateMapper, gameStateMapper);

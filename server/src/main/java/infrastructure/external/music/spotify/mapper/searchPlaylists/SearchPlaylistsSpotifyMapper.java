@@ -1,8 +1,8 @@
-package infrastructure.persistence.inMemory.music.mapper.searchPlaylists;
+package infrastructure.external.music.spotify.mapper.searchPlaylists;
 
 import domain.music.Playlist;
 import domain.music.PlaylistId;
-import infrastructure.persistence.inMemory.music.dto.searchPlaylists.SearchPlaylistsSpotifyDto;
+import infrastructure.external.music.spotify.dto.searchPlaylists.SearchPlaylistsSpotifyDto;
 
 import java.util.List;
 import java.util.Objects;

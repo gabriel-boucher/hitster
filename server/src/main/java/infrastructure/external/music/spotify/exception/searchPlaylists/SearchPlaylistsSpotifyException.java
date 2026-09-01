@@ -1,4 +1,4 @@
-package infrastructure.persistence.inMemory.music.exception.searchPlaylists;
+package infrastructure.external.music.spotify.exception.searchPlaylists;
 
 import infrastructure.persistence.inMemory.musicAuth.spotify.apiToken.SpotifyAccessToken;
 

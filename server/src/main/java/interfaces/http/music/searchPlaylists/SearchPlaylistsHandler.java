@@ -4,7 +4,7 @@ import application.MusicAppService;
 import domain.exception.PlayerNotFoundException;
 import domain.exception.GameNotFoundException;
 import domain.music.Playlist;
-import infrastructure.persistence.inMemory.music.exception.searchPlaylists.SearchPlaylistsSpotifyException;
+import infrastructure.external.music.spotify.exception.searchPlaylists.SearchPlaylistsSpotifyException;
 import interfaces.dto.responseDto.EventResponse;
 import interfaces.dto.responseDto.exceptionDto.BadRequestExceptionResponse;
 import interfaces.dto.responseDto.exceptionDto.NotFoundExceptionResponse;

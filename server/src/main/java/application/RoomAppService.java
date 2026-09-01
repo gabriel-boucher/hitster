@@ -11,7 +11,7 @@ import domain.player.PlayerFactory;
 import domain.player.PlayerId;
 import domain.room.*;
 import domain.music.*;
-import infrastructure.persistence.inMemory.music.MusicRepositoryFactory;
+import infrastructure.external.music.MusicRepositoryFactory;
 
 import java.util.List;
 import java.util.function.Consumer;

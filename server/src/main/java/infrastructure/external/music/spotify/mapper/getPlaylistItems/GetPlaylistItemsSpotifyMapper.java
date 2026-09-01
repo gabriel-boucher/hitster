@@ -1,9 +1,9 @@
-package infrastructure.persistence.inMemory.music.mapper.getPlaylistItems;
+package infrastructure.external.music.spotify.mapper.getPlaylistItems;
 
 import domain.deck.item.ItemStatus;
 import domain.deck.item.card.Card;
 import domain.deck.item.card.CardId;
-import infrastructure.persistence.inMemory.music.dto.getPlaylistItems.GetPlaylistItemsSpotifyDto;
+import infrastructure.external.music.spotify.dto.getPlaylistItems.GetPlaylistItemsSpotifyDto;
 
 import java.util.List;
 

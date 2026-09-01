@@ -1,4 +1,4 @@
-package infrastructure.persistence.inMemory.music.exception.getPlaylistItems;
+package infrastructure.external.music.spotify.exception.getPlaylistItems;
 
 import domain.music.PlaylistId;
 import infrastructure.persistence.inMemory.musicAuth.spotify.apiToken.SpotifyAccessToken;

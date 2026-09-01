@@ -10,6 +10,7 @@ public enum EventResponseStatus {
     UNAUTHORIZED_ACCESS_TOKEN,
     SEARCH_PLAYLISTS,
     CREATE_ROOM,
+    CONNECT_ROOM,
     JOIN_ROOM,
     LEAVE_ROOM,
     CHANGE_PLAYER_ME,

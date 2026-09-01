@@ -16,7 +16,6 @@ export default function useDisconnect() {
             navigate("/");
             resetAllStates();
         };
-
         socket.on(ConnectionSocketEvents.DISCONNECT, handleDisconnect);
 
         return () => {

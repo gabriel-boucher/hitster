@@ -57,13 +57,13 @@ public class Room {
         return playlists;
     }
 
-    public void addPlayer(PlayerId playerId) {
+    public void addPlayer(PlayerId playerId, String playerName) {
         for (Player player : players) {
             if (player.getId().equals(playerId)) {
                 return;
             }
         }
-        Player player = playerFactory.create(playerId, players);
+        Player player = playerFactory.create(playerId, playerName, players);
         players.add(player);
     }
 

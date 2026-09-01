@@ -1,19 +1,19 @@
 import {ButtonHTMLAttributes, ReactNode} from "react";
 import styled from "styled-components";
 
-interface PrimaryButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     children: ReactNode;
 }
 
-export default function SecondaryButton({ children, ...props }: PrimaryButtonProps) {
+export default function SecondaryButton({ children, ...props }: ButtonProps) {
     return (
-        <SecondaryButtonContainer {...props}>
+        <ButtonContainer {...props}>
             {children}
-        </SecondaryButtonContainer>
+        </ButtonContainer>
     )
 }
 
-const SecondaryButtonContainer = styled.button`
+const ButtonContainer = styled.button`
     width: 100%;
     padding: 0.875rem;
     font-size: 1rem;

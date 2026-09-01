@@ -11,7 +11,6 @@ import interfaces.dto.responseDto.exceptionDto.BadRequestExceptionResponse;
 import interfaces.dto.responseDto.exceptionDto.NotFoundExceptionResponse;
 import interfaces.dto.responseDto.successDto.OkSuccessResponse;
 import interfaces.filter.auth.BearerTokenProvider;
-import interfaces.http.RestEventHandler;
 import interfaces.http.RestEventHandlerWithRequest;
 import interfaces.http.room.joinRoom.dto.JoinRoomData;
 import interfaces.http.room.joinRoom.dto.JoinRoomRequest;
@@ -32,9 +31,9 @@ public class JoinRoomHandler implements RestEventHandlerWithRequest<JoinRoomRequ
     public EventResponse handleEvent(String gameId, String playerId, JoinRoomRequest request) {
         try {
             JoinRoomData data = joinRoomMapper.toDomain(gameId, playerId, request);
-            PlayerId pId = roomAppService.joinGame(data.connectionId(), data.gameId(), data.playerId());
+            roomAppService.joinGame(data.connectionId(), data.gameId(), data.playerId(), data.playerName());
 
-            String token = bearerTokenProvider.generate(pId, data.gameId());
+            String token = bearerTokenProvider.generate(data.playerId(), data.gameId());
 
             return new OkSuccessResponse<>(JOIN_ROOM, token);
         } catch (GameNotFoundException | IllegalArgumentException e) { // room not found | uuid mapper

@@ -4,7 +4,8 @@ import { PlaylistId } from "../type/music/Playlist.ts";
 
 export const apiPaths = {
   createRoom: () => "/api/games/new/create",
-  joinRoom: (gameId: RoomId) => `/api/games/${gameId}/join`,
+  connectRoom: (gameId: RoomId) => `/api/games/${gameId}/connect`,
+  joinGame: (gameId: RoomId) => `/api/games/${gameId}/join`,
   startGame: (gameId: RoomId) => `/api/games/${gameId}/start`,
   changePlayerName: (gameId: RoomId, playerName: string) =>
     `/api/games/${gameId}/player/me?name=${encodeURIComponent(playerName)}`,

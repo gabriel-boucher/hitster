@@ -6,7 +6,7 @@ import ProfileSection from "../components/LobbyPage/Profile/ProfileSection.tsx";
 import PlaylistsSection from "../components/LobbyPage/Playlists/PlaylistsSection.tsx";
 import PlayersSection from "../components/LobbyPage/Players/PlayersSection.tsx";
 import SettingsSection from "../components/LobbyPage/Settings/SettingsSection.tsx";
-import PrimaryButton from "../components/LobbyPage/elements/PrimaryButton.tsx";
+import PrimaryButton from "../components/elements/PrimaryButton.tsx";
 
 interface Props {
   setPageLoading: (loading: boolean) => void;

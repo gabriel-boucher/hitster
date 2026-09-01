@@ -7,6 +7,7 @@ import domain.player.PlayerId;
 public record JoinRoomData(
         GameId gameId,
         PlayerId playerId,
-        ConnectionId connectionId
+        ConnectionId connectionId,
+        String playerName
 ) {
 }

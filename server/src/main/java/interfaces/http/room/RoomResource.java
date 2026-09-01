@@ -2,6 +2,8 @@ package interfaces.http.room;
 
 import interfaces.dto.responseDto.EventResponse;
 import interfaces.filter.auth.AuthContext;
+import interfaces.http.room.connectRoom.ConnectRoomHandler;
+import interfaces.http.room.connectRoom.dto.ConnectRoomRequest;
 import interfaces.http.room.joinRoom.JoinRoomHandler;
 import interfaces.http.room.joinRoom.dto.JoinRoomRequest;
 import interfaces.http.room.createRoom.CreateRoomHandler;
@@ -15,14 +17,17 @@ import jakarta.ws.rs.core.MediaType;
 public class RoomResource {
 
     private final CreateRoomHandler createRoomHandler;
+    private final ConnectRoomHandler connectRoomHandler;
     private final JoinRoomHandler joinRoomHandler;
     private final StartGameHandler startGameHandler;
 
     public RoomResource(
             CreateRoomHandler createRoomHandler,
+            ConnectRoomHandler connectRoomHandler,
             JoinRoomHandler joinRoomHandler,
             StartGameHandler startGameHandler) {
         this.createRoomHandler = createRoomHandler;
+        this.connectRoomHandler = connectRoomHandler;
         this.joinRoomHandler = joinRoomHandler;
         this.startGameHandler = startGameHandler;
     }
@@ -33,7 +38,19 @@ public class RoomResource {
     public EventResponse createRoom() {
         System.out.println("Create room request received");
 
-        return createRoomHandler.handleEvent(null, null);
+        return createRoomHandler.handleEvent();
+    }
+
+    @POST
+    @Path("connect")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public EventResponse connectRoom(
+            ConnectRoomRequest connectRoomRequest,
+            @PathParam("gameId") String gameId) {
+        System.out.println("Connect room for gameId: " + gameId + " by playerId: " + connectRoomRequest.playerId());
+
+        return connectRoomHandler.handleEvent(gameId, connectRoomRequest.playerId());
     }
 
     @POST

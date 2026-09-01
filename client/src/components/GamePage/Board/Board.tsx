@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import StackCards from "./StackCards";
-import Button from "src/components/elements/Button";
+import RoundButton from "../../elements/RoundButton.tsx";
 import Next from "src/components/icons/Next";
 import PlayerBar from "./PlayerBar";
 import SpotifyPlayer from "../SpotifyPlayer/SpotifyPlayer";
@@ -34,7 +34,7 @@ export default function Board({ setHoveredPlayerId, setIsClickedPlayer }: Props)
             <SpotifyPlayer />
           </Center>
           <NextButton>
-            <Button iconComponent={Next()} handleClick={nextTurn} />
+            <RoundButton iconComponent={Next()} onClick={nextTurn} />
           </NextButton>
         </>
       ) : (

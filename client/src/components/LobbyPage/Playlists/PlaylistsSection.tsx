@@ -9,7 +9,7 @@ import Section from "../components/Section.tsx";
 import RemoveButton from "../elements/RemoveButton.tsx";
 import {SectionListItem} from "../components/SectionListItem.tsx";
 import {SectionListContainer} from "../components/SectionListContainer.tsx";
-import SecondaryButton from "../elements/SecondaryButton.tsx";
+import SecondaryButton from "../../elements/SecondaryButton.tsx";
 
 export default function PlaylistsSection() {
   const [{ playerId }] = useConnectionStateProvider();

@@ -3,8 +3,10 @@ package application;
 import domain.connection.*;
 import domain.exception.ConnectionNotFoundException;
 import domain.exception.GameNotFoundException;
+import domain.exception.PlayerNotFoundException;
 import domain.game.*;
 import domain.deck.item.card.Card;
+import domain.player.Player;
 import domain.player.PlayerColor;
 import domain.player.PlayerFactory;
 import domain.player.PlayerId;
@@ -40,20 +42,27 @@ public class RoomAppService {
         this.roomValidator = roomValidator;
     }
 
-    public Room createGame() {
+    public GameId createGame() {
         Room room = roomFactory.create(gameFactory, playerFactory, roomValidator);
         roomRepository.saveRoom(room);
-        return room;
+        return room.getId();
     }
 
-    public PlayerId joinGame(ConnectionId connectionId, GameId gameId, PlayerId playerId) {
+    public List<Player> connectGame(GameId gameId) {
+        Room room = roomRepository.getRoomById(gameId)
+                .orElseThrow(() -> new GameNotFoundException(gameId));
+
+        return room.getPlayers();
+    }
+
+    public void joinGame(ConnectionId connectionId, GameId gameId, PlayerId playerId, String playerName) {
         Connection connection = connectionFactory.create(connectionId, playerId, gameId);
         List<Connection> connections = connectionRepository.getConnectionsByPlayerIdAndGameId(connection.getPlayerId(), connection.getGameId());
         Room room = roomRepository.getRoomById(gameId)
                 .orElseThrow(() -> new GameNotFoundException(gameId));
 
         if (connections.isEmpty()) {
-            room.addPlayer(playerId);
+            room.addPlayer(playerId, playerName);
         }
         connectionServer.joinRoom(connection);
         connectionRepository.addConnection(connection);
@@ -70,8 +79,6 @@ public class RoomAppService {
             gameRepository.saveGame(game);
             connectionServer.broadcastGameState(game);
         }
-
-        return connection.getPlayerId();
     }
 
     public void leaveGame(ConnectionId connectionId) {

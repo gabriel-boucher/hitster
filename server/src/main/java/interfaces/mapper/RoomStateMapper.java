@@ -16,6 +16,7 @@ public class RoomStateMapper {
     public RoomStateResponse toDto(Room room) {
         return new RoomStateResponse(
                 room.getId().toString(),
+                room.getGameStatus().toString(),
                 room.getPlayers().stream().filter(Player::isPlaying).map(playerMapper::toDto).toList(),
                 room.getPlaylists().stream().map(playlistMapper::toDto).toList(),
                 room.getMusicPlayerType().toString()

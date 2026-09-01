@@ -7,13 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerFactory {
-    public Player create(PlayerId playerId, List <Player> players) {
-        int count = players.size();
+    public Player create(PlayerId playerId, String playerName, List <Player> players) {
+        int count = 1;
         while (true) {
-            final String playerName = "Player " + (count + 1);
-            final boolean nameExists = players.stream()
-                    .anyMatch(player -> player.getName().equals(playerName));
-            if (!nameExists) {
+            String finalPlayerName = playerName;
+            boolean isNotTaken = players.stream()
+                    .noneMatch(player -> player.getName().equals(finalPlayerName));
+            if (isNotTaken) {
+                if (count > 1) {
+                    playerName += " (" + count + ")";
+                }
                 return new Player(playerId, playerName, getAvailableColor(players), new Deck(new ArrayList<>(), new ArrayList<>()), true);
             }
             count++;
@@ -22,9 +25,9 @@ public class PlayerFactory {
 
     private PlayerColor getAvailableColor(List<Player> players) {
         for (PlayerColor color : PlayerColor.values()) {
-            boolean isTaken = players.stream()
-                    .anyMatch(player -> color.equals(player.getColor()));
-            if (!isTaken) {
+            boolean isNotTaken = players.stream()
+                    .noneMatch(player -> color.equals(player.getColor()));
+            if (isNotTaken) {
                 return color;
             }
         }

@@ -47,6 +47,9 @@ import interfaces.http.music.MusicResource;
 import interfaces.http.music.playlistProvider.PlaylistProviderHandler;
 import interfaces.http.player.PlayerResource;
 import interfaces.http.playlist.PlaylistResource;
+import interfaces.http.room.connectRoom.ConnectRoomHandler;
+import interfaces.http.room.connectRoom.ConnectRoomMapper;
+import interfaces.http.room.createRoom.dto.CreateRoomMapper;
 import interfaces.mapper.*;
 import interfaces.http.music.playlistProvider.inMemoryAuth.AuthInMemoryHandler;
 import interfaces.http.music.playlistProvider.spotifyAuth.AuthSpotifyHandler;
@@ -112,6 +115,8 @@ public class ApplicationContext {
         SearchPlaylistsMapper searchPlaylistsMapper = new SearchPlaylistsMapper(playlistMapper);
 
         // RoomResource mappers
+        CreateRoomMapper createRoomMapper = new CreateRoomMapper();
+        ConnectRoomMapper connectRoomMapper = new ConnectRoomMapper();
         JoinRoomMapper joinRoomMapper = new JoinRoomMapper();
         ChangePlayerMeMapper changePlayerMeMapper = new ChangePlayerMeMapper();
         RemovePlayerMapper removePlayerMapper = new RemovePlayerMapper();
@@ -203,7 +208,8 @@ public class ApplicationContext {
         SearchPlaylistsHandler searchPlaylistsHandler = new SearchPlaylistsHandler(musicAppService, searchPlaylistsMapper);
         PlaylistProviderHandler playlistProviderHandler = new PlaylistProviderHandler(authInMemoryHandler, authSpotifyHandler);
 
-        CreateRoomHandler createRoomHandler = new CreateRoomHandler(roomAppService);
+        CreateRoomHandler createRoomHandler = new CreateRoomHandler(roomAppService, createRoomMapper);
+        ConnectRoomHandler connectRoomHandler = new ConnectRoomHandler(roomAppService, connectRoomMapper);
         JoinRoomHandler joinRoomHandler = new JoinRoomHandler(roomAppService, joinRoomMapper);
         StartGameHandler startGameHandler = new StartGameHandler(roomAppService, startGameMapper);
 
@@ -225,7 +231,7 @@ public class ApplicationContext {
         TokenMovementHandler tokenMovementHandler = new TokenMovementHandler(addTokenHandler, removeTokenHandler);
 
         connectionResource = new ConnectionResource(disconnectHandler);
-        roomResource = new RoomResource(createRoomHandler, joinRoomHandler, startGameHandler);
+        roomResource = new RoomResource(createRoomHandler, connectRoomHandler, joinRoomHandler, startGameHandler);
         gameResource = new GameResource(nextTurnHandler);
         playerResource = new PlayerResource(changePlayerMeHandler, removePlayerHandler);
         playlistResource = new PlaylistResource(addPlaylistHandler, removePlaylistHandler);

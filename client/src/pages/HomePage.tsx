@@ -1,30 +1,48 @@
 import styled from "styled-components";
 import useCreateRoom from "../hooks/http/room/useCreateRoom.ts";
+import { useNavigate } from "react-router-dom";
+import {useEffect} from "react";
+import {useConnectionStateProvider} from "../stateProvider/connection/ConnectionStateProvider.tsx";
+import {useResetAllStates} from "../hooks/useResetAllStates.ts";
+import PrimaryButton from "../components/elements/PrimaryButton.tsx";
 
 export default function HomePage() {
+  const [{ socket }] = useConnectionStateProvider();
+  const navigate = useNavigate();
+  const resetAllStates = useResetAllStates();
+
   const createRoom = useCreateRoom();
+  const joinRoom = () => navigate("/join");
+
+  useEffect(() => {
+    resetAllStates();
+    if (socket) socket.disconnect();
+  }, [resetAllStates, socket]);
 
   return (
     <Container>
       <Title>HITSTER</Title>
-      <CreateRoomButton onClick={createRoom}>Create Room</CreateRoomButton>
+      <PrimaryButton onClick={createRoom} style={{ width: "14rem" }}>Create</PrimaryButton>
+      <PrimaryButton onClick={joinRoom} style={{ width: "14rem" }}>Join</PrimaryButton>
     </Container>
   );
 }
 
 const Container = styled.div`
   height: 100vh;
-  width: 100vw;  display: flex;
+  width: 100vw;  
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 2rem;
   color: var(--primary-text-color);
   font-family: 'Poppins', sans-serif;
 `;
 
 const Title = styled.h1`
     font-size: 8rem;
-    margin-bottom: 2rem;
+    margin: 0;
     color: var(--primary-color);
     text-shadow: 0 0 10px var(--primary-color), 0 0 25px var(--primary-color);
     animation: pulse 2s infinite;
@@ -39,23 +57,5 @@ const Title = styled.h1`
         100% {
             text-shadow: 0 0 10px var(--primary-color);
         }
-    }
-`;
-
-const CreateRoomButton = styled.button`
-    background-color: var(--primary-color);
-    border: none;
-    padding: 1rem 2.5rem;
-    font-size: 1.4rem;
-    font-weight: bold;
-    border-radius: 12px;
-    color: var(--primary-text-color);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-bottom: 5rem;
-
-    &:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0 15px var(--primary-color);
     }
 `;

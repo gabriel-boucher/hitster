@@ -7,6 +7,7 @@ import java.util.List;
 
 public record RoomStateResponse(
         String gameId,
+        String gameStatus,
         List<PlayerDto> players,
         List<PlaylistDto> playlists,
         String musicPlayerType

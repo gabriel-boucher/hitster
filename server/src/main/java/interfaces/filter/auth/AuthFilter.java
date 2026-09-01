@@ -24,7 +24,7 @@ public class AuthFilter implements ContainerRequestFilter {
         }
 
         String path = requestContext.getUriInfo().getPath();
-        if ((path.endsWith("/join") || path.endsWith("/create")) && requestContext.getMethod().equals("POST")) {
+        if ((path.endsWith("/create") || path.endsWith("/connect")) || path.endsWith("/join") && requestContext.getMethod().equals("POST")) {
             return;
         }
 

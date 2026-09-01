@@ -13,7 +13,8 @@ public class JoinRoomMapper {
                 playerId.isEmpty() ?
                         PlayerId.create() :
                         PlayerId.fromString(playerId),
-                ConnectionId.fromString(request.socketId())
+                ConnectionId.fromString(request.socketId()),
+                request.playerName()
         );
     }
 }

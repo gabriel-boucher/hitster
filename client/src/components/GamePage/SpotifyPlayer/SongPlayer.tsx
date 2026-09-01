@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from "react";
-import Button from "src/components/elements/Button";
+import RoundButton from "../../elements/RoundButton.tsx";
 import Slider from "src/components/elements/Slider";
 import Pause from "src/components/icons/Pause";
 import Play from "src/components/icons/Play";
@@ -23,7 +23,7 @@ export default function SongPlayer() {
 
   return (
     <Player>
-        <Button iconComponent={iconComponent} handleClick={handlePlay} />
+        <RoundButton iconComponent={iconComponent} onClick={handlePlay} />
         <Playback>
             <span className="time left">{songProgress}</span>
             <Slider

@@ -7,7 +7,7 @@ import {ItemStatus} from "../../type/item/ItemStatus.ts";
 
 export interface SetGameStatusGameAction {
   type: gameReducerCases.SET_GAME_STATUS;
-  gameStatus: GameStatus;
+  gameStatus: GameStatus | undefined;
 }
 
 export interface SetItemsGameAction {

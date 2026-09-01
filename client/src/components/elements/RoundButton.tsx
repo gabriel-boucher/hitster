@@ -1,20 +1,17 @@
-import { JSX } from "react";
+import {ButtonHTMLAttributes, JSX} from "react";
 import styled from "styled-components";
 
-interface ButtonProps {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     iconComponent: JSX.Element;
-    handleClick: () => void;
 }
 
-export default function Button({ iconComponent, handleClick }: ButtonProps) {
+export default function RoundButton({ iconComponent, ...props }: ButtonProps) {
   return (
-    <ButtonWrapper>
-        <ButtonContainer onClick={handleClick}>
-            <Glow>
-                {iconComponent}
-            </Glow>
-        </ButtonContainer>
-    </ButtonWrapper>
+      <ButtonContainer {...props}>
+          <Glow>
+              {iconComponent}
+          </Glow>
+      </ButtonContainer>
   );
 }
 
@@ -39,19 +36,11 @@ const ButtonContainer = styled.button`
 
     &:hover {
         cursor: pointer;
-        height: 100%;
+        transform: scale(1.02);
 
         ${Glow} {
             box-shadow: 0 0 0.4rem var(--primary-color), 0 0 0.7rem var(--primary-color), 0 0 1.2rem var(--primary-color),
             inset 0 0 0.4rem var(--primary-color), inset 0 0 0.7rem var(--primary-color), inset 0 0 1.2rem var(--primary-color);
         }
     }
-`;
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 10.2vh;
-  aspect-ratio: 1/1;
 `;

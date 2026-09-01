@@ -18,6 +18,11 @@ export default function GamePage() {
   const mouseDrag = useMouseDrag()
   const mouseUpCard = useMouseUpCard()
 
+  // Prevents player joining with no cards and tokens showing (hoveredPlayerId is "")
+  useEffect(() => {
+    setHoveredPlayerId(playerId);
+  }, [playerId]);
+
   useEffect(() => {
     if (!isDragging) return;
     // Mouse events
@@ -57,10 +62,6 @@ const DisableHoverContainer = styled.div`
   flex-direction: column;
   justify-content: space-between;
   height: 74vh;
-
-  &.disable-hover {
-    pointer-events: none;
-  }
 `
 
 const Container = styled.div`

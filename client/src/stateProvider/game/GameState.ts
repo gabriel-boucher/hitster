@@ -5,7 +5,7 @@ import {PlayerId} from "../../type/player/Player.ts";
 import {ItemStatus} from "../../type/item/ItemStatus.ts";
 
 export interface GameState {
-  gameStatus: GameStatus;
+  gameStatus: GameStatus | undefined;
   items: (Card | Token)[];
   currentCardId: CardId;
   currentCardStatus: ItemStatus;

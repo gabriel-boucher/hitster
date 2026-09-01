@@ -5,7 +5,6 @@ import {useConnectionStateProvider} from "../../stateProvider/connection/Connect
 import {connectionReducerCases} from "../../stateProvider/connection/ConnectionReducerCases.ts";
 import {roomReducerCases} from "../../stateProvider/room/RoomReducerCases.ts";
 import {useRoomStateProvider} from "../../stateProvider/room/RoomStateProvider.tsx";
-import {CLIENT_URL} from "../../config/url.ts";
 import {StateChangedSocketEvents} from "./stateChangedSocketEvents.ts";
 import {useGameStateProvider} from "../../stateProvider/game/GameStateProvider.tsx";
 import {gameReducerCases} from "../../stateProvider/game/GameReducerCases.ts";
@@ -26,9 +25,6 @@ export default function useRoomState() {
         roomDispatch({ type: roomReducerCases.SET_PLAYERS, players: roomState.players });
         roomDispatch({ type: roomReducerCases.SET_PLAYLISTS, playlists: roomState.playlists });
         roomDispatch({ type: roomReducerCases.SET_MUSIC_PLAYER_TYPE, musicPlayerType: roomState.musicPlayerType });
-        if (roomState.gameId === "") {
-          window.location.href = CLIENT_URL;
-        }
       }
     };
 

@@ -113,22 +113,22 @@ const PlayerIcon = styled.div<{
       $isActivePlayer ? "var(--primary-text-color)" : "transparent"};
   box-shadow: 0 0 0.2rem
       ${({ $isActivePlayer }) =>
-        $isActivePlayer ? "var(--primary-bg-color)" : "transparent"},
+        $isActivePlayer ? "var(--primary-color)" : "transparent"},
     0 0 0.5rem
       ${({ $isActivePlayer }) =>
-        $isActivePlayer ? "var(--primary-bg-color)" : "transparent"},
+        $isActivePlayer ? "var(--primary-color)" : "transparent"},
     0 0 1rem
       ${({ $isActivePlayer }) =>
-        $isActivePlayer ? "var(--primary-bg-color)" : "transparent"},
+        $isActivePlayer ? "var(--primary-color)" : "transparent"},
     inset 0 0 0.2rem
       ${({ $isActivePlayer }) =>
-        $isActivePlayer ? "var(--primary-bg-color)" : "transparent"},
+        $isActivePlayer ? "var(--primary-color)" : "transparent"},
     inset 0 0 0.5rem
       ${({ $isActivePlayer }) =>
-        $isActivePlayer ? "var(--primary-bg-color)" : "transparent"},
+        $isActivePlayer ? "var(--primary-color)" : "transparent"},
     inset 0 0 1rem
       ${({ $isActivePlayer }) =>
-        $isActivePlayer ? "var(--primary-bg-color)" : "transparent"};
+        $isActivePlayer ? "var(--primary-color)" : "transparent"};
 
   /* background-image: url(${({ $playerImage }) => $playerImage}); */
   background-color: ${({ $playerImage }) => $playerImage};

@@ -90,27 +90,21 @@ public class RoomAppService {
         if (connections.size() == 1) {
             room.removePlayer(connection.getPlayerId());
         }
+        connectionRepository.removeConnection(connection);
+        roomRepository.saveRoom(room);
+        connectionServer.broadcastRoomState(room);
 
-        Game game = null;
         if (room.getGameStatus() == GameStatus.PLAYING) {
-            game = gameRepository.getGameById(connection.getGameId())
+            Game game = gameRepository.getGameById(connection.getGameId())
                     .orElseThrow(() -> new GameNotFoundException(connection.getGameId()));
             game.removePlayer(connection.getPlayerId());
+            gameRepository.saveGame(game);
+            connectionServer.broadcastGameState(game);
         }
 
         if (room.isEmpty()) {
             roomRepository.deleteRoom(room.getId());
             gameRepository.deleteGame(room.getId());
-            return;
-        }
-
-        connectionRepository.removeConnection(connection);
-        roomRepository.saveRoom(room);
-        connectionServer.broadcastRoomState(room);
-
-        if (game != null) {
-            gameRepository.saveGame(game);
-            connectionServer.broadcastGameState(game);
         }
     }
 

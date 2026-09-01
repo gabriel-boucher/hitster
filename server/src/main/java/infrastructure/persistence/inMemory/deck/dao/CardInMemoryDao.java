@@ -43,4 +43,9 @@ public class CardInMemoryDao implements CardDao {
     public void saveStackCardsByGameId(String gameId, List<CardPersistenceDto> cards) {
         this.cards.computeIfAbsent(gameId, k -> new HashMap<>()).put("stack", cards);
     }
+
+    @Override
+    public void deleteByGameId(String gameId) {
+        cards.remove(gameId);
+    }
 }

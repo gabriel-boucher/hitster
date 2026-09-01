@@ -11,7 +11,6 @@ import domain.player.PlayerFactory;
 import domain.player.PlayerId;
 import domain.music.Playlist;
 import domain.music.PlaylistId;
-import domain.room.exception.PlayerAlreadyInRoomException;
 
 import java.util.List;
 
@@ -108,6 +107,10 @@ public class Room {
     public void removePlaylist(PlayerId playerId, PlaylistId playlistId) {
         validator.validatePlaylistCanBeRemoved(playerId, playlistId, players, playlists, gameStatus);
         playlists.removeIf(playlist -> playlist.id().equals(playlistId));
+    }
+
+    public boolean isEmpty() {
+        return players.stream().noneMatch(Player::isPlaying);
     }
 
     public Game startGame(PlayerId playerId) {

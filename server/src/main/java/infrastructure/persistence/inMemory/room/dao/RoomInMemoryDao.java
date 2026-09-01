@@ -22,4 +22,9 @@ public class RoomInMemoryDao implements RoomDao {
     public void saveRoom(RoomPersistenceDto room) {
         rooms.put(room.gameId(), room);
     }
+
+    @Override
+    public void deleteRoom(String gameId) {
+        rooms.remove(gameId);
+    }
 }

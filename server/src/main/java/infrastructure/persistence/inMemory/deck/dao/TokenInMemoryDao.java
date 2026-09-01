@@ -33,4 +33,9 @@ public class TokenInMemoryDao implements TokenDao {
     public void saveByGameIdAndPlayerId(String gameId, String playerId, List<TokenPersistenceDto> tokens) {
         this.tokens.computeIfAbsent(gameId, k -> new HashMap<>()).put(playerId, tokens);
     }
+
+    @Override
+    public void deleteByGameId(String gameId) {
+        tokens.remove(gameId);
+    }
 }

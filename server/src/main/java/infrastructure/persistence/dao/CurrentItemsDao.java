@@ -7,4 +7,5 @@ import java.util.List;
 public interface CurrentItemsDao {
     List<ItemPersistenceDto> getCurrentDeckByGameId(String gameId, String currentPlayerId, String currentCardId);
     void saveCurrentDeckByGameId(String gameId, String currentCardId, List<ItemPersistenceDto> items);
+    void deleteByGameId(String gameId);
 }

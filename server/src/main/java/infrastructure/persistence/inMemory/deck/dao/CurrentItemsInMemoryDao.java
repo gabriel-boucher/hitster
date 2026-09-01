@@ -56,4 +56,9 @@ public class CurrentItemsInMemoryDao implements CurrentItemsDao {
         }
         currentItems.put(gameId, currentItemsList);
     }
+
+    @Override
+    public void deleteByGameId(String gameId) {
+        currentItems.remove(gameId);
+    }
 }

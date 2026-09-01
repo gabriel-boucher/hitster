@@ -1,7 +1,5 @@
 package infrastructure.persistence.inMemory.game;
 
-import domain.deck.item.card.Card;
-import domain.deck.item.token.Token;
 import domain.game.Game;
 import domain.game.GameId;
 import domain.game.GameRepository;
@@ -18,18 +16,20 @@ public class InMemoryGameRepository implements GameRepository {
     private final GameStatusDao gameStatusDao;
     private final PlayerDao playerDao;
     private final CardDao cardDao;
+    private final TokenDao tokenDao;
     private final CurrentItemsDao currentItemsDao;
     private final GamePersistenceMapper gamePersistenceMapper;
     private final PlayerPersistenceMapper playerPersistenceMapper;
     private final CardPersistenceMapper cardPersistenceMapper;
     private final CurrentItemPersistenceMapper currentItemPersistenceMapper;
 
-    public InMemoryGameRepository(GameDao gameDao, GameStatusDao gameStatusDao, PlayerDao playerDao, CardDao cardDao, CurrentItemsDao currentItemsDao,
+    public InMemoryGameRepository(GameDao gameDao, GameStatusDao gameStatusDao, PlayerDao playerDao, CardDao cardDao, TokenDao tokenDao, CurrentItemsDao currentItemsDao,
                                   GamePersistenceMapper gamePersistenceMapper, PlayerPersistenceMapper playerPersistenceMapper, CardPersistenceMapper cardPersistenceMapper, CurrentItemPersistenceMapper currentItemPersistenceMapper) {
         this.gameDao = gameDao;
         this.gameStatusDao = gameStatusDao;
         this.playerDao = playerDao;
         this.cardDao = cardDao;
+        this.tokenDao = tokenDao;
         this.currentItemsDao = currentItemsDao;
         this.gamePersistenceMapper = gamePersistenceMapper;
         this.playerPersistenceMapper = playerPersistenceMapper;
@@ -79,5 +79,15 @@ public class InMemoryGameRepository implements GameRepository {
                 .map(currentItemPersistenceMapper::toDto)
                 .collect(Collectors.toList());
         currentItemsDao.saveCurrentDeckByGameId(game.getId().toString(), game.getCurrentCard().getId().toString(), currentItemsDtos);
+    }
+
+    @Override
+    public void deleteGame(GameId gameId) {
+        gameDao.deleteGame(gameId.toString());
+        gameStatusDao.deleteByGameId(gameId.toString());
+        playerDao.deleteByGameId(gameId.toString());
+        cardDao.deleteByGameId(gameId.toString());
+        tokenDao.deleteByGameId(gameId.toString());
+        currentItemsDao.deleteByGameId(gameId.toString());
     }
 }

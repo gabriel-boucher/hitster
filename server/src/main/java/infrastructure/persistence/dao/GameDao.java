@@ -7,4 +7,5 @@ import java.util.Optional;
 public interface GameDao {
     Optional<GamePersistenceDto> getGameById(String gameId);
     void saveGame(GamePersistenceDto game);
+    void deleteGame(String gameId);
 }

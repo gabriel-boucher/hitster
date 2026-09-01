@@ -21,4 +21,9 @@ public class GameStatusInMemoryDao implements GameStatusDao {
     public void saveByGameId(String gameId, String status) {
         gameStatuses.put(gameId, status);
     }
+
+    @Override
+    public void deleteByGameId(String gameId) {
+        gameStatuses.remove(gameId);
+    }
 }

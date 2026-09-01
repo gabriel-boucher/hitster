@@ -68,4 +68,12 @@ public class InMemoryRoomRepository implements RoomRepository {
                 .map(playlistPersistenceMapper::toDto).collect(Collectors.toList());
         playlistDao.saveByGameId(room.getId().toString(), playlistPersistenceDtos);
     }
+
+    @Override
+    public void deleteRoom(GameId gameId) {
+        roomDao.deleteRoom(gameId.toString());
+        gameStatusDao.deleteByGameId(gameId.toString());
+        playerDao.deleteByGameId(gameId.toString());
+        playlistDao.deleteByGameId(gameId.toString());
+    }
 }

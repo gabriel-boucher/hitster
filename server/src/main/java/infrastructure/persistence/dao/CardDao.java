@@ -12,4 +12,5 @@ public interface CardDao {
     void saveCurrentCardByGameId(String gameId, CardPersistenceDto card);
     void saveByGameIdAndPlayerId(String gameId, String playerId, List<CardPersistenceDto> cards);
     void saveStackCardsByGameId(String gameId, List<CardPersistenceDto> cards);
+    void deleteByGameId(String gameId);
 }

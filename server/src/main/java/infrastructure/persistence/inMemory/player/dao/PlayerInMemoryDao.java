@@ -50,4 +50,9 @@ public class PlayerInMemoryDao implements PlayerDao {
 
         this.players.put(gameId, playersDto);
     }
+
+    @Override
+    public void deleteByGameId(String gameId) {
+        players.remove(gameId);
+    }
 }

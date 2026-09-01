@@ -7,4 +7,5 @@ import java.util.Optional;
 public interface RoomDao {
     Optional<RoomPersistenceDto> getRoomByGameId(String gameId);
     void saveRoom(RoomPersistenceDto room);
+    void deleteRoom(String gameId);
 }

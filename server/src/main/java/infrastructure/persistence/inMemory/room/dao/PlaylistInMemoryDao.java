@@ -23,4 +23,9 @@ public class PlaylistInMemoryDao implements PlaylistDao {
     public void saveByGameId(String gameId, List<PlaylistPersistenceDto> playlists) {
         this.playlists.put(gameId, playlists);
     }
+
+    @Override
+    public void deleteByGameId(String gameId) {
+        playlists.remove(gameId);
+    }
 }

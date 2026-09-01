@@ -169,7 +169,7 @@ public class ApplicationContext {
         PlayerDao playerDao = new PlayerInMemoryDao(new HashMap<>(), cardDao, tokenDao);
 
         // Repositories
-        GameRepository gameRepository = new InMemoryGameRepository(gameDao, gameStatusDao, playerDao, cardDao, currentItemsDao, gamePersistenceMapper, playerPersistenceMapper, cardPersistenceMapper, currentItemPersistenceMapper);
+        GameRepository gameRepository = new InMemoryGameRepository(gameDao, gameStatusDao, playerDao, cardDao, tokenDao, currentItemsDao, gamePersistenceMapper, playerPersistenceMapper, cardPersistenceMapper, currentItemPersistenceMapper);
         RoomRepository roomRepository = new InMemoryRoomRepository(roomDao, gameStatusDao, playerDao, playlistDao, roomPersistenceMapper, playerPersistenceMapper, playlistPersistenceMapper);
         ConnectionRepository connectionRepository = new InMemoryConnectionRepository();
         SpotifyAccessTokenRepository spotifyAccessTokenRepository = new InMemorySpotifyAccessTokenRepository();
